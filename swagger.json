@@ -1,0 +1,1604 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "DrinkMaster V1 API docs",
+    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/...) | [Privacy Policy](https://...)",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "https://..." }],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User endpoints"
+    },
+    {
+      "name": "Filters",
+      "description": "Filters endpoints"
+    },
+    {
+      "name": "Drinks",
+      "description": "Drinks endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "parameters": [],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Provided email already exists",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User authentication",
+        "parameters": [],
+        "requestBody": {
+          "description": "Authentication's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "403": {
+            "description": "Email doesn't exist / Password is wrong",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/signout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User logout",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Get new pair of tokens (use Bearer {refreshToken} instead of accessToken)",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Object with session's id",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokensRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokensResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid refresh token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/google": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Google authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
+        "responses": {
+          "200": {
+            "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user",
+            "content": {}
+          },
+          "403": {
+            "description": "Not registered or registered with postman",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/facebook": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Facebook authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
+        "responses": {
+          "200": {
+            "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user",
+            "content": {}
+          },
+          "403": {
+            "description": "Not registered or registered with postman",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user info",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user info",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/subscribe": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Subscribe to newsletters",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/filters/categories": {
+      "get": {
+        "tags": ["Filters"],
+        "summary": "Getting a list of cocktail categories",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/filters/ingredients": {
+      "get": {
+        "tags": ["Filters"],
+        "summary": "Getting the ingredients list",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/filters/glasses": {
+      "get": {
+        "tags": ["Filters"],
+        "summary": "Obtaining a list of containers for serving",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/mainpage": {
+      "get": {
+        "tags": ["Drinks"],
+        "summary": "Getting cocktails for the main page",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/popular": {
+      "get": {
+        "tags": ["Drinks"],
+        "summary": "Getting popular cocktails",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/search": {
+      "get": {
+        "tags": ["Drinks"],
+        "summary": "Getting cocktails by category + ingredient + keyword",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own/add": {
+      "post": {
+        "tags": ["Drinks"],
+        "summary": "Adding your own cocktail",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own/remove": {
+      "delete": {
+        "tags": ["Drinks"],
+        "summary": "Deleting your own cocktail",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own": {
+      "get": {
+        "tags": ["Drinks"],
+        "summary": "Getting your own cocktails",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/favorite/add": {
+      "post": {
+        "tags": ["Drinks"],
+        "summary": "Adding a cocktail to favorites",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/favorite/remove": {
+      "delete": {
+        "tags": ["Drinks"],
+        "summary": "Removing a cocktail from favorites",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/favorite": {
+      "get": {
+        "tags": ["Drinks"],
+        "summary": "Receiving cocktails from the chosen ones",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks": {
+      "get": {
+        "tags": ["Drinks"],
+        "summary": "Get one cocktail per ID",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Child's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body) / No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Child not found / Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "required": ["username", "birthday", "email", "password"],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "John"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday",
+            "minLength": 10,
+            "maxLength": 10,
+            "example": "01/01/2001"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty12",
+            "minLength": 8,
+            "maxLength": 100
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "507f1f77bcf86cd799439011"
+          }
+        }
+      },
+      "LoginRequest": {
+        "required": ["email", "password"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "minLength": 8,
+            "maxLength": 100,
+            "example": "qwerty12"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Session's access token (needed for all requests)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Session's refresh token (needed for /auth/refresh)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
+          },
+          "sid": {
+            "type": "string",
+            "description": "Session's id (needed for /auth/refresh)",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "username": {
+                "type": "string",
+                "description": "User's name",
+                "example": "John"
+              },
+              "id": {
+                "type": "string",
+                "description": "User's id",
+                "example": "507f1f77bcf86cd799439012"
+              },
+              "children": {
+                "type": "array",
+                "description": "User's children",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rewards": {
+                      "type": "integer",
+                      "description": "Child's rewards"
+                    },
+                    "habits": {
+                      "type": "array",
+                      "description": "Child's habits",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "days": {
+                            "type": "array",
+                            "description": "Habit days",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "date": {
+                                  "type": "string",
+                                  "description": "Day's date",
+                                  "example": "2020-12-31"
+                                },
+                                "isCompleted": {
+                                  "type": "string",
+                                  "description": "Day's status",
+                                  "enum": ["unknown", "confirmed", "canceled"]
+                                }
+                              }
+                            }
+                          },
+                          "_id": {
+                            "type": "string",
+                            "description": "Habit's id",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Habit's name",
+                            "example": "Name of the habit"
+                          },
+                          "rewardPerDay": {
+                            "type": "integer",
+                            "description": "Habit's reward for a single day",
+                            "example": 1
+                          },
+                          "childId": {
+                            "type": "string",
+                            "description": "Id of the child whose habit it is",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "__v": {
+                            "type": "integer",
+                            "description": "MongoDB document service versionKey (ignore)"
+                          }
+                        }
+                      }
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "description": "Child's tasks",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "description": "Task's id",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Task's name",
+                            "example": "Name of the task"
+                          },
+                          "reward": {
+                            "type": "string",
+                            "description": "Task's reward",
+                            "example": 1
+                          },
+                          "isCompleted": {
+                            "type": "string",
+                            "description": "Task's status",
+                            "enum": ["unknown", "confirmed", "canceled"]
+                          },
+                          "childId": {
+                            "type": "string",
+                            "description": "Id of the child whose task it is",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "daysToComplete": {
+                            "type": "integer",
+                            "description": "Amount of days to complete this task (optional)",
+                            "example": 1
+                          },
+                          "__v": {
+                            "type": "integer",
+                            "description": "MongoDB document service versionKey (ignore)"
+                          }
+                        }
+                      }
+                    },
+                    "gifts": {
+                      "type": "array",
+                      "description": "Child's gifts",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "description": "Gift's id",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Gift's name",
+                            "example": "Name of the gift"
+                          },
+                          "price": {
+                            "type": "integer",
+                            "description": "Gift's price",
+                            "minimum": 1,
+                            "example": 1
+                          },
+                          "isPurchased": {
+                            "type": "boolean",
+                            "description": "Gift's status"
+                          },
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
+                          },
+                          "childId": {
+                            "type": "string",
+                            "description": "Id of the child this gift was created for",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "__v": {
+                            "type": "integer",
+                            "description": "MongoDB document service versionKey (ignore)"
+                          }
+                        }
+                      }
+                    },
+                    "_id": {
+                      "type": "string",
+                      "description": "Child's id",
+                      "example": "507f1f77bcf86cd799439011"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Child's name",
+                      "example": "John"
+                    },
+                    "gender": {
+                      "type": "string",
+                      "description": "Child's gender",
+                      "enum": ["male", "female"]
+                    },
+                    "__v": {
+                      "type": "integer",
+                      "description": "MongoDB document service versionKey (ignore)"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "RefreshTokensRequest": {
+        "type": "object",
+        "properties": {
+          "sid": {
+            "type": "string",
+            "description": "Session's ('sid' field after authentication)",
+            "example": "507f1f77bcf86cd799439011"
+          }
+        }
+      },
+      "RefreshTokensResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
+          },
+          "newSid": {
+            "type": "string",
+            "description": "New session's id",
+            "example": "507f1f77bcf86cd799439011"
+          }
+        }
+      },
+      "GetUserInfoRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John"
+          },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "507f1f77bcf86cd799439012"
+          },
+
+          "children": {
+            "type": "array",
+            "description": "User's children",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rewards": {
+                  "type": "integer",
+                  "description": "Child's rewards"
+                },
+                "habits": {
+                  "type": "array",
+                  "description": "Child's habits",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "days": {
+                        "type": "array",
+                        "description": "Habit days",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "description": "Day's date",
+                              "example": "2020-12-31"
+                            },
+                            "isCompleted": {
+                              "type": "string",
+                              "description": "Day's status",
+                              "enum": ["unknown", "confirmed", "canceled"]
+                            }
+                          }
+                        }
+                      },
+                      "_id": {
+                        "type": "string",
+                        "description": "Habit's id",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Habit's name",
+                        "example": "Name of the habit"
+                      },
+                      "rewardPerDay": {
+                        "type": "integer",
+                        "description": "Habit's reward for a single day",
+                        "example": 1
+                      },
+                      "childId": {
+                        "type": "string",
+                        "description": "Id of the child whose habit it is",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "__v": {
+                        "type": "integer",
+                        "description": "MongoDB document service versionKey (ignore)"
+                      }
+                    }
+                  }
+                },
+                "tasks": {
+                  "type": "array",
+                  "description": "Child's tasks",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Task's id",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Task's name",
+                        "example": "Name of the task"
+                      },
+                      "reward": {
+                        "type": "string",
+                        "description": "Task's reward",
+                        "example": 1
+                      },
+                      "isCompleted": {
+                        "type": "string",
+                        "description": "Task's status",
+                        "enum": ["unknown", "confirmed", "canceled"]
+                      },
+                      "childId": {
+                        "type": "string",
+                        "description": "Id of the child whose task it is",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "daysToComplete": {
+                        "type": "integer",
+                        "description": "Amount of days to complete this task (optional)",
+                        "example": 1
+                      },
+                      "__v": {
+                        "type": "integer",
+                        "description": "MongoDB document service versionKey (ignore)"
+                      }
+                    }
+                  }
+                },
+                "gifts": {
+                  "type": "array",
+                  "description": "Child's gifts",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Gift's id",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Gift's name",
+                        "example": "Name of the gift"
+                      },
+                      "price": {
+                        "type": "integer",
+                        "description": "Gift's price",
+                        "minimum": 1,
+                        "example": 1
+                      },
+                      "isPurchased": {
+                        "type": "boolean",
+                        "description": "Gift's status"
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
+                      },
+                      "childId": {
+                        "type": "string",
+                        "description": "Id of the child this gift was created for",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "__v": {
+                        "type": "integer",
+                        "description": "MongoDB document service versionKey (ignore)"
+                      }
+                    }
+                  }
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Child's id",
+                  "example": "507f1f77bcf86cd799439011"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Child's name",
+                  "example": "John"
+                },
+                "gender": {
+                  "type": "string",
+                  "description": "Child's gender",
+                  "enum": ["male", "female"]
+                },
+                "__v": {
+                  "type": "integer",
+                  "description": "MongoDB document service versionKey (ignore)"
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetUserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John"
+          },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "507f1f77bcf86cd799439012"
+          },
+
+          "children": {
+            "type": "array",
+            "description": "User's children",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rewards": {
+                  "type": "integer",
+                  "description": "Child's rewards"
+                },
+                "habits": {
+                  "type": "array",
+                  "description": "Child's habits",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "days": {
+                        "type": "array",
+                        "description": "Habit days",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "description": "Day's date",
+                              "example": "2020-12-31"
+                            },
+                            "isCompleted": {
+                              "type": "string",
+                              "description": "Day's status",
+                              "enum": ["unknown", "confirmed", "canceled"]
+                            }
+                          }
+                        }
+                      },
+                      "_id": {
+                        "type": "string",
+                        "description": "Habit's id",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Habit's name",
+                        "example": "Name of the habit"
+                      },
+                      "rewardPerDay": {
+                        "type": "integer",
+                        "description": "Habit's reward for a single day",
+                        "example": 1
+                      },
+                      "childId": {
+                        "type": "string",
+                        "description": "Id of the child whose habit it is",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "__v": {
+                        "type": "integer",
+                        "description": "MongoDB document service versionKey (ignore)"
+                      }
+                    }
+                  }
+                },
+                "tasks": {
+                  "type": "array",
+                  "description": "Child's tasks",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Task's id",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Task's name",
+                        "example": "Name of the task"
+                      },
+                      "reward": {
+                        "type": "string",
+                        "description": "Task's reward",
+                        "example": 1
+                      },
+                      "isCompleted": {
+                        "type": "string",
+                        "description": "Task's status",
+                        "enum": ["unknown", "confirmed", "canceled"]
+                      },
+                      "childId": {
+                        "type": "string",
+                        "description": "Id of the child whose task it is",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "daysToComplete": {
+                        "type": "integer",
+                        "description": "Amount of days to complete this task (optional)",
+                        "example": 1
+                      },
+                      "__v": {
+                        "type": "integer",
+                        "description": "MongoDB document service versionKey (ignore)"
+                      }
+                    }
+                  }
+                },
+                "gifts": {
+                  "type": "array",
+                  "description": "Child's gifts",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Gift's id",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Gift's name",
+                        "example": "Name of the gift"
+                      },
+                      "price": {
+                        "type": "integer",
+                        "description": "Gift's price",
+                        "minimum": 1,
+                        "example": 1
+                      },
+                      "isPurchased": {
+                        "type": "boolean",
+                        "description": "Gift's status"
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
+                      },
+                      "childId": {
+                        "type": "string",
+                        "description": "Id of the child this gift was created for",
+                        "example": "507f1f77bcf86cd799439011"
+                      },
+                      "__v": {
+                        "type": "integer",
+                        "description": "MongoDB document service versionKey (ignore)"
+                      }
+                    }
+                  }
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Child's id",
+                  "example": "507f1f77bcf86cd799439011"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Child's name",
+                  "example": "John"
+                },
+                "gender": {
+                  "type": "string",
+                  "description": "Child's gender",
+                  "enum": ["male", "female"]
+                },
+                "__v": {
+                  "type": "integer",
+                  "description": "MongoDB document service versionKey (ignore)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
