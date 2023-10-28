@@ -6,7 +6,7 @@ const { HttpError, ctrlWrapper } = require("../utils");
 
 const { SECRET_JWT } = process.env;
 
-exports.register = ctrlWrapper(async (req, res) => {
+const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -24,9 +24,9 @@ exports.register = ctrlWrapper(async (req, res) => {
       birthday: newUser.birthday,
     },
   });
-});
+};
 
-exports.login = ctrlWrapper(async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -42,15 +42,15 @@ exports.login = ctrlWrapper(async (req, res) => {
   }
 
   const payload = {
-    id: user.id,
+    id: user._id,
   };
 
   const { name, birthday } = user;
-
   const token = jwt.sign(payload, SECRET_JWT, {
     expiresIn: "24h",
   });
-  await User.findByIdAndUpdate(user.id, { token });
+
+  await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token,
     user: {
@@ -59,10 +59,16 @@ exports.login = ctrlWrapper(async (req, res) => {
       birthday,
     },
   });
-});
+};
 
-exports.logout = async (req, res) => {
-  const { id } = req.user;
-  await User.findByIdAndUpdate(id, { token: "" });
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
   res.status(204).send();
+};
+
+module.exports = {
+  registr: ctrlWrapper(register),
+  login: ctrlWrapper(login),
+  logout: ctrlWrapper(logout),
 };
