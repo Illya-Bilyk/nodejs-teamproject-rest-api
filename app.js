@@ -8,6 +8,8 @@ const filters = require("./routes/api/filters");
 
 const app = express();
 
+const usersRouter = require("./routes/users");
+
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
@@ -18,6 +20,7 @@ app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));
 
+app.use("/auth", usersRouter);
 app.use("/api/filters", filters);
 
 app.use((req, res) => {
