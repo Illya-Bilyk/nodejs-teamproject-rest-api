@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post("/singup", validateBody(registerSchema), ctrl.register);
 
-router.post("/singup", validateBody(loginSchema), ctrl.login);
+router.post("/singin", validateBody(loginSchema), ctrl.login);
 
 router.post("/singout", authenticate, ctrl.logout);
 

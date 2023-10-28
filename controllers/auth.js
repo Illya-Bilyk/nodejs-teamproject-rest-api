@@ -68,7 +68,7 @@ const logout = async (req, res) => {
 };
 
 module.exports = {
-  registr: ctrlWrapper(register),
+  register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
 };
