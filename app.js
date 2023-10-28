@@ -4,6 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
+const filters = require("./routes/api/filters");
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(express.static("public"));
 
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));
+
+app.use("/api/filters", filters);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
