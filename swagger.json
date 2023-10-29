@@ -11,7 +11,7 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://..." }],
+  "servers": [{ "url": "https://drinks-whm4.onrender.com" }],
   "tags": [
     {
       "name": "Auth",
@@ -215,7 +215,7 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
@@ -245,7 +245,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -258,12 +258,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -274,7 +274,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -288,7 +288,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -301,12 +301,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -317,7 +317,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -331,7 +331,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -344,12 +344,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -360,7 +360,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -374,7 +374,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -387,12 +387,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -403,7 +403,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -417,7 +417,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -430,12 +430,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -446,7 +446,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -460,7 +460,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -473,12 +473,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -489,7 +489,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -503,7 +503,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -516,12 +516,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -532,7 +532,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -546,7 +546,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -557,25 +557,55 @@
         "tags": ["Drinks"],
         "summary": "Getting cocktails by category + ingredient + keyword",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
+          },
+          {
+            "in": "query",
+            "name": "keyword",
+            "type": "string",
+            "required": "true",
+            "default": "Ir",
+            "description": "A word from the search bar - Enter the text ..."
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "type": "string",
+            "required": "true",
+            "default": "Coffee / Tea",
+            "description": "A category from the category drop-down list, or an empty string"
+          },
+          {
+            "in": "query",
+            "name": "ingredient",
+            "type": "string",
+            "required": "true",
+            "default": "Sugar",
+            "description": "Ingredients from the ingredient drop-down list or an empty string"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetSearchResponse"
                 }
               }
             }
@@ -589,7 +619,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Search query not found (invalid query)",
             "content": {}
           }
         }
@@ -602,12 +632,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -618,7 +648,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -632,7 +662,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -645,12 +675,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -661,7 +691,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -675,7 +705,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -688,12 +718,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -704,7 +734,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -718,7 +748,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -731,12 +761,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -747,7 +777,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -761,7 +791,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -774,12 +804,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -790,7 +820,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -804,7 +834,7 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
@@ -817,12 +847,12 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserInfoRequest"
               }
             }
           }
@@ -833,7 +863,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
                 }
               }
             }
@@ -847,50 +877,48 @@
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Users not found / Invalid user / Invalid session",
             "content": {}
           }
         }
       }
     },
-    "/drinks": {
+    "/drinks/{drinkId}": {
       "get": {
         "tags": ["Drinks"],
         "summary": "Get one cocktail per ID",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetByIDResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": " No token provided / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Not authorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Drink not found",
             "content": {}
           }
         }
@@ -1001,27 +1029,27 @@
               },
               "username": {
                 "type": "string",
-                "description": "User's name",
+                "description": "User name",
                 "example": "John"
               },
               "id": {
                 "type": "string",
-                "description": "User's id",
+                "description": "User id",
                 "example": "507f1f77bcf86cd799439012"
               },
               "children": {
                 "type": "array",
-                "description": "User's children",
+                "description": "User",
                 "items": {
                   "type": "object",
                   "properties": {
                     "rewards": {
                       "type": "integer",
-                      "description": "Child's rewards"
+                      "description": "Users rewards"
                     },
                     "habits": {
                       "type": "array",
-                      "description": "Child's habits",
+                      "description": "Users habits",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -1073,7 +1101,7 @@
                     },
                     "tasks": {
                       "type": "array",
-                      "description": "Child's tasks",
+                      "description": "Users's tasks",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -1116,7 +1144,7 @@
                     },
                     "gifts": {
                       "type": "array",
-                      "description": "Child's gifts",
+                      "description": "Users's gifts",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -1158,17 +1186,17 @@
                     },
                     "_id": {
                       "type": "string",
-                      "description": "Child's id",
+                      "description": "Users's id",
                       "example": "507f1f77bcf86cd799439011"
                     },
                     "name": {
                       "type": "string",
-                      "description": "Child's name",
+                      "description": "Users's name",
                       "example": "John"
                     },
                     "gender": {
                       "type": "string",
-                      "description": "Child's gender",
+                      "description": "Users's gender",
                       "enum": ["male", "female"]
                     },
                     "__v": {
@@ -1213,384 +1241,165 @@
         }
       },
       "GetUserInfoRequest": {
+        "type": "object"
+      },
+      "GetUserInfoResponse": {},
+      "GetSearchRequest": {
         "type": "object",
+        "in": "body",
         "properties": {
-          "email": {
+          "page": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "description": "Current page for pagination",
+            "example": "1"
           },
-          "username": {
+          "limit": {
             "type": "string",
-            "description": "User's name",
-            "example": "John"
+            "description": "Number of drinks per page",
+            "example": "9"
           },
-          "id": {
+          "keyword": {
             "type": "string",
-            "description": "User's id",
-            "example": "507f1f77bcf86cd799439012"
+            "description": "A word from the search bar - Enter the text ...",
+            "example": "Ir"
           },
-
-          "children": {
-            "type": "array",
-            "description": "User's children",
-            "items": {
-              "type": "object",
-              "properties": {
-                "rewards": {
-                  "type": "integer",
-                  "description": "Child's rewards"
-                },
-                "habits": {
-                  "type": "array",
-                  "description": "Child's habits",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "days": {
-                        "type": "array",
-                        "description": "Habit days",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "date": {
-                              "type": "string",
-                              "description": "Day's date",
-                              "example": "2020-12-31"
-                            },
-                            "isCompleted": {
-                              "type": "string",
-                              "description": "Day's status",
-                              "enum": ["unknown", "confirmed", "canceled"]
-                            }
-                          }
-                        }
-                      },
-                      "_id": {
-                        "type": "string",
-                        "description": "Habit's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Habit's name",
-                        "example": "Name of the habit"
-                      },
-                      "rewardPerDay": {
-                        "type": "integer",
-                        "description": "Habit's reward for a single day",
-                        "example": 1
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose habit it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "tasks": {
-                  "type": "array",
-                  "description": "Child's tasks",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Task's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Task's name",
-                        "example": "Name of the task"
-                      },
-                      "reward": {
-                        "type": "string",
-                        "description": "Task's reward",
-                        "example": 1
-                      },
-                      "isCompleted": {
-                        "type": "string",
-                        "description": "Task's status",
-                        "enum": ["unknown", "confirmed", "canceled"]
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose task it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "daysToComplete": {
-                        "type": "integer",
-                        "description": "Amount of days to complete this task (optional)",
-                        "example": 1
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "gifts": {
-                  "type": "array",
-                  "description": "Child's gifts",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Gift's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Gift's name",
-                        "example": "Name of the gift"
-                      },
-                      "price": {
-                        "type": "integer",
-                        "description": "Gift's price",
-                        "minimum": 1,
-                        "example": 1
-                      },
-                      "isPurchased": {
-                        "type": "boolean",
-                        "description": "Gift's status"
-                      },
-                      "imageUrl": {
-                        "type": "string",
-                        "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child this gift was created for",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "_id": {
-                  "type": "string",
-                  "description": "Child's id",
-                  "example": "507f1f77bcf86cd799439011"
-                },
-                "name": {
-                  "type": "string",
-                  "description": "Child's name",
-                  "example": "John"
-                },
-                "gender": {
-                  "type": "string",
-                  "description": "Child's gender",
-                  "enum": ["male", "female"]
-                },
-                "__v": {
-                  "type": "integer",
-                  "description": "MongoDB document service versionKey (ignore)"
-                }
-              }
-            }
+          "category": {
+            "type": "string",
+            "description": "A category from the category drop-down list, or an empty string",
+            "example": "Coffee / Tea"
+          },
+          "ingredient": {
+            "type": "string",
+            "description": "Ingredients from the ingredient drop-down list or an empty string",
+            "example": "Sugar"
           }
         }
       },
-      "GetUserInfoResponse": {
+      "GetSearchResponse": {
         "type": "object",
         "properties": {
-          "email": {
+          "page": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "description": "Current page for pagination",
+            "example": "1"
           },
-          "username": {
+          "per_page": {
             "type": "string",
-            "description": "User's name",
-            "example": "John"
+            "description": "Number of drinks per page",
+            "example": "9"
           },
-          "id": {
+          "max_page": {
             "type": "string",
-            "description": "User's id",
-            "example": "507f1f77bcf86cd799439012"
+            "description": "The number of drinks in the database according to the query criteria",
+            "example": "1"
           },
-
-          "children": {
+          "drinks": {
             "type": "array",
-            "description": "User's children",
-            "items": {
-              "type": "object",
-              "properties": {
-                "rewards": {
-                  "type": "integer",
-                  "description": "Child's rewards"
-                },
-                "habits": {
-                  "type": "array",
-                  "description": "Child's habits",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "days": {
-                        "type": "array",
-                        "description": "Habit days",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "date": {
-                              "type": "string",
-                              "description": "Day's date",
-                              "example": "2020-12-31"
-                            },
-                            "isCompleted": {
-                              "type": "string",
-                              "description": "Day's status",
-                              "enum": ["unknown", "confirmed", "canceled"]
-                            }
-                          }
-                        }
-                      },
-                      "_id": {
-                        "type": "string",
-                        "description": "Habit's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Habit's name",
-                        "example": "Name of the habit"
-                      },
-                      "rewardPerDay": {
-                        "type": "integer",
-                        "description": "Habit's reward for a single day",
-                        "example": 1
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose habit it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
+            "description": "The array of drinks in the database according to the query criteria",
+            "example": [
+              {
+                "_id": "639b6de9ff77d221f190c508",
+                "drink": "Irish Coffee",
+                "drinkAlternate": "Sorry, not specified",
+                "tags": "IBA,ContemporaryClassic",
+                "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
+                "category": "Coffee / Tea",
+                "IBA": "Contemporary Classics",
+                "alcoholic": "Alcoholic",
+                "glass": "Irish coffee cup",
+                "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
+                "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
+                "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
+                "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
+                "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
+                "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
+                "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
+                "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
+                "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
+                "ingredients": [
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d78",
+                    "title": "Irish whiskey",
+                    "measure": "1 1/2 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4c2"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d79",
+                    "title": "Coffee",
+                    "measure": "8 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4e7"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7a",
+                    "title": "Sugar",
+                    "measure": "1 tsp ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4bc"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7b",
+                    "title": "Whipped cream",
+                    "measure": "1 tblsp ",
+                    "ingredientId": "64f1d5c069d8333cf130fb38"
                   }
-                },
-                "tasks": {
-                  "type": "array",
-                  "description": "Child's tasks",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Task's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Task's name",
-                        "example": "Name of the task"
-                      },
-                      "reward": {
-                        "type": "string",
-                        "description": "Task's reward",
-                        "example": 1
-                      },
-                      "isCompleted": {
-                        "type": "string",
-                        "description": "Task's status",
-                        "enum": ["unknown", "confirmed", "canceled"]
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose task it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "daysToComplete": {
-                        "type": "integer",
-                        "description": "Amount of days to complete this task (optional)",
-                        "example": 1
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "gifts": {
-                  "type": "array",
-                  "description": "Child's gifts",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Gift's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Gift's name",
-                        "example": "Name of the gift"
-                      },
-                      "price": {
-                        "type": "integer",
-                        "description": "Gift's price",
-                        "minimum": 1,
-                        "example": 1
-                      },
-                      "isPurchased": {
-                        "type": "boolean",
-                        "description": "Gift's status"
-                      },
-                      "imageUrl": {
-                        "type": "string",
-                        "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child this gift was created for",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "_id": {
-                  "type": "string",
-                  "description": "Child's id",
-                  "example": "507f1f77bcf86cd799439011"
-                },
-                "name": {
-                  "type": "string",
-                  "description": "Child's name",
-                  "example": "John"
-                },
-                "gender": {
-                  "type": "string",
-                  "description": "Child's gender",
-                  "enum": ["male", "female"]
-                },
-                "__v": {
-                  "type": "integer",
-                  "description": "MongoDB document service versionKey (ignore)"
-                }
+                ],
+                "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
               }
-            }
+            ]
           }
         }
+      },
+      "GetByIDResponse": {
+        "type": "object",
+        "example": [
+          {
+            "_id": "639b6de9ff77d221f190c51e",
+            "drink": "Affair",
+            "drinkAlternate": "Sorry, not specified",
+            "tags": "OrdinaryDrink,Alcoholic",
+            "video": "https://youtu.be/BGTB26zMxjw?si=hgl0lfGa9VgBK9mi",
+            "category": "Ordinary Drink",
+            "IBA": "Sorry, not specified",
+            "alcoholic": "Alcoholic",
+            "glass": "Highball glass",
+            "description": "Affair is a seductive and sophisticated cocktail that combines a mix of spirits and fruit juices. It is made with vodka, peach schnapps, cranberry juice, and orange juice. The combination of flavors creates a balanced and tantalizing drink that is sure to impress. It is best enjoyed in the company of someone special.",
+            "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass. Top with club soda and serve.",
+            "instructionsES": "Vierta el Schnapps, el jugo de naranja y el jugo de arándano sobre hielo en un vaso alto. Complete con el agua carbonatada y sirva.",
+            "instructionsDE": "Gießen Sie Schnaps, Orangensaft und Cranberrysaft über Eis in ein Highball-Glas. Mit Club-Soda überziehen und servieren.",
+            "instructionsFR": "Verser le schnaps, le jus d'orange et le jus de canneberge sur de la glace dans un verre highball. Garnir de club soda et servir.",
+            "instructionsIT": "Versare la grappa, il succo d'arancia e il succo di mirtillo rosso sul ghiaccio in un bicchiere highball. Completare con la soda club e servire.",
+            "instructionsRU": "Налейте шнапс, апельсиновый сок и клюквенный сок со льдом в стакан хайбол. Долейте содовой и подавайте.",
+            "instructionsPL": "Wlej sznaps, sok pomarańczowy i sok żurawinowy do lodu w szklance typu highball. Na wierzch z sodą klubową i podawaj.",
+            "instructionsUK": "Розлийте шнапс, апельсиновий сік і журавлинний сік з льодом у келих хайбол. Зверху полийте газованою водою та подавайте.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Affair.jpg",
+            "ingredients": [
+              {
+                "_id": "653e988f5e22fd46dc6056d7",
+                "title": "Strawberry schnapps",
+                "measure": "2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4a9"
+              },
+              {
+                "_id": "653e988f5e22fd46dc6056d8",
+                "title": "Orange juice",
+                "measure": "2 oz ",
+                "ingredientId": "64f1d5c069d8333cf130fb3d"
+              },
+              {
+                "_id": "653e988f5e22fd46dc6056d9",
+                "title": "Cranberry juice",
+                "measure": "2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4f1"
+              },
+              {
+                "_id": "653e988f5e22fd46dc6056da",
+                "title": "Club soda",
+                "ingredientId": "64f1d5c069d8333cf130fb40"
+              }
+            ],
+            "shortDescription": "A seductive and sophisticated cocktail with a mix of spirits and fruit juices."
+          }
+        ]
       }
     },
     "securitySchemes": {

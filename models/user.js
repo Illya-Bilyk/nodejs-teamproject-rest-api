@@ -13,8 +13,7 @@ const userSchema = new Schema(
     },
     name: {
       type: String,
-      required: [true, "name is required"],
-      unique: true,
+      required: [true, "name is required"],      
     },
     birthday: {
       type: String,
