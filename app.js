@@ -8,6 +8,7 @@ const swaggerDocument = require("./swagger.json");
 const app = express();
 
 const usersRouter = require("./routes/users");
+const filtersRouter = require("./routes/api/filters");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
@@ -20,6 +21,7 @@ app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));
 
 app.use("/auth", usersRouter);
+app.use("/api/filters", filtersRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
