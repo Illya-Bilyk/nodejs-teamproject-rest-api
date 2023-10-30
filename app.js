@@ -9,7 +9,7 @@ const app = express();
 
 const usersRouter = require("./routes/users");
 const filtersRouter = require("./routes/api/filters");
-const drinksRouter = require("./routes/drinks");
+const drinksRouter = require("./routes/api/drinks");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 

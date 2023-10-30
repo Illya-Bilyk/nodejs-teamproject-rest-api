@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("../controllers/drinks");
-const { validateBody, isValidId, authenticate } = require("../middlewares");
+const ctrl = require("../../controllers/drinks");
+const { validateBody, isValidId, authenticate } = require("../../middlewares");
 
-const { schemasRecipe } = require("../models/recipe");
+const { schemasRecipe } = require("../../models/recipe");
 
 // router.get("/mainpage", authenticate, ctrl.getMainpageDrinks);
 
