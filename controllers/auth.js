@@ -142,10 +142,20 @@ const logout = async (req, res) => {
   res.status(204).send();
 };
 
+const getCurrent = (req, res) => {
+  const { email, birthday } = req.user;
+
+  res.json({
+    email,
+    birthday,
+  });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   // googleAuth: ctrlWrapper(googleAuth),
   // googleRedirect: ctrlWrapper(googleRedirect),
   logout: ctrlWrapper(logout),
+  getCurrent: ctrlWrapper(getCurrent),
 };
