@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 // const axios = require("axios");
 
 const { User } = require("../models/user");
-const { HttpError, ctrlWrapper } = require("../utils");
+const { HttpError, ctrlWrapper, sendEmail } = require("../utils");
+
 
 const { SECRET_JWT } = process.env;
 
@@ -152,6 +153,33 @@ const getCurrent = (req, res) => {
   });
 };
 
+const sendSubscribeEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+  if (user.subsribe) {
+    throw HttpError(400, "Subscription has already been send");
+  }
+
+  const subscribedEmail = {
+    to: email,
+    subject: "Subscription",
+    html: `<p>You successfully subscribed to our news!</p>`,
+  };
+
+  await sendEmail(subscribedEmail);
+
+  await User.findByIdAndUpdate(user._id, { subsribe: true });
+
+  res.json({
+    message: "Subscription email sent",
+  });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
@@ -159,4 +187,5 @@ module.exports = {
   // googleRedirect: ctrlWrapper(googleRedirect),
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),
+  sendSubscribeEmail: ctrlWrapper(sendSubscribeEmail),
 };
