@@ -7,7 +7,7 @@ const swaggerDocument = require("./swagger.json");
 
 const app = express();
 
-const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/api/users");
 const filtersRouter = require("./routes/api/filters");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
