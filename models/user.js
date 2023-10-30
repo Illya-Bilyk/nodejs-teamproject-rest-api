@@ -3,7 +3,6 @@ const Joi = require("joi");
 
 const { handleMongooseError } = require("../utils");
 
-
 const emailRegexp = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 const userSchema = new Schema(
@@ -77,9 +76,19 @@ const loginSchema = Joi.object({
   }),
 });
 
+const emailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    "string.base": `email should be a type of 'text'`,
+    "string.empty": `email cannot be an empty field`,
+    "string.pattern.base": `email not valid`,
+    "any.required": `missing required email field`,
+  }),
+});
+
 const schemas = {
   registerSchema,
   loginSchema,
+  emailSchema,
 };
 const User = model("user", userSchema);
 
