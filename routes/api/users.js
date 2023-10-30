@@ -11,9 +11,9 @@ router.post("/singup", validateBody(schemas.registerSchema), ctrl.register);
 
 router.post("/singin", validateBody(schemas.loginSchema), ctrl.login);
 
-router.get("/google", ctrl.googleAuth);
+// router.get("/google", ctrl.googleAuth);
 
-router.get("/google-redirect", ctrl.googleRedirect);
+// router.get("/google-redirect", ctrl.googleRedirect);
 
 router.post("/logout", authenticate, ctrl.logout);
 
