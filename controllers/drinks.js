@@ -1,6 +1,5 @@
 const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
-const  User = require("../models/user"); 
 const { ctrlWrapper, HttpError } = require("../utils");
 
 // const getMainpageDrinks = async (req, res) => {
@@ -20,23 +19,15 @@ const searchDrinks = async (req, res) => {
     ingredient = "",
   } = req.query;
 
-  const { authorization = "" } = req.headers;
-  const [bearer, token] = authorization.split(" ");
+  const { birthday } = req.user;
 
-  if (bearer !== "Bearer" || !token) {
-    throw HttpError(400, "No token provided");
+  if (!birthday) {
+    throw HttpError(404, "Users not found (invalid query)");
   }
 
-  const responseUserAge = await User.findOne({ token });
-
-  if (!responseUserAge) {
-    throw HttpError(401, "Unauthorized (invalid access token)");
-  }
-
-  const { birthday } = responseUserAge;
   const birthdayReversed = birthday.split("/").reverse().join("/");
   const age = dobToAge(birthdayReversed);
-  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];  
+  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
 
   const skip = (page - 1) * limit;
 
@@ -72,7 +63,7 @@ const searchDrinks = async (req, res) => {
   const response = await Recipe.find(
     {
       category: findCategory,
-      "ingredients.title": findIngredient,      
+      "ingredients.title": findIngredient,
       drink: { $regex: `${keyword}`, $options: "i" },
       alcoholic: alcohol,
     },
@@ -120,14 +111,6 @@ const getFavoriteDrink = async (req, res) => {
 };
 
 const getDrinkById = async (req, res) => {
-  const { authorization = "" } = req.headers;
-  
-  const [bearer, token] = authorization.split(" ");  
-
-  if (bearer !== "Bearer" || !token) {
-    throw HttpError(400, "No token provided");
-  }
-
   const { drinkId } = req.params;
 
   const response = await Recipe.findById(drinkId);

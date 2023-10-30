@@ -179,7 +179,6 @@ const Recipe = model("recipe", recipeSchema);
 
 const schemasRecipe = { addRecipesSchema };
 
-// exports
 module.exports = {
   Recipe,
   schemasRecipe,

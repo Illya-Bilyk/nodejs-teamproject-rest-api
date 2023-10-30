@@ -9,6 +9,7 @@ const isValidId = (req, res, next) => {
   if (!isValidObjectId(drinkId)) {
     next(HttpError(400, `${drinkId} is not valid id`));
   }
+  console.log("isValidId  ", "ID valid");
   next();
 };
 

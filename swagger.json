@@ -610,16 +610,12 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request (invalid request body) / No token provided",
-            "content": {}
-          },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Search query not found (invalid query)",
+            "description": "Users not found (invalid query) / Search query not found (invalid query)",
             "content": {}
           }
         }
@@ -909,12 +905,8 @@
               }
             }
           },
-          "400": {
-            "description": " No token provided / {drinkId} is not valid id",
-            "content": {}
-          },
           "401": {
-            "description": "Not authorized",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
