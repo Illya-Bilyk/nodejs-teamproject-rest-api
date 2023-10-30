@@ -1,36 +1,34 @@
 const { Schema, model } = require("mongoose");
 const { handleMongooseError } = require("../utils");
+const Joi = require("joi");
 
 const recipeSchema = new Schema(
   {
     drink: {
       type: String,
       required: [true, "Set name for drink"],
+      minlength: 2,
+      maxlength: 100,
     },
     drinkAlternate: {
       type: String,
       default: "Sorry, not specified",
+      minlength: 2,
+      maxlength: 100,
     },
-    tags: String,
-    video: String,
+    tags: {
+      type: String,
+      minlength: 2,
+      maxlength: 254,
+    },
+    video: { type: String },
     category: {
       type: String,
       required: [true, "Choose category for a drink"],
-      enum: [
-        "Ordinary Drink",
-        "Cocktail",
-        "Shake",
-        "Other/Unknown",
-        "Cocoa",
-        "Shot",
-        "Coffee / Tea",
-        "Homemade Liqueur",
-        "Punch / Party Drink",
-        "Beer",
-        "Soft Drink",
-      ],
+      minlength: 2,
+      maxlength: 100,
     },
-    IBA: String,
+    IBA: { type: String },
     alcoholic: {
       type: String,
       required: true,
@@ -39,77 +37,149 @@ const recipeSchema = new Schema(
     glass: {
       type: String,
       required: [true, "Choose glass for a drink"],
-      enum: [
-        "Highball glass",
-        "Cocktail glass",
-        "Old-fashioned glass",
-        "Whiskey Glass",
-        "Collins glass",
-        "Pousse cafe glass",
-        "Champagne flute",
-        "Whiskey sour glass",
-        "Cordial glass",
-        "Brandy snifter",
-        "White wine glass",
-        "Nick and Nora Glass",
-        "Hurricane glass",
-        "Coffee mug",
-        "Shot glass",
-        "Jar",
-        "Irish coffee cup",
-        "Punch bowl",
-        "Pitcher",
-        "Pint glass",
-        "Copper Mug",
-        "Wine Glass",
-        "Beer mug",
-        "Margarita/Coupette glass",
-        "Beer pilsner",
-        "Beer Glass",
-        "Parfait glass",
-        "Mason jar",
-        "Margarita glass",
-        "Martini Glass",
-        "Balloon Glass",
-        "Coupe Glass",
-      ],
+      minlength: 2,
+      maxlength: 150,
     },
-    description: String,
-    instructions: String,
-    instructionsES: String,
-    instructionsDE: String,
-    instructionsFR: String,
-    instructionsIT: String,
-    instructionsRU: String,
-    instructionsPL: String,
-    instructionsUK: String,
-    drinkThumb: String,
+    description: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructions: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsES: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsDE: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsFR: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsIT: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsRU: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsPL: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    instructionsUK: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
+    drinkThumb: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
     ingredients: [
       {
-        title: String,
-        measure: String,
-        quantity: String,
+        title: { type: String, required: true, minlength: 2, maxlength: 100 },
+        measure: { type: String, required: true, minlength: 2, maxlength: 100 },
+        quantity: {
+          type: String,
+          required: true,
+          minlength: 2,
+          maxlength: 100,
+        },
         ingredientId: {
           type: Schema.Types.ObjectId,
           ref: "ingredients",
         },
       },
     ],
-    shortDescription: String,
+    shortDescription: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 500,
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "user",
     },
-    users: [String],
+    users: { type: [String], required: true },
   },
   { versionKey: false, timestamps: true }
 );
 
 recipeSchema.post("save", handleMongooseError);
 
+const addRecipesSchema = Joi.object({
+  drink: Joi.string().min(2).max(100).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 100 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  category: Joi.string().min(2).max(100).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 100 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  alcoholic: Joi.string().min(2).max(100).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 100 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  glass: Joi.string().min(2).max(100).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 100 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  description: Joi.string().min(2).max(500).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 500 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  instructions: Joi.string().min(2).max(500).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 500 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  drinkThumb: Joi.string().min(2).max(500).required().messages({
+    "any.required": `missing required name field`,
+    "string.empty": `"name" cannot be empty, min 2 max 500 letters`,
+    "string.base": `"name" must be string`,
+  }),
+  ingredients: Joi.array().items({
+    title: Joi.string().min(2).max(100).required(),
+    measure: Joi.string().min(2).max(100).required(),
+  }),
+});
+
 const Recipe = model("recipe", recipeSchema);
 
-// exports
+const schemasRecipe = { addRecipesSchema };
+
 module.exports = {
   Recipe,
+  schemasRecipe,
 };
