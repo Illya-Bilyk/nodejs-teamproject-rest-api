@@ -2,9 +2,116 @@ const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
 const { ctrlWrapper, HttpError } = require("../utils");
 
-// const getMainpageDrinks = async (req, res) => {
-//   res.status(200).json();
-// };
+const getMainpageDrinks = async (req, res) => {
+  // const { birthday } = req.user;
+
+  // if (!birthday) {
+  //   throw HttpError(404, "Users not found (invalid query)");
+  // }
+
+  // const birthdayReversed = birthday.split("/").reverse().join("/");
+  // const age = dobToAge(birthdayReversed);
+
+  const age = 35; // Temporarily set the age to 18+
+  const alcohol = age > 18;
+
+  // Request for all drinks
+  const resultAll = await Recipe.aggregate([
+    {
+      $match: {
+        category: {
+          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
+        },
+      },
+    },
+    { $group: { _id: "$category", drinks: { $push: "$$ROOT" } } },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        drinks: {
+          $slice: ["$drinks", 3],
+        },
+      },
+    },
+    {
+      $project: {
+        category: 1,
+        drinks: {
+          $map: {
+            input: "$drinks",
+            as: "drink",
+            in: {
+              _id: "$$drink._id",
+              drink: "$$drink.drink",
+              category: "$$drink.category",
+              alcoholic: "$$drink.alcoholic",
+              drinkThumb: "$$drink.drinkThumb",
+            },
+          },
+        },
+      },
+    },
+    { $sort: { category: 1 } },
+  ]);
+
+  // Request only for non-alcoholic drinks
+
+  const resultNonAlko = await Recipe.aggregate([
+    {
+      $match: {
+        category: {
+          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
+        },
+      },
+    },
+    { $group: { _id: "$category", drinks: { $push: "$$ROOT" } } },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        drinks: {
+          $filter: {
+            input: "$drinks",
+            as: "drink",
+            cond: { $eq: ["$$drink.alcoholic", "Non alcoholic"] },
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        category: 1,
+        drinks: {
+          $slice: ["$drinks", 3],
+        },
+      },
+    },
+    {
+      $project: {
+        category: 1,
+        drinks: {
+          $map: {
+            input: "$drinks",
+            as: "drink",
+            in: {
+              _id: "$$drink._id",
+              drink: "$$drink.drink",
+              category: "$$drink.category",
+              alcoholic: "$$drink.alcoholic",
+              drinkThumb: "$$drink.drinkThumb",
+            },
+          },
+        },
+      },
+    },
+    { $match: { "drinks.0": { $exists: true } } },
+    { $sort: { category: 1 } },
+  ]);
+
+  const result = alcohol ? resultAll : resultNonAlko;
+  res.status(200).json(result);
+};
 
 // const getPopularDrinks = async (req, res) => {
 //   res.status(200).json();
@@ -123,7 +230,7 @@ const getDrinkById = async (req, res) => {
 };
 
 module.exports = {
-  // getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
+  getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
   // getPopularDrinks: ctrlWrapper(getPopularDrinks),
   searchDrinks: ctrlWrapper(searchDrinks),
   addDrink: ctrlWrapper(addDrink),
