@@ -20,7 +20,7 @@ app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));
 
-app.use("/auth", usersRouter);
+app.use("/api/auth", usersRouter);
 app.use("/api/filters", filtersRouter);
 
 app.use((req, res) => {
