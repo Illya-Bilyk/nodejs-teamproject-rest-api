@@ -10,7 +10,8 @@ const { HttpError, ctrlWrapper } = require("../utils");
 const { SECRET_JWT } = process.env;
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password, birthday } = req.body;
+
   const user = await User.findOne({ email });
 
   if (user) {
