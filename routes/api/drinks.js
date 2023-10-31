@@ -5,7 +5,11 @@ const { validateBody, isValidId, authenticate } = require("../../middlewares");
 
 const { schemasRecipe } = require("../../models/recipe");
 
-// router.get("/mainpage", authenticate, ctrl.getMainpageDrinks);
+router.get(
+  "/mainpage",
+  // authenticate,
+  ctrl.getMainpageDrinks
+);
 
 // router.get("/popular", authenticate, ctrl.getPopularDrinks);
 
