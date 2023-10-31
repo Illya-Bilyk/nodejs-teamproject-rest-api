@@ -22,4 +22,12 @@ router.post("/refresh", ctrl.refreshTokens);
 
 router.get("/current", authenticate, ctrl.getCurrent);
 
+router.post(
+  "/subscribe",
+  authenticate,
+  validateBody(schemas.emailSchema),
+  ctrl.sendSubscribeEmail
+);
+
+
 module.exports = router;
