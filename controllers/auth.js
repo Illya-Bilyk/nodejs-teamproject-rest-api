@@ -5,12 +5,13 @@ const jwt = require("jsonwebtoken");
 // const axios = require("axios");
 
 const { User } = require("../models/user");
+const { sessionModel } = require("../models/session");
 const { HttpError, ctrlWrapper } = require("../utils");
 
-const { SECRET_JWT } = process.env;
+const { ACCESS_SECRET_JWT, REFRESH_SECRET_JWT } = process.env;
 
 const register = async (req, res) => {
-  const { name, email, password, birthday } = req.body;
+  const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
@@ -21,7 +22,18 @@ const register = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({ ...req.body, password: hashPassword });
 
+  const payload = {
+    id: newUser._id,
+  };
+
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
+    expiresIn: "4h",
+  });
+  await User.findByIdAndUpdate(newUser._id, {
+    accessToken,
+  });
   res.status(201).json({
+    accessToken,
     user: {
       name: newUser.name,
       email: newUser.email,
@@ -45,24 +57,99 @@ const login = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  const payload = {
-    id: user._id,
-  };
+  const newSession = await sessionModel.create({
+    uid: user._id,
+  });
 
-  const { name, birthday } = user;
-  const token = jwt.sign(payload, SECRET_JWT, {
+  const payload = { uid: user._id, sid: newSession._id };
+
+  const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
+    expiresIn: "2h",
+  });
+  const refreshToken = jwt.sign(payload, REFRESH_SECRET_JWT, {
     expiresIn: "24h",
   });
 
-  await User.findByIdAndUpdate(user._id, { token });
+  // const payload = {
+  //   id: user._id,
+  // };
+
+  const { name, birthday } = user;
+  // const token = jwt.sign(payload, ACCESS_SECRET_JWT, {
+  //   expiresIn: "24h",
+  // });
+
+  await User.findByIdAndUpdate(user._id, {
+    // token,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    sid: newSession._id,
+  });
+
   res.json({
-    token,
+    // token,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    sid: newSession._id,
     user: {
       email,
       name,
       birthday,
     },
   });
+};
+
+// refreshTokens
+const refreshTokens = async (req, res) => {
+  const authorizationHeader = req.get("Authorization");
+  if (authorizationHeader) {
+    const activeSession = await sessionModel.findById(req.body.sid);
+    if (!activeSession) {
+      throw HttpError(404, "Invalid session");
+      // return res.status(404).send({ message: "Invalid session" });
+    }
+    const reqRefreshToken = authorizationHeader.replace("Bearer ", "");
+    let payload = {};
+    try {
+      payload = jwt.verify(reqRefreshToken, REFRESH_SECRET_JWT);
+    } catch (err) {
+      await sessionModel.findByIdAndDelete(req.body.sid);
+      throw HttpError(401, "Unauthorized");
+      // return res.status(401).send({ message: "Unauthorized" });
+    }
+    const user = await User.findById(payload.uid);
+    const session = await sessionModel.findById(payload.sid);
+    if (!user) {
+      throw HttpError(404, "Invalid user");
+      // return res.status(404).send({ message: "Invalid user" });
+    }
+    if (!session) {
+      throw HttpError(404, "Invalid session");
+      // return res.status(404).send({ message: "Invalid session" });
+    }
+    await sessionModel.findByIdAndDelete(payload.sid);
+    const newSession = await sessionModel.create({
+      uid: user._id,
+    });
+    const newAccessToken = jwt.sign(
+      { uid: user._id, sid: newSession._id },
+      ACCESS_SECRET_JWT,
+      {
+        expiresIn: "2h",
+      }
+    );
+    const newRefreshToken = jwt.sign(
+      { uid: user._id, sid: newSession._id },
+      REFRESH_SECRET_JWT,
+      { expiresIn: "24h" }
+    );
+    return res
+      .status(200)
+      .send({ newAccessToken, newRefreshToken, newSid: newSession._id });
+  }
+  throw HttpError(400, "No token provided");
+
+  // return res.status(400).send({ message: "No token provided" });
 };
 
 // const googleAuth = async (req, res) => {
@@ -119,16 +206,16 @@ const login = async (req, res) => {
 //   //   });
 //   //   const accessToken = jwt.sign(
 //   //     { uid: existingParent._id, sid: newSession._id },
-//   //     process.env.JWT_ACCESS_SECRET as string,
+//   //     process.env.ACCESS_SECRET_JWT,
 //   //     {
-//   //       expiresIn: process.env.JWT_ACCESS_EXPIRE_TIME,
+//   //       expiresIn: "2h",
 //   //     }
 //   //   );
 //   //   const refreshToken = jwt.sign(
 //   //     { uid: existingParent._id, sid: newSession._id },
-//   //     process.env.JWT_REFRESH_SECRET as string,
+//   //     REFRESH_SECRET_JWT,
 //   //     {
-//   //       expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME,
+//   //       expiresIn: "24h",
 //   //     }
 //   // );
 //   return res
@@ -155,6 +242,7 @@ const getCurrent = (req, res) => {
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  refreshTokens: ctrlWrapper(refreshTokens),
   // googleAuth: ctrlWrapper(googleAuth),
   // googleRedirect: ctrlWrapper(googleRedirect),
   logout: ctrlWrapper(logout),
