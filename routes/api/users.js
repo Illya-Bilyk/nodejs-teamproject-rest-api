@@ -18,6 +18,8 @@ router.post("/singin", validateBody(schemas.loginSchema), ctrl.login);
 
 router.post("/logout", authenticate, ctrl.logout);
 
+router.post("/refresh", ctrl.refreshTokens);
+
 router.get("/current", authenticate, ctrl.getCurrent);
 
 router.post(
@@ -26,5 +28,6 @@ router.post(
   validateBody(schemas.emailSchema),
   ctrl.sendSubscribeEmail
 );
+
 
 module.exports = router;

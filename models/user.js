@@ -28,9 +28,16 @@ const userSchema = new Schema(
       type: [],
       default: undefined,
     },
-    token: {
+    accessToken: {
       type: String,
       default: null,
+    },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
+    sid: {
+      type: String,
     },
   },
   { versionKey: false, timestamps: true }
