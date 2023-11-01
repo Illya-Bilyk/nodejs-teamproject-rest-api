@@ -12,11 +12,11 @@ const ctrl = require("../../controllers/auth");
 
 const router = express.Router();
 
-router.post("/singup", validateBody(schemas.registerSchema), ctrl.register);
+router.post("/signup", validateBody(schemas.registerSchema), ctrl.register);
 
-router.post("/singin", validateBody(schemas.loginSchema), ctrl.login);
+router.post("/signin", validateBody(schemas.loginSchema), ctrl.login);
 
-router.post("/singout", authenticate, ctrl.logout);
+router.post("/signout", authenticate, ctrl.signout);
 
 router.post("/refresh", ctrl.refreshTokens);
 

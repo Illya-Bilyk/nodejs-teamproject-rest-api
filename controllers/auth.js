@@ -145,7 +145,7 @@ const refreshTokens = async (req, res) => {
   throw HttpError(400, "No token provided");
 };
 
-const singout = async (req, res) => {
+const signout = async (req, res) => {
   const currentSession = req.session;
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
@@ -203,7 +203,7 @@ module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   refreshTokens: ctrlWrapper(refreshTokens),
-  logout: ctrlWrapper(singout),
+  signout: ctrlWrapper(signout),
   getCurrent: ctrlWrapper(getCurrent),
   sendSubscribeEmail: ctrlWrapper(sendSubscribeEmail),
   updatUser: ctrlWrapper(updatUser),
