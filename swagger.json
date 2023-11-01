@@ -942,48 +942,34 @@
             "description": "User's email",
             "format": "email",
             "minLength": 3,
-            "maxLength": 254,
-            "example": "test@example.com"
+            "maxLength": 254
           },
           "password": {
             "type": "string",
             "description": "User's password",
-            "minLength": 6,
-            "maxLength": 100,
-            "example": "qwerty12"
+            "example": "qwerty12",
+            "minLength": 8,
+            "maxLength": 100
           }
         }
       },
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "accessToken": {
+          "username": {
             "type": "string",
-            "description": "Session's access token (needed for all requests)",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+            "description": "User's name",
+            "example": "John"
           },
-          "user": {
-            "username": {
-              "type": "string",
-              "description": "User's name",
-              "example": "John"
-            },
-            "birthday": {
-              "type": "string",
-              "description": "User's birthday",
-              "example": "01/01/2001"
-            },
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email",
-              "example": "test@example.com"
-            },
-            "id": {
-              "type": "string",
-              "description": "User's id",
-              "example": "507f1f77bcf86cd799439011"
-            }
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "507f1f77bcf86cd799439011"
           }
         }
       },
@@ -996,8 +982,7 @@
             "description": "User's email",
             "format": "email",
             "minLength": 3,
-            "maxLength": 254,
-            "example": "test@example.com"
+            "maxLength": 254
           },
           "password": {
             "type": "string",
@@ -1026,7 +1011,7 @@
             "description": "Session's id (needed for /auth/refresh)",
             "example": "507f1f77bcf86cd799439011"
           },
-          "user": {
+          "data": {
             "type": "object",
             "properties": {
               "email": {
@@ -1039,15 +1024,179 @@
                 "description": "User name",
                 "example": "John"
               },
-              "birthday": {
-                "type": "string",
-                "description": "User's birthday",
-                "example": "01/01/2001"
-              },
               "id": {
                 "type": "string",
                 "description": "User id",
                 "example": "507f1f77bcf86cd799439012"
+              },
+              "children": {
+                "type": "array",
+                "description": "User",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rewards": {
+                      "type": "integer",
+                      "description": "Users rewards"
+                    },
+                    "habits": {
+                      "type": "array",
+                      "description": "Users habits",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "days": {
+                            "type": "array",
+                            "description": "Habit days",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "date": {
+                                  "type": "string",
+                                  "description": "Day's date",
+                                  "example": "2020-12-31"
+                                },
+                                "isCompleted": {
+                                  "type": "string",
+                                  "description": "Day's status",
+                                  "enum": ["unknown", "confirmed", "canceled"]
+                                }
+                              }
+                            }
+                          },
+                          "_id": {
+                            "type": "string",
+                            "description": "Habit's id",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Habit's name",
+                            "example": "Name of the habit"
+                          },
+                          "rewardPerDay": {
+                            "type": "integer",
+                            "description": "Habit's reward for a single day",
+                            "example": 1
+                          },
+                          "childId": {
+                            "type": "string",
+                            "description": "Id of the child whose habit it is",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "__v": {
+                            "type": "integer",
+                            "description": "MongoDB document service versionKey (ignore)"
+                          }
+                        }
+                      }
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "description": "Users's tasks",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "description": "Task's id",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Task's name",
+                            "example": "Name of the task"
+                          },
+                          "reward": {
+                            "type": "string",
+                            "description": "Task's reward",
+                            "example": 1
+                          },
+                          "isCompleted": {
+                            "type": "string",
+                            "description": "Task's status",
+                            "enum": ["unknown", "confirmed", "canceled"]
+                          },
+                          "childId": {
+                            "type": "string",
+                            "description": "Id of the child whose task it is",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "daysToComplete": {
+                            "type": "integer",
+                            "description": "Amount of days to complete this task (optional)",
+                            "example": 1
+                          },
+                          "__v": {
+                            "type": "integer",
+                            "description": "MongoDB document service versionKey (ignore)"
+                          }
+                        }
+                      }
+                    },
+                    "gifts": {
+                      "type": "array",
+                      "description": "Users's gifts",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "description": "Gift's id",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Gift's name",
+                            "example": "Name of the gift"
+                          },
+                          "price": {
+                            "type": "integer",
+                            "description": "Gift's price",
+                            "minimum": 1,
+                            "example": 1
+                          },
+                          "isPurchased": {
+                            "type": "boolean",
+                            "description": "Gift's status"
+                          },
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
+                          },
+                          "childId": {
+                            "type": "string",
+                            "description": "Id of the child this gift was created for",
+                            "example": "507f1f77bcf86cd799439011"
+                          },
+                          "__v": {
+                            "type": "integer",
+                            "description": "MongoDB document service versionKey (ignore)"
+                          }
+                        }
+                      }
+                    },
+                    "_id": {
+                      "type": "string",
+                      "description": "Users's id",
+                      "example": "507f1f77bcf86cd799439011"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Users's name",
+                      "example": "John"
+                    },
+                    "gender": {
+                      "type": "string",
+                      "description": "Users's gender",
+                      "enum": ["male", "female"]
+                    },
+                    "__v": {
+                      "type": "integer",
+                      "description": "MongoDB document service versionKey (ignore)"
+                    }
+                  }
+                }
               }
             }
           }
