@@ -187,6 +187,18 @@ const sendSubscribeEmail = async (req, res) => {
   });
 };
 
+const updatUser = async (req, res) => {
+  const { id } = req.user;
+
+  const result = User.findByIdAndUpdate(id, req.body, { new: true });
+
+  if (!result) {
+    throw HttpError(404);
+  }
+
+  res.json(result._update);
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
@@ -194,4 +206,5 @@ module.exports = {
   logout: ctrlWrapper(singout),
   getCurrent: ctrlWrapper(getCurrent),
   sendSubscribeEmail: ctrlWrapper(sendSubscribeEmail),
+  updatUser: ctrlWrapper(updatUser),
 };
