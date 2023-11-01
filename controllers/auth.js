@@ -20,7 +20,7 @@ const register = async (req, res) => {
   const newUser = await User.create({ ...req.body, password: hashPassword });
 
   const payload = {
-    id: newUser._id,
+    uid: newUser._id,
   };
 
   const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
@@ -135,7 +135,6 @@ const refreshTokens = async (req, res) => {
 
 const logout = async (req, res) => {
   const currentSession = req.session;
-  console.log(currentSession);
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
 };
