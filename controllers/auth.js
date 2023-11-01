@@ -147,6 +147,9 @@ const refreshTokens = async (req, res) => {
 
 const signout = async (req, res) => {
   const currentSession = req.session;
+  const { id } = req.user;
+  console.log(id);
+  await User.findByIdAndUpdate(id, { accessToken: "" });
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
 };
