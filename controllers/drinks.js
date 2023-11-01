@@ -113,9 +113,33 @@ const getMainpageDrinks = async (req, res) => {
   res.status(200).json(result);
 };
 
-// const getPopularDrinks = async (req, res) => {
-//   res.status(200).json();
-// };
+const getPopularDrinks = async (req, res) => {
+  // const { birthday } = req.user;
+
+  // if (!birthday) {
+  //   throw HttpError(404, "Users not found (invalid query)");
+  // }
+
+  // const birthdayReversed = birthday.split("/").reverse().join("/");
+  // const age = dobToAge(birthdayReversed);
+
+  const age = 27; // Temporarily set the age to 18+
+  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
+
+  const result = await Recipe.find(
+    { alcoholic: alcohol },
+    {
+      _id: 1,
+      drink: 1,
+      category: 1,
+      alcoholic: 1,
+      glass: 1,
+      drinkThumb: 1,
+    }
+  ).limit(50);
+
+  res.status(200).json(result);
+};
 
 const searchDrinks = async (req, res) => {
   const {
@@ -231,7 +255,7 @@ const getDrinkById = async (req, res) => {
 
 module.exports = {
   getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
-  // getPopularDrinks: ctrlWrapper(getPopularDrinks),
+  getPopularDrinks: ctrlWrapper(getPopularDrinks),
   searchDrinks: ctrlWrapper(searchDrinks),
   addDrink: ctrlWrapper(addDrink),
   deleteDrink: ctrlWrapper(deleteDrink),
