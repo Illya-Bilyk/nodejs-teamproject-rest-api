@@ -5,9 +5,9 @@ const sessionSchema = new Schema({
     type: String,
     ref: "User",
   },
-  // sid: {
-  //   type: String,
-  // },
+  sid: {
+    type: String,
+  },
 });
 
 const sessionModel = model("sessionModel", sessionSchema);
