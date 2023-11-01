@@ -19,18 +19,30 @@ const register = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({ ...req.body, password: hashPassword });
 
-  const payload = {
-    id: newUser._id,
-  };
+  // const payload = {
+  //   uid: newUser._id,
+  // };
+
+  // const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
+  //   expiresIn: "4h",
+  // });
+
+  const newSession = await sessionModel.create({
+    uid: newUser._id,
+  });
+
+  const payload = { uid: newUser._id, sid: newSession._id };
 
   const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
     expiresIn: "4h",
   });
   await User.findByIdAndUpdate(newUser._id, {
     accessToken,
+    sid: newSession._id,
   });
   res.status(201).json({
     accessToken,
+    sid: newSession._id,
     user: {
       name: newUser.name,
       email: newUser.email,
@@ -135,7 +147,6 @@ const refreshTokens = async (req, res) => {
 
 const logout = async (req, res) => {
   const currentSession = req.session;
-  console.log(currentSession);
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
 };

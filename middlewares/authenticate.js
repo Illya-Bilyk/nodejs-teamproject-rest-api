@@ -13,20 +13,20 @@ const authenticate = async (req, res, next) => {
     try {
       payload = jwt.verify(accessToken, ACCESS_SECRET_JWT);
     } catch (err) {
-      throw HttpError(401, "Unauthorized");
+      next(HttpError(401, "Unauthorized"));
     }
     const user = await User.findById(payload.uid);
     const session = await sessionModel.findById(payload.sid);
     if (!user) {
-      throw HttpError(404, "Invalid user");
+      next(HttpError(404, "Invalid user"));
     }
     if (!session) {
-      throw HttpError(404, "Invalid session");
+      next(HttpError(404, "Invalid session"));
     }
     req.user = user;
     req.session = session;
     next();
-  } else throw HttpError(400, "No token provided");
+  } else next(HttpError(400, "No token provided"));
 };
 
 module.exports = authenticate;
