@@ -985,271 +985,271 @@
               "example": "507f1f77bcf86cd799439011"
             }
           }
-        },
-        "LoginRequest": {
-          "required": ["email", "password"],
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email",
-              "minLength": 3,
-              "maxLength": 254,
-              "example": "test@example.com"
-            },
-            "password": {
-              "type": "string",
-              "description": "User's password",
-              "minLength": 8,
-              "maxLength": 100,
-              "example": "qwerty12"
-            }
+        }
+      },
+      "LoginRequest": {
+        "required": ["email", "password"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 254,
+            "example": "test@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "minLength": 8,
+            "maxLength": 100,
+            "example": "qwerty12"
           }
-        },
-        "LoginResponse": {
-          "type": "object",
-          "properties": {
-            "accessToken": {
-              "type": "string",
-              "description": "Session's access token (needed for all requests)",
-              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
-            },
-            "refreshToken": {
-              "type": "string",
-              "description": "Session's refresh token (needed for /auth/refresh)",
-              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
-            },
-            "sid": {
-              "type": "string",
-              "description": "Session's id (needed for /auth/refresh)",
-              "example": "507f1f77bcf86cd799439011"
-            },
-            "user": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "description": "User's email",
-                  "format": "email"
-                },
-                "username": {
-                  "type": "string",
-                  "description": "User name",
-                  "example": "John"
-                },
-                "birthday": {
-                  "type": "string",
-                  "description": "User's birthday",
-                  "example": "01/01/2001"
-                },
-                "id": {
-                  "type": "string",
-                  "description": "User id",
-                  "example": "507f1f77bcf86cd799439012"
-                }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Session's access token (needed for all requests)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Session's refresh token (needed for /auth/refresh)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
+          },
+          "sid": {
+            "type": "string",
+            "description": "Session's id (needed for /auth/refresh)",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "username": {
+                "type": "string",
+                "description": "User name",
+                "example": "John"
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "01/01/2001"
+              },
+              "id": {
+                "type": "string",
+                "description": "User id",
+                "example": "507f1f77bcf86cd799439012"
               }
             }
           }
-        },
-        "RefreshTokensRequest": {
-          "type": "object",
-          "properties": {
-            "sid": {
-              "type": "string",
-              "description": "Session's ('sid' field after authentication)",
-              "example": "507f1f77bcf86cd799439011"
-            }
-          }
-        },
-        "RefreshTokensResponse": {
-          "type": "object",
-          "properties": {
-            "accessToken": {
-              "type": "string",
-              "description": "Access token",
-              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
-            },
-            "refreshToken": {
-              "type": "string",
-              "description": "Refresh token",
-              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
-            },
-            "newSid": {
-              "type": "string",
-              "description": "New session's id",
-              "example": "507f1f77bcf86cd799439011"
-            }
-          }
-        },
-        "GetUserInfoRequest": {
-          "type": "object"
-        },
-        "GetUserInfoResponse": {},
-        "GetSearchRequest": {
-          "type": "object",
-          "in": "body",
-          "properties": {
-            "page": {
-              "type": "string",
-              "description": "Current page for pagination",
-              "example": "1"
-            },
-            "limit": {
-              "type": "string",
-              "description": "Number of drinks per page",
-              "example": "9"
-            },
-            "keyword": {
-              "type": "string",
-              "description": "A word from the search bar - Enter the text ...",
-              "example": "Ir"
-            },
-            "category": {
-              "type": "string",
-              "description": "A category from the category drop-down list, or an empty string",
-              "example": "Coffee / Tea"
-            },
-            "ingredient": {
-              "type": "string",
-              "description": "Ingredients from the ingredient drop-down list or an empty string",
-              "example": "Sugar"
-            }
-          }
-        },
-        "GetSearchResponse": {
-          "type": "object",
-          "properties": {
-            "page": {
-              "type": "string",
-              "description": "Current page for pagination",
-              "example": "1"
-            },
-            "per_page": {
-              "type": "string",
-              "description": "Number of drinks per page",
-              "example": "9"
-            },
-            "max_page": {
-              "type": "string",
-              "description": "The number of drinks in the database according to the query criteria",
-              "example": "1"
-            },
-            "drinks": {
-              "type": "array",
-              "description": "The array of drinks in the database according to the query criteria",
-              "example": [
-                {
-                  "_id": "639b6de9ff77d221f190c508",
-                  "drink": "Irish Coffee",
-                  "drinkAlternate": "Sorry, not specified",
-                  "tags": "IBA,ContemporaryClassic",
-                  "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
-                  "category": "Coffee / Tea",
-                  "IBA": "Contemporary Classics",
-                  "alcoholic": "Alcoholic",
-                  "glass": "Irish coffee cup",
-                  "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
-                  "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
-                  "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
-                  "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
-                  "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
-                  "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
-                  "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
-                  "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
-                  "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
-                  "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
-                  "ingredients": [
-                    {
-                      "_id": "653e4aacf694b8bfbdce6d78",
-                      "title": "Irish whiskey",
-                      "measure": "1 1/2 oz ",
-                      "ingredientId": "64aebb7f82d96cc69e0eb4c2"
-                    },
-                    {
-                      "_id": "653e4aacf694b8bfbdce6d79",
-                      "title": "Coffee",
-                      "measure": "8 oz ",
-                      "ingredientId": "64aebb7f82d96cc69e0eb4e7"
-                    },
-                    {
-                      "_id": "653e4aacf694b8bfbdce6d7a",
-                      "title": "Sugar",
-                      "measure": "1 tsp ",
-                      "ingredientId": "64aebb7f82d96cc69e0eb4bc"
-                    },
-                    {
-                      "_id": "653e4aacf694b8bfbdce6d7b",
-                      "title": "Whipped cream",
-                      "measure": "1 tblsp ",
-                      "ingredientId": "64f1d5c069d8333cf130fb38"
-                    }
-                  ],
-                  "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
-                }
-              ]
-            }
-          }
-        },
-        "GetByIDResponse": {
-          "type": "object",
-          "example": [
-            {
-              "_id": "639b6de9ff77d221f190c51e",
-              "drink": "Affair",
-              "drinkAlternate": "Sorry, not specified",
-              "tags": "OrdinaryDrink,Alcoholic",
-              "video": "https://youtu.be/BGTB26zMxjw?si=hgl0lfGa9VgBK9mi",
-              "category": "Ordinary Drink",
-              "IBA": "Sorry, not specified",
-              "alcoholic": "Alcoholic",
-              "glass": "Highball glass",
-              "description": "Affair is a seductive and sophisticated cocktail that combines a mix of spirits and fruit juices. It is made with vodka, peach schnapps, cranberry juice, and orange juice. The combination of flavors creates a balanced and tantalizing drink that is sure to impress. It is best enjoyed in the company of someone special.",
-              "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass. Top with club soda and serve.",
-              "instructionsES": "Vierta el Schnapps, el jugo de naranja y el jugo de arándano sobre hielo en un vaso alto. Complete con el agua carbonatada y sirva.",
-              "instructionsDE": "Gießen Sie Schnaps, Orangensaft und Cranberrysaft über Eis in ein Highball-Glas. Mit Club-Soda überziehen und servieren.",
-              "instructionsFR": "Verser le schnaps, le jus d'orange et le jus de canneberge sur de la glace dans un verre highball. Garnir de club soda et servir.",
-              "instructionsIT": "Versare la grappa, il succo d'arancia e il succo di mirtillo rosso sul ghiaccio in un bicchiere highball. Completare con la soda club e servire.",
-              "instructionsRU": "Налейте шнапс, апельсиновый сок и клюквенный сок со льдом в стакан хайбол. Долейте содовой и подавайте.",
-              "instructionsPL": "Wlej sznaps, sok pomarańczowy i sok żurawinowy do lodu w szklance typu highball. Na wierzch z sodą klubową i podawaj.",
-              "instructionsUK": "Розлийте шнапс, апельсиновий сік і журавлинний сік з льодом у келих хайбол. Зверху полийте газованою водою та подавайте.",
-              "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Affair.jpg",
-              "ingredients": [
-                {
-                  "_id": "653e988f5e22fd46dc6056d7",
-                  "title": "Strawberry schnapps",
-                  "measure": "2 oz ",
-                  "ingredientId": "64aebb7f82d96cc69e0eb4a9"
-                },
-                {
-                  "_id": "653e988f5e22fd46dc6056d8",
-                  "title": "Orange juice",
-                  "measure": "2 oz ",
-                  "ingredientId": "64f1d5c069d8333cf130fb3d"
-                },
-                {
-                  "_id": "653e988f5e22fd46dc6056d9",
-                  "title": "Cranberry juice",
-                  "measure": "2 oz ",
-                  "ingredientId": "64aebb7f82d96cc69e0eb4f1"
-                },
-                {
-                  "_id": "653e988f5e22fd46dc6056da",
-                  "title": "Club soda",
-                  "ingredientId": "64f1d5c069d8333cf130fb40"
-                }
-              ],
-              "shortDescription": "A seductive and sophisticated cocktail with a mix of spirits and fruit juices."
-            }
-          ]
         }
       },
-      "securitySchemes": {
-        "Bearer": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
+      "RefreshTokensRequest": {
+        "type": "object",
+        "properties": {
+          "sid": {
+            "type": "string",
+            "description": "Session's ('sid' field after authentication)",
+            "example": "507f1f77bcf86cd799439011"
+          }
         }
+      },
+      "RefreshTokensResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
+          },
+          "newSid": {
+            "type": "string",
+            "description": "New session's id",
+            "example": "507f1f77bcf86cd799439011"
+          }
+        }
+      },
+      "GetUserInfoRequest": {
+        "type": "object"
+      },
+      "GetUserInfoResponse": {},
+      "GetSearchRequest": {
+        "type": "object",
+        "in": "body",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "1"
+          },
+          "limit": {
+            "type": "string",
+            "description": "Number of drinks per page",
+            "example": "9"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "A word from the search bar - Enter the text ...",
+            "example": "Ir"
+          },
+          "category": {
+            "type": "string",
+            "description": "A category from the category drop-down list, or an empty string",
+            "example": "Coffee / Tea"
+          },
+          "ingredient": {
+            "type": "string",
+            "description": "Ingredients from the ingredient drop-down list or an empty string",
+            "example": "Sugar"
+          }
+        }
+      },
+      "GetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "1"
+          },
+          "per_page": {
+            "type": "string",
+            "description": "Number of drinks per page",
+            "example": "9"
+          },
+          "max_page": {
+            "type": "string",
+            "description": "The number of drinks in the database according to the query criteria",
+            "example": "1"
+          },
+          "drinks": {
+            "type": "array",
+            "description": "The array of drinks in the database according to the query criteria",
+            "example": [
+              {
+                "_id": "639b6de9ff77d221f190c508",
+                "drink": "Irish Coffee",
+                "drinkAlternate": "Sorry, not specified",
+                "tags": "IBA,ContemporaryClassic",
+                "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
+                "category": "Coffee / Tea",
+                "IBA": "Contemporary Classics",
+                "alcoholic": "Alcoholic",
+                "glass": "Irish coffee cup",
+                "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
+                "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
+                "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
+                "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
+                "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
+                "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
+                "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
+                "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
+                "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
+                "ingredients": [
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d78",
+                    "title": "Irish whiskey",
+                    "measure": "1 1/2 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4c2"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d79",
+                    "title": "Coffee",
+                    "measure": "8 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4e7"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7a",
+                    "title": "Sugar",
+                    "measure": "1 tsp ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4bc"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7b",
+                    "title": "Whipped cream",
+                    "measure": "1 tblsp ",
+                    "ingredientId": "64f1d5c069d8333cf130fb38"
+                  }
+                ],
+                "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
+              }
+            ]
+          }
+        }
+      },
+      "GetByIDResponse": {
+        "type": "object",
+        "example": [
+          {
+            "_id": "639b6de9ff77d221f190c51e",
+            "drink": "Affair",
+            "drinkAlternate": "Sorry, not specified",
+            "tags": "OrdinaryDrink,Alcoholic",
+            "video": "https://youtu.be/BGTB26zMxjw?si=hgl0lfGa9VgBK9mi",
+            "category": "Ordinary Drink",
+            "IBA": "Sorry, not specified",
+            "alcoholic": "Alcoholic",
+            "glass": "Highball glass",
+            "description": "Affair is a seductive and sophisticated cocktail that combines a mix of spirits and fruit juices. It is made with vodka, peach schnapps, cranberry juice, and orange juice. The combination of flavors creates a balanced and tantalizing drink that is sure to impress. It is best enjoyed in the company of someone special.",
+            "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass. Top with club soda and serve.",
+            "instructionsES": "Vierta el Schnapps, el jugo de naranja y el jugo de arándano sobre hielo en un vaso alto. Complete con el agua carbonatada y sirva.",
+            "instructionsDE": "Gießen Sie Schnaps, Orangensaft und Cranberrysaft über Eis in ein Highball-Glas. Mit Club-Soda überziehen und servieren.",
+            "instructionsFR": "Verser le schnaps, le jus d'orange et le jus de canneberge sur de la glace dans un verre highball. Garnir de club soda et servir.",
+            "instructionsIT": "Versare la grappa, il succo d'arancia e il succo di mirtillo rosso sul ghiaccio in un bicchiere highball. Completare con la soda club e servire.",
+            "instructionsRU": "Налейте шнапс, апельсиновый сок и клюквенный сок со льдом в стакан хайбол. Долейте содовой и подавайте.",
+            "instructionsPL": "Wlej sznaps, sok pomarańczowy i sok żurawinowy do lodu w szklance typu highball. Na wierzch z sodą klubową i podawaj.",
+            "instructionsUK": "Розлийте шнапс, апельсиновий сік і журавлинний сік з льодом у келих хайбол. Зверху полийте газованою водою та подавайте.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Affair.jpg",
+            "ingredients": [
+              {
+                "_id": "653e988f5e22fd46dc6056d7",
+                "title": "Strawberry schnapps",
+                "measure": "2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4a9"
+              },
+              {
+                "_id": "653e988f5e22fd46dc6056d8",
+                "title": "Orange juice",
+                "measure": "2 oz ",
+                "ingredientId": "64f1d5c069d8333cf130fb3d"
+              },
+              {
+                "_id": "653e988f5e22fd46dc6056d9",
+                "title": "Cranberry juice",
+                "measure": "2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4f1"
+              },
+              {
+                "_id": "653e988f5e22fd46dc6056da",
+                "title": "Club soda",
+                "ingredientId": "64f1d5c069d8333cf130fb40"
+              }
+            ],
+            "shortDescription": "A seductive and sophisticated cocktail with a mix of spirits and fruit juices."
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
