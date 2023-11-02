@@ -1,14 +1,148 @@
 const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
+const { Ingredient } = require("../models/ingredient");
+const { Drinks } = require("../models/drinks");
 const { ctrlWrapper, HttpError } = require("../utils");
+// const { ObjectId } = require("mongoose");
 
-// const getMainpageDrinks = async (req, res) => {
-//   res.status(200).json();
-// };
+const getMainpageDrinks = async (req, res) => {
+  // const { birthday } = req.user;
 
-// const getPopularDrinks = async (req, res) => {
-//   res.status(200).json();
-// };
+  // if (!birthday) {
+  //   throw HttpError(404, "Users not found (invalid query)");
+  // }
+
+  // const birthdayReversed = birthday.split("/").reverse().join("/");
+  // const age = dobToAge(birthdayReversed);
+
+  const age = 35; // Temporarily set the age to 18+
+  const alcohol = age > 18;
+
+  // Request for all drinks
+  const resultAll = await Recipe.aggregate([
+    {
+      $match: {
+        category: {
+          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
+        },
+      },
+    },
+    { $group: { _id: "$category", drinks: { $push: "$$ROOT" } } },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        drinks: {
+          $slice: ["$drinks", 3],
+        },
+      },
+    },
+    {
+      $project: {
+        category: 1,
+        drinks: {
+          $map: {
+            input: "$drinks",
+            as: "drink",
+            in: {
+              _id: "$$drink._id",
+              drink: "$$drink.drink",
+              category: "$$drink.category",
+              alcoholic: "$$drink.alcoholic",
+              drinkThumb: "$$drink.drinkThumb",
+            },
+          },
+        },
+      },
+    },
+    { $sort: { category: 1 } },
+  ]);
+
+  // Request only for non-alcoholic drinks
+
+  const resultNonAlko = await Recipe.aggregate([
+    {
+      $match: {
+        category: {
+          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
+        },
+      },
+    },
+    { $group: { _id: "$category", drinks: { $push: "$$ROOT" } } },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        drinks: {
+          $filter: {
+            input: "$drinks",
+            as: "drink",
+            cond: { $eq: ["$$drink.alcoholic", "Non alcoholic"] },
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        category: 1,
+        drinks: {
+          $slice: ["$drinks", 3],
+        },
+      },
+    },
+    {
+      $project: {
+        category: 1,
+        drinks: {
+          $map: {
+            input: "$drinks",
+            as: "drink",
+            in: {
+              _id: "$$drink._id",
+              drink: "$$drink.drink",
+              category: "$$drink.category",
+              alcoholic: "$$drink.alcoholic",
+              drinkThumb: "$$drink.drinkThumb",
+            },
+          },
+        },
+      },
+    },
+    { $match: { "drinks.0": { $exists: true } } },
+    { $sort: { category: 1 } },
+  ]);
+
+  const result = alcohol ? resultAll : resultNonAlko;
+  res.status(200).json(result);
+};
+
+const getPopularDrinks = async (req, res) => {
+  // const { birthday } = req.user;
+
+  // if (!birthday) {
+  //   throw HttpError(404, "Users not found (invalid query)");
+  // }
+
+  // const birthdayReversed = birthday.split("/").reverse().join("/");
+  // const age = dobToAge(birthdayReversed);
+
+  const age = 27; // Temporarily set the age to 18+
+  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
+
+  const result = await Recipe.find(
+    { alcoholic: alcohol },
+    {
+      _id: 1,
+      drink: 1,
+      category: 1,
+      alcoholic: 1,
+      glass: 1,
+      drinkThumb: 1,
+    }
+  ).limit(50);
+
+  res.status(200).json(result);
+};
 
 const searchDrinks = async (req, res) => {
   const {
@@ -86,16 +220,122 @@ const searchDrinks = async (req, res) => {
   });
 };
 
-const addDrink = async (req, res) => {
-  res.status(200).json({});
+const addDrinkImg = async (req, res) => {
+  const avatarURL = req.file.path;
+
+  if (!avatarURL) {
+    throw HttpError(400, "Bad Request");
+  }
+
+  res.status(201).json({
+    avatarURL: avatarURL,
+  });
+};
+
+const addDrink = async (req, res, next) => {
+  const { _id: owner } = req.user;
+
+  if (!req.body.drink) {
+    next(HttpError(401, "Missing fields 'drink'"));
+  }
+
+  if (!req.body.category) {
+    next(HttpError(401, "Missing fields 'category'"));
+  }
+
+  if (!req.body.alcoholic) {
+    next(HttpError(401, "Missing fields 'category'"));
+  }
+
+  if (!req.body.glass) {
+    next(HttpError(401, "Missing fields 'glass'"));
+  }
+
+  if (!req.body.description) {
+    next(HttpError(401, "Missing fields 'description'"));
+  }
+
+  if (!req.body.instructions) {
+    next(HttpError(401, "Missing fields 'instructions'"));
+  }
+
+  if (!req.body.drinkThumb) {
+    next(HttpError(401, "Missing fields 'drinkThumb'"));
+  }
+
+  if (!req.body.ingredients) {
+    next(HttpError(401, "Missing fields 'ingredients'"));
+  }
+
+  if (!req.body.shortDescription) {
+    next(HttpError(401, "Missing fields 'shortDescription'"));
+  }
+
+  const ingredientTitleArray = req.body.ingredients.map((item) => {
+    const ingredientArray = item.title;
+    return ingredientArray;
+  });
+
+  const responseIngredientArray = await Ingredient.find({
+    title: ingredientTitleArray,
+  });
+
+  const ingredientIDArray = responseIngredientArray.map((item) => {
+    const ingrIDArray = item._id;
+    return ingrIDArray;
+  });
+
+  const element = [];
+  for (let i = 0; i < req.body.ingredients.length; i++) {
+    element.push(
+      Object.assign(req.body.ingredients[i], {
+        ingredientId: ingredientIDArray[i],
+      })
+    );
+  }
+
+  const response = await Drinks.insertMany(
+    {
+      ...req.body,
+      ingredients: element,
+      owner,
+    },
+    { _id: false }
+  );
+
+  if (!response) {
+    throw HttpError(404, "Add request not made (invalid request)");
+  }
+
+  res.status(200).json({
+    message: "drink added",
+  });
 };
 
 const deleteDrink = async (req, res) => {
-  res.status(200).json({});
+  const { drinkId } = req.params;
+
+  const response = await Drinks.findByIdAndRemove(drinkId);
+
+  if (!response) {
+    throw HttpError(404, "Not found 404");
+  }
+
+  res.status(200).json({
+    message: "drink deleted",
+  });
 };
 
 const getDrink = async (req, res) => {
-  res.status(200).json({});
+  const { _id } = req.user;
+
+  const response = await Drinks.find({ owner: _id });
+
+  if (!response) {
+    throw HttpError(404, "Not found");
+  }
+
+  res.status(200).json(response);
 };
 
 const addFavoriteDrink = async (req, res) => {
@@ -123,9 +363,10 @@ const getDrinkById = async (req, res) => {
 };
 
 module.exports = {
-  // getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
-  // getPopularDrinks: ctrlWrapper(getPopularDrinks),
+  getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
+  getPopularDrinks: ctrlWrapper(getPopularDrinks),
   searchDrinks: ctrlWrapper(searchDrinks),
+  addDrinkImg: ctrlWrapper(addDrinkImg),
   addDrink: ctrlWrapper(addDrink),
   deleteDrink: ctrlWrapper(deleteDrink),
   getDrink: ctrlWrapper(getDrink),

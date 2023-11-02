@@ -1,18 +1,19 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
-const { handleMongooseError } = require("../utils/index");
+
+const { handleMongooseError } = require("../utils");
+
 const emailRegexp = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "name is required"],      
+      required: [true, "name is required"],
     },
     birthday: {
       type: String,
       required: [true, "Birthday is required"],
-      unique: true,
     },
     email: {
       type: String,
@@ -27,10 +28,17 @@ const userSchema = new Schema(
       type: [],
       default: undefined,
     },
-    token: {
+    accessToken: {
       type: String,
       default: null,
     },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
+    // sid: {
+    //   type: String,
+    // },
   },
   { versionKey: false, timestamps: true }
 );
@@ -75,9 +83,28 @@ const loginSchema = Joi.object({
   }),
 });
 
+const emailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    "string.base": `email should be a type of 'text'`,
+    "string.empty": `email cannot be an empty field`,
+    "string.pattern.base": `email not valid`,
+    "any.required": `missing required email field`,
+  }),
+});
+
+const updatUserSchema = Joi.object({
+  name: Joi.string().required().messages({
+    "string.base": `name should be a type of 'text'`,
+    "string.empty": `name cannot be an empty field`,
+    "any.required": `missing required name field`,
+  }),
+});
+
 const schemas = {
   registerSchema,
   loginSchema,
+  emailSchema,
+  updatUserSchema,
 };
 const User = model("user", userSchema);
 

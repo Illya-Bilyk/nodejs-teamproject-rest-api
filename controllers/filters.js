@@ -8,7 +8,17 @@ const getCategories = async (req, res) => {
 };
 
 const getIngredients = async (req, res) => {
-  const result = await Ingredient.distinct("title").sort();
+  const result = await Ingredient.find(
+    {},
+    {
+      _id: 1,
+      title: 1,
+      alcohol: 1,
+      ingredientThumb: 1,
+      "thumb-medium": 1,
+      "thumb-small": 1,
+    }
+  );
   res.json(result);
 };
 

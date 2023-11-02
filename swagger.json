@@ -624,12 +624,18 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Users object",
+          "description": "Users files",
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
+                "type": "object",
+                "properties": {
+                  "cocktail": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
               }
             }
           }
@@ -640,17 +646,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/AddDrinkImgResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "No token provided / Bad request",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized / File is missing",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -668,75 +682,81 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
+                "$ref": "#/components/schemas/AddDrinkRequest"
               }
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/AddDrinkResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized / Missing fields 'drink'/'category'/'category'/'glass'/'description'/'instructions'/'drinkThumb'/'ingredients'/'shortDescription'",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / Add request not made (invalid request)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks/own/remove": {
+    "/drinks/own/remove/{drinkId}": {
       "delete": {
         "tags": ["Drinks"],
         "summary": "Deleting your own cocktail",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/RemoveDrinkResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -748,38 +768,31 @@
         "summary": "Getting your own cocktails",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "201": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetDrinkResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -1118,6 +1131,261 @@
             "type": "string",
             "description": "New session's id",
             "example": "507f1f77bcf86cd799439011"
+          }
+        }
+      },
+      "AddDrinkImgResponse": {
+        "type": "object",
+        "properties": {
+          "avatarURL": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698760293/cocktails/653fa858149cd42514905850-2EmQibRWanpjmcqFMIbOK.jpg"
+          }
+        }
+      },
+      "AddDrinkRequest": {
+        "required": [
+          "drink",
+          "category",
+          "alcoholic",
+          "glass",
+          "description",
+          "instructions",
+          "drinkThumb",
+          "ingredients",
+          "shortDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Drink's name",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "Strong"
+          },
+          "category": {
+            "type": "string",
+            "description": "Drink's category",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "Ordinary Drink"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "The presence of alcohol",
+            "enum": ["Alcoholic", "Non alcoholic"]
+          },
+          "glass": {
+            "type": "string",
+            "description": "User's password",
+            "example": "A glass of drink",
+            "minLength": 2,
+            "maxLength": 150
+          },
+          "description": {
+            "type": "string",
+            "description": "Drink's description",
+            "minLength": 2,
+            "maxLength": 500,
+            "example": "Strong is a refreshing cocktail that combines the flavors of citrus and mint. It is made with fresh lime juice, orange liqueur, and a touch of mint syrup. The drink is served over ice and garnished with a sprig of mint. It is the perfect beverage for a hot summer day."
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Drink's instructions",
+            "minLength": 2,
+            "maxLength": 500,
+            "example": "In a shaker half-filled with ice cubes, combine the rum, Kahlua, and cream. Shake well. Strain into a cocktail glass and garnish with the nutmeg."
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "Drink's image",
+            "minLength": 2,
+            "maxLength": 500,
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698926456/cocktails/65436e6f6db048cb734906eb-gpfjfDjaEjdaKVzX06itZ.jpg"
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "Array of ingredients",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "minLength": 2,
+                  "maxLength": 100,
+                  "example": "Club soda"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "minLength": 2,
+                  "maxLength": 100,
+                  "example": "1 1/2 oz"
+                }
+              }
+            }
+          },
+          "shortDescription": {
+            "type": "string",
+            "description": "Drink's short description",
+            "minLength": 2,
+            "maxLength": 500,
+            "example": "A refreshing and citrusy cocktail with a hint of mint."
+          }
+        }
+      },
+      "AddDrinkResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "drink added"
+          }
+        }
+      },
+      "RemoveDrinkResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "drink deleted"
+          }
+        }
+      },
+      "GetDrinkResponse": {
+        "type": "object",
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Drink's name",
+            "example": "Summer apple"
+          },
+          "category": {
+            "type": "string",
+            "description": "Drink's category",
+            "example": "Ordinary Drink"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "The presence of alcohol",
+            "example": "Alcoholic"
+          },
+          "glass": {
+            "type": "string",
+            "description": "A glass of drink",
+            "example": "Cocktail glass"
+          },
+          "description": {
+            "type": "string",
+            "description": "Drink's description",
+            "example": "Quentin is a refreshing cocktail that combines the flavors of citrus a…"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Drink's instructions",
+            "example": "In a shaker half-filled with ice cubes, combine the rum, Kahlua, and cream. Shake well. Strain into a cocktail glass and garnish with the nutmeg."
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "Drink's image",
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698918620/cocktails/65436e6f6db048cb734906eb-wzK6R4B5iNNi8JvAAwu1R.jpg"
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "Array of ingredients",
+            "example": [
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Dark rum"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1 1/2 oz"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186a"
+                }
+              },
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Kahlua"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1/2 oz"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186b"
+                }
+              },
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Light cream"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1 oz"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186c"
+                }
+              },
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Nutmeg"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1/8 tsp grated"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186d"
+                }
+              }
+            ]
+          },
+          "shortDescription": {
+            "type": "string",
+            "description": "Drink's short description",
+            "example": "A refreshing and citrusy cocktail with a hint of mint."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner's ID",
+            "example": "6543c84e61d98501f9f42ff3"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Data created",
+            "example": "2023-11-01T12:14:45.965Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Data last updated",
+            "example": "2023-11-01T12:14:45.965Z"
           }
         }
       },
