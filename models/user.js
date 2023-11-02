@@ -36,9 +36,9 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    sid: {
-      type: String,
-    },
+    // sid: {
+    //   type: String,
+    // },
   },
   { versionKey: false, timestamps: true }
 );
