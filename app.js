@@ -7,6 +7,7 @@ const swaggerDocument = require("./swagger.json");
 
 const app = express();
 
+const authRouter = require("./routes/api/auth");
 const usersRouter = require("./routes/api/users");
 const filtersRouter = require("./routes/api/filters");
 const drinksRouter = require("./routes/api/drinks");
@@ -21,7 +22,8 @@ app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));
 
-app.use("/auth", usersRouter);
+app.use("/auth", authRouter);
+app.use("/users", usersRouter);
 app.use("/filters", filtersRouter);
 app.use("/drinks", drinksRouter);
 
