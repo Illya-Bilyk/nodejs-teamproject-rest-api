@@ -151,11 +151,9 @@ const singout = async (req, res) => {
   return res.status(204).end();
 };
 
-
-
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   refreshTokens: ctrlWrapper(refreshTokens),
-  logout: ctrlWrapper(singout),
+  signout: ctrlWrapper(singout),
 };
