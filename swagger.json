@@ -58,12 +58,16 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request (invalid request body)",
+          "404": {
+            "description": "Not found",
             "content": {}
           },
           "409": {
             "description": "Provided email already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -97,11 +101,19 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "No token provided",
             "content": {}
           },
-          "403": {
-            "description": "Email doesn't exist / Password is wrong",
+          "401": {
+            "description": "Unauthorized / Email or password is wrong",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -123,11 +135,15 @@
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -162,47 +178,19 @@
             }
           },
           "400": {
-            "description": "Invalid request body / No token provided",
+            "description": "No token provided",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid refresh token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/auth/google": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Google authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
-        "responses": {
-          "200": {
-            "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user",
+            "description": "Not found / Invalid user / Invalid session",
             "content": {}
           },
-          "403": {
-            "description": "Not registered or registered with postman",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/auth/facebook": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Facebook authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
-        "responses": {
-          "200": {
-            "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user",
-            "content": {}
-          },
-          "403": {
-            "description": "Not registered or registered with postman",
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -610,12 +598,59 @@
               }
             }
           },
+          "400": {
+            "description": "No token provided",
+            "content": {}
+          },
           "401": {
             "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found (invalid query) / Search query not found (invalid query)",
+            "description": "Not found / Invalid user / Invalid session / Users not found (invalid query) / Search query not found (invalid query)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own/add/img": {
+      "post": {
+        "tags": ["Drinks"],
+        "summary": "Adding your image to your own cocktail",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Users object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
             "content": {}
           }
         }
@@ -905,12 +940,20 @@
               }
             }
           },
+          "400": {
+            "description": "No token provided",
+            "content": {}
+          },
           "401": {
             "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Drink not found",
+            "description": "Not found / Invalid user / Invalid session / Drink not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -920,10 +963,10 @@
   "components": {
     "schemas": {
       "RegistrationRequest": {
-        "required": ["username", "birthday", "email", "password"],
+        "required": ["name", "birthday", "email", "password"],
         "type": "object",
         "properties": {
-          "username": {
+          "name": {
             "type": "string",
             "description": "User's name",
             "minLength": 2,
@@ -942,15 +985,14 @@
             "description": "User's email",
             "format": "email",
             "minLength": 3,
-            "maxLength": 254,
-            "example": "test@example.com"
+            "maxLength": 254
           },
           "password": {
             "type": "string",
             "description": "User's password",
-            "minLength": 6,
-            "maxLength": 100,
-            "example": "qwerty12"
+            "example": "qwerty12",
+            "minLength": 8,
+            "maxLength": 100
           }
         }
       },
@@ -962,27 +1004,29 @@
             "description": "Session's access token (needed for all requests)",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
           },
+          "sid": {
+            "type": "string",
+            "description": "Session's id (needed for /auth/refresh)",
+            "example": "65423c61f2c5a9d94a44c85c"
+          },
           "user": {
-            "username": {
-              "type": "string",
-              "description": "User's name",
-              "example": "John"
-            },
-            "birthday": {
-              "type": "string",
-              "description": "User's birthday",
-              "example": "01/01/2001"
-            },
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email",
-              "example": "test@example.com"
-            },
-            "id": {
-              "type": "string",
-              "description": "User's id",
-              "example": "507f1f77bcf86cd799439011"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "User name",
+                "example": "John"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "01/01/2001"
+              }
             }
           }
         }
@@ -996,8 +1040,7 @@
             "description": "User's email",
             "format": "email",
             "minLength": 3,
-            "maxLength": 254,
-            "example": "test@example.com"
+            "maxLength": 254
           },
           "password": {
             "type": "string",
@@ -1029,25 +1072,20 @@
           "user": {
             "type": "object",
             "properties": {
+              "name": {
+                "type": "string",
+                "description": "User name",
+                "example": "John"
+              },
               "email": {
                 "type": "string",
                 "description": "User's email",
                 "format": "email"
               },
-              "username": {
-                "type": "string",
-                "description": "User name",
-                "example": "John"
-              },
               "birthday": {
                 "type": "string",
                 "description": "User's birthday",
                 "example": "01/01/2001"
-              },
-              "id": {
-                "type": "string",
-                "description": "User id",
-                "example": "507f1f77bcf86cd799439012"
               }
             }
           }
@@ -1066,12 +1104,12 @@
       "RefreshTokensResponse": {
         "type": "object",
         "properties": {
-          "accessToken": {
+          "newAccessToken": {
             "type": "string",
             "description": "Access token",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
           },
-          "refreshToken": {
+          "newRefreshToken": {
             "type": "string",
             "description": "Refresh token",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
@@ -1083,9 +1121,7 @@
           }
         }
       },
-      "GetUserInfoRequest": {
-        "type": "object"
-      },
+      "GetUserInfoRequest": {},
       "GetUserInfoResponse": {},
       "GetSearchRequest": {
         "type": "object",
