@@ -2,15 +2,18 @@ const { isValidObjectId } = require("mongoose");
 
 const { HttpError } = require("../utils");
 
+const isRealId = (id, next) => {
+  if (!isValidObjectId(id)) {
+    next(HttpError(400, `${id} is not valid id`));
+  }
+};
+
 const isValidId = (req, res, next) => {
   const { drinkId } = req.params;
+  const { id } = req.user;
 
-  console.log("isValidId req.params: ", req.params);
+  drinkId ? isRealId(drinkId, next) : isRealId(id, next);
 
-  if (!isValidObjectId(drinkId)) {
-    next(HttpError(400, `${drinkId} is not valid id`));
-  }
-  console.log("isValidId  ", "ID valid");
   next();
 };
 
