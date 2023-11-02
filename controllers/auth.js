@@ -154,8 +154,6 @@ const signout = async (req, res) => {
   return res.status(204).end();
 };
 
-
-
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
