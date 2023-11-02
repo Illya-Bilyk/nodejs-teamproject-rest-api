@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const { User } = require("../models/user");
 const { sessionModel } = require("../models/session");
-const { HttpError, ctrlWrapper, sendEmail } = require("../utils");
+const { HttpError, ctrlWrapper } = require("../utils");
 
 const { ACCESS_SECRET_JWT, REFRESH_SECRET_JWT } = process.env;
 
@@ -151,60 +151,11 @@ const singout = async (req, res) => {
   return res.status(204).end();
 };
 
-const getCurrent = (req, res) => {
-  const { email, birthday } = req.user;
 
-  res.json({
-    email,
-    birthday,
-  });
-};
-
-const sendSubscribeEmail = async (req, res) => {
-  const { email } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    throw HttpError(404, "User not found");
-  }
-  if (user.subsribe) {
-    throw HttpError(400, "Subscription has already been send");
-  }
-
-  const subscribedEmail = {
-    to: email,
-    subject: "Subscription",
-    html: `<p>You successfully subscribed to our news!</p>`,
-  };
-
-  await sendEmail(subscribedEmail);
-
-  await User.findByIdAndUpdate(user._id, { subsribe: true });
-
-  res.json({
-    message: "Subscription email sent",
-  });
-};
-
-const updatUser = async (req, res) => {
-  const { id } = req.user;
-
-  const result = User.findByIdAndUpdate(id, req.body, { new: true });
-
-  if (!result) {
-    throw HttpError(404);
-  }
-
-  res.json(result._update);
-};
 
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   refreshTokens: ctrlWrapper(refreshTokens),
   logout: ctrlWrapper(singout),
-  getCurrent: ctrlWrapper(getCurrent),
-  sendSubscribeEmail: ctrlWrapper(sendSubscribeEmail),
-  updatUser: ctrlWrapper(updatUser),
 };

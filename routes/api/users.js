@@ -8,17 +8,9 @@ const {
 
 const { schemas } = require("../../models/user");
 
-const ctrl = require("../../controllers/auth");
+const ctrl = require("../../controllers/users");
 
 const router = express.Router();
-
-router.post("/singup", validateBody(schemas.registerSchema), ctrl.register);
-
-router.post("/singin", validateBody(schemas.loginSchema), ctrl.login);
-
-router.post("/singout", authenticate, ctrl.logout);
-
-router.post("/refresh", ctrl.refreshTokens);
 
 router.get("/current", authenticate, ctrl.getCurrent);
 
