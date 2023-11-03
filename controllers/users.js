@@ -40,13 +40,14 @@ const sendSubscribeEmail = async (req, res) => {
 const updatUser = async (req, res) => {
   const { id } = req.user;
 
-  const result = User.findByIdAndUpdate(id, req.body, { new: true });
+  const result = await User.findByIdAndUpdate(id, req.body, { new: true });
 
   if (!result) {
     throw HttpError(404);
   }
 
-  res.json(result._update);
+  res.json({ message: "User updated successfully" });
+
 };
 
 module.exports = {

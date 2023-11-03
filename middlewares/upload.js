@@ -6,6 +6,7 @@ const ShortUniqueId = require("short-unique-id");
 const uid = new ShortUniqueId();
 const { HttpError } = require("../utils");
 
+
 const { CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET } = process.env;
 
 cloudinary.config({
@@ -13,11 +14,13 @@ cloudinary.config({
   api_key: CLOUDINARY_KEY,
   api_secret: CLOUDINARY_SECRET,
   secure: true,
+
 });
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
+
     if (!file) {
       throw HttpError(400, "File is missing");
     } // якщо немає файлу - повідомлення про помилку
@@ -35,6 +38,7 @@ const storage = new CloudinaryStorage({
       folder = "others";
     }
     return {
+
       folder: folder, // назва папки на cloudinary
       allowed_formats: ["jpeg", "jpg", "png"], // дозволений формат файлу
       public_id: fileData.originalname, // назва файлу в папці на cloudinary
@@ -42,6 +46,7 @@ const storage = new CloudinaryStorage({
         { width: 350, height: 350 },
         { width: 700, height: 700 },
       ], // перетворення файлу
+
     };
   },
 });
