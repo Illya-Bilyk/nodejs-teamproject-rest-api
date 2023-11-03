@@ -19,7 +19,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     if (!file) {
-      throw HttpError(401, "File is missing");
+      throw HttpError(400, "File is missing");
     } // якщо немає файлу - повідомлення про помилку
 
     const filename = `${req.user.id}-${uid.rnd(21)}`; // генеруємо нову назву файлу

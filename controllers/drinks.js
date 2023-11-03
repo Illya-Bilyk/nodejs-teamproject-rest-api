@@ -235,42 +235,6 @@ const addDrinkImg = async (req, res) => {
 const addDrink = async (req, res, next) => {
   const { _id: owner } = req.user;
 
-  if (!req.body.drink) {
-    next(HttpError(401, "Missing fields 'drink'"));
-  }
-
-  if (!req.body.category) {
-    next(HttpError(401, "Missing fields 'category'"));
-  }
-
-  if (!req.body.alcoholic) {
-    next(HttpError(401, "Missing fields 'category'"));
-  }
-
-  if (!req.body.glass) {
-    next(HttpError(401, "Missing fields 'glass'"));
-  }
-
-  if (!req.body.description) {
-    next(HttpError(401, "Missing fields 'description'"));
-  }
-
-  if (!req.body.instructions) {
-    next(HttpError(401, "Missing fields 'instructions'"));
-  }
-
-  if (!req.body.drinkThumb) {
-    next(HttpError(401, "Missing fields 'drinkThumb'"));
-  }
-
-  if (!req.body.ingredients) {
-    next(HttpError(401, "Missing fields 'ingredients'"));
-  }
-
-  if (!req.body.shortDescription) {
-    next(HttpError(401, "Missing fields 'shortDescription'"));
-  }
-
   const ingredientTitleArray = req.body.ingredients.map((item) => {
     const ingredientArray = item.title;
     return ingredientArray;
@@ -285,19 +249,15 @@ const addDrink = async (req, res, next) => {
     return ingrIDArray;
   });
 
-  const element = [];
-  for (let i = 0; i < req.body.ingredients.length; i++) {
-    element.push(
-      Object.assign(req.body.ingredients[i], {
-        ingredientId: ingredientIDArray[i],
-      })
-    );
-  }
+  const arrayIngredients = req.body.ingredients.map((item, index) => {
+    const arr = Object.assign(item, { ingredientId: ingredientIDArray[index] });
+    return arr;
+  });
 
   const response = await Drinks.insertMany(
     {
       ...req.body,
-      ingredients: element,
+      ingredients: arrayIngredients,
       owner,
     },
     { _id: false }
@@ -318,7 +278,7 @@ const deleteDrink = async (req, res) => {
   const response = await Drinks.findByIdAndRemove(drinkId);
 
   if (!response) {
-    throw HttpError(404, "Not found 404");
+    throw HttpError(404, "Not found");
   }
 
   res.status(200).json({

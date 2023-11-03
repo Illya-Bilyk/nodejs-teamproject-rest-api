@@ -66,7 +66,6 @@ const drinksSchema = new Schema(
   },
   { versionKey: false, timestamps: true }
 );
-// { _id: false, versionKey: false, timestamps: true }
 
 drinksSchema.post("save", handleMongooseError);
 
@@ -125,3 +124,4 @@ module.exports = {
   Drinks,
   schemasDrinks,
 };
+// { _id: false, versionKey: false, timestamps: true }

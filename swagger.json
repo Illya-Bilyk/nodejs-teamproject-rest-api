@@ -652,11 +652,11 @@
             }
           },
           "400": {
-            "description": "No token provided / Bad request",
+            "description": "No token provided / Bad request / File is missing",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized / File is missing",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
@@ -703,7 +703,7 @@
             "content": {}
           },
           "401": {
-            "description": "Unauthorized / Missing fields 'drink'/'category'/'category'/'glass'/'description'/'instructions'/'drinkThumb'/'ingredients'/'shortDescription'",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {

@@ -1,7 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../../controllers/drinks");
-const { validateBody, isValidId, authenticate, upload } = require("../../middlewares");
+const {
+  validateBody,
+  isValidId,
+  authenticate,
+  upload,
+} = require("../../middlewares");
 
 const { schemasDrinks } = require("../../models/drinks");
 const { schemas } = require("../../models/user");
@@ -12,9 +17,11 @@ router.get(
   ctrl.getMainpageDrinks
 );
 
-router.get("/popular",
+router.get(
+  "/popular",
   // authenticate,
-  ctrl.getPopularDrinks);
+  ctrl.getPopularDrinks
+);
 
 router.get("/search", authenticate, ctrl.searchDrinks);
 
@@ -42,8 +49,9 @@ router.delete(
 router.get("/own", authenticate, ctrl.getDrink);
 
 router.post(
-  "/favorite/add",
+  "/favorite/add/:drinkId",
   authenticate,
+  isValidId,
   validateBody(schemas.updatUserSchema),
   ctrl.addFavoriteDrink
 );
