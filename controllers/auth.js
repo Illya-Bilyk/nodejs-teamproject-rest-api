@@ -1,11 +1,15 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
+const queryString = require("query-string");
+const URL = require("url");
+const axios = require("axios");
 
 const { User } = require("../models/user");
 const { sessionModel } = require("../models/session");
 const { HttpError, ctrlWrapper } = require("../utils");
 
-const { ACCESS_SECRET_JWT, REFRESH_SECRET_JWT } = process.env;
+const { ACCESS_SECRET_JWT, REFRESH_SECRET_JWT, BASE_URL } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -17,15 +21,12 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashPassword });
-
-  // const payload = {
-  //   uid: newUser._id,
-  // };
-
-  // const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
-  //   expiresIn: "4h",
-  // });
+  const avatarURL = gravatar.url(email);
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
 
   const newSession = await sessionModel.create({
     uid: newUser._id,
@@ -34,7 +35,7 @@ const register = async (req, res) => {
   const payload = { uid: newUser._id, sid: newSession._id };
 
   const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
-    expiresIn: "4h",
+    expiresIn: "12h",
   });
   await User.findByIdAndUpdate(newUser._id, {
     accessToken,
@@ -73,10 +74,10 @@ const login = async (req, res) => {
   const payload = { uid: user._id, sid: newSession._id };
 
   const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
-    expiresIn: "2h",
+    expiresIn: "12h",
   });
   const refreshToken = jwt.sign(payload, REFRESH_SECRET_JWT, {
-    expiresIn: "24h",
+    expiresIn: "7d",
   });
 
   const { name, birthday } = user;
@@ -130,13 +131,13 @@ const refreshTokens = async (req, res) => {
       { uid: user._id, sid: newSession._id },
       ACCESS_SECRET_JWT,
       {
-        expiresIn: "2h",
+        expiresIn: "12h",
       }
     );
     const newRefreshToken = jwt.sign(
       { uid: user._id, sid: newSession._id },
       REFRESH_SECRET_JWT,
-      { expiresIn: "24h" }
+      { expiresIn: "7d" }
     );
     return res
       .status(200)
@@ -149,9 +150,78 @@ const signout = async (req, res) => {
   const currentSession = req.session;
   const { id } = req.user;
   console.log(id);
-  await User.findByIdAndUpdate(id, { accessToken: "" });
+  await User.findByIdAndUpdate(id, { accessToken: "", refreshToken: "" });
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
+};
+
+const googleAuth = async (req, res) => {
+  const stringifiedParams = queryString.stringify({
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    redirect_uri: ` ${process.env.BASE_URL}/auth/google-redirect`,
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+    ].join(" "),
+    response_type: "code",
+    access_type: "offline",
+    prompt: "consent",
+  });
+  return res.redirect(
+    `    https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
+  );
+};
+
+const googleRedirect = async (req, res) => {
+  const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+  const urlObj = new URL(fullUrl);
+  const urlParams = queryString.parse(urlObj.search);
+  const code = urlParams.code;
+  console.log(code);
+  const tokenData = await axios({
+    url: `https://oauth2.googleapis.com/token`,
+    method: "post",
+    data: {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: `${BASE_URL}/auth/google-redirect`,
+      grant_type: "authorization_code",
+      code,
+    },
+  });
+  const userData = await axios({
+    url: "https://www.googleapis.com/oauth2/v2/userinfo",
+    method: "get",
+    headers: {
+      Authorization: "Bearer"`${tokenData.data.access_token}`,
+    },
+  });
+  console.log(userData);
+  const existingParent = await User.findOne({ email: userData.data.email });
+  if (!existingParent || !existingParent.originUrl) {
+    return res.status(403).send({
+      message:
+        "You should register from front-end first (not postman). Google/Facebook are only for sign-in",
+    });
+  }
+  const newSession = await sessionModel.create({
+    uid: existingParent._id,
+  });
+  const accessToken = jwt.sign(
+    { uid: existingParent._id, sid: newSession._id },
+    ACCESS_SECRET_JWT,
+    {
+      expiresIn: "12h",
+    }
+  );
+  const refreshToken = jwt.sign(
+    { uid: existingParent._id, sid: newSession._id },
+    REFRESH_SECRET_JWT,
+    {
+      expiresIn: "7d",
+    }
+  );
+  return res.redirect`    ${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`();
 };
 
 module.exports = {
@@ -159,4 +229,6 @@ module.exports = {
   login: ctrlWrapper(login),
   refreshTokens: ctrlWrapper(refreshTokens),
   signout: ctrlWrapper(signout),
+  googleAuth: ctrlWrapper(googleAuth),
+  googleRedirect: ctrlWrapper(googleRedirect),
 };
