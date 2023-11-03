@@ -18,12 +18,21 @@ const getMainpageDrinks = async (req, res) => {
   const age = 35; // Temporarily set the age to 18+
   const alcohol = age > 18;
 
+  // Function for random array shuffling
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
   // Request for all drinks
   const resultAll = await Recipe.aggregate([
     {
       $match: {
         category: {
-          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
+          $in: ["Ordinary Drink", "Cocktail", "Shake", "Other/Unknown"],
         },
       },
     },
@@ -32,9 +41,7 @@ const getMainpageDrinks = async (req, res) => {
       $project: {
         _id: 0,
         category: "$_id",
-        drinks: {
-          $slice: ["$drinks", 3],
-        },
+        drinks: 1,
       },
     },
     {
@@ -55,7 +62,24 @@ const getMainpageDrinks = async (req, res) => {
         },
       },
     },
-    { $sort: { category: 1 } },
+    {
+      $addFields: {
+        order: {
+          $indexOfArray: [
+            ["Ordinary Drink", "Cocktail", "Shake", "Other/Unknown"],
+            "$category",
+          ],
+        },
+      },
+    },
+    {
+      $sort: { order: 1 },
+    },
+    {
+      $project: {
+        order: 0,
+      },
+    },
   ]);
 
   // Request only for non-alcoholic drinks
@@ -85,9 +109,7 @@ const getMainpageDrinks = async (req, res) => {
     {
       $project: {
         category: 1,
-        drinks: {
-          $slice: ["$drinks", 3],
-        },
+        drinks: 1,
       },
     },
     {
@@ -109,10 +131,33 @@ const getMainpageDrinks = async (req, res) => {
       },
     },
     { $match: { "drinks.0": { $exists: true } } },
-    { $sort: { category: 1 } },
+    {
+      $addFields: {
+        order: {
+          $indexOfArray: [
+            ["Ordinary Drink", "Cocktail", "Shake", "Other/Unknown"],
+            "$category",
+          ],
+        },
+      },
+    },
+    {
+      $sort: { order: 1 },
+    },
+    {
+      $project: {
+        order: 0,
+      },
+    },
   ]);
 
   const result = alcohol ? resultAll : resultNonAlko;
+
+  // Mixing the elements of the drinks array in each category and trimming it to three elements
+  result.forEach((category) => {
+    category.drinks = shuffleArray(category.drinks).slice(0, 3);
+  });
+
   res.status(200).json(result);
 };
 
