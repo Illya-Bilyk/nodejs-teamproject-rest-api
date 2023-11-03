@@ -1,6 +1,9 @@
 const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
+const { Ingredient } = require("../models/ingredient");
+const { Drinks } = require("../models/drinks");
 const { ctrlWrapper, HttpError } = require("../utils");
+// const { ObjectId } = require("mongoose");
 
 const getMainpageDrinks = async (req, res) => {
   // const { birthday } = req.user;
@@ -217,16 +220,82 @@ const searchDrinks = async (req, res) => {
   });
 };
 
-const addDrink = async (req, res) => {
-  res.status(200).json({});
+const addDrinkImg = async (req, res) => {
+  const avatarURL = req.file.path;
+
+  if (!avatarURL) {
+    throw HttpError(400, "Bad Request");
+  }
+
+  res.status(201).json({
+    avatarURL: avatarURL,
+  });
+};
+
+const addDrink = async (req, res, next) => {
+  const { _id: owner } = req.user;
+
+  const ingredientTitleArray = req.body.ingredients.map((item) => {
+    const ingredientArray = item.title;
+    return ingredientArray;
+  });
+
+  const responseIngredientArray = await Ingredient.find({
+    title: ingredientTitleArray,
+  });
+
+  const ingredientIDArray = responseIngredientArray.map((item) => {
+    const ingrIDArray = item._id;
+    return ingrIDArray;
+  });
+
+  const arrayIngredients = req.body.ingredients.map((item, index) => {
+    const arr = Object.assign(item, { ingredientId: ingredientIDArray[index] });
+    return arr;
+  });
+
+  const response = await Drinks.insertMany(
+    {
+      ...req.body,
+      ingredients: arrayIngredients,
+      owner,
+    },
+    { _id: false }
+  );
+
+  if (!response) {
+    throw HttpError(404, "Add request not made (invalid request)");
+  }
+
+  res.status(200).json({
+    message: "drink added",
+  });
 };
 
 const deleteDrink = async (req, res) => {
-  res.status(200).json({});
+  const { drinkId } = req.params;
+
+  const response = await Drinks.findByIdAndRemove(drinkId);
+
+  if (!response) {
+    throw HttpError(404, "Not found");
+  }
+
+  res.status(200).json({
+    message: "drink deleted",
+  });
 };
 
 const getDrink = async (req, res) => {
-  res.status(200).json({});
+  const { _id } = req.user;
+
+  const response = await Drinks.find({ owner: _id });
+
+  if (!response) {
+    throw HttpError(404, "Not found");
+  }
+
+  res.status(200).json(response);
 };
 
 const addFavoriteDrink = async (req, res) => {
@@ -257,6 +326,7 @@ module.exports = {
   getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
   getPopularDrinks: ctrlWrapper(getPopularDrinks),
   searchDrinks: ctrlWrapper(searchDrinks),
+  addDrinkImg: ctrlWrapper(addDrinkImg),
   addDrink: ctrlWrapper(addDrink),
   deleteDrink: ctrlWrapper(deleteDrink),
   getDrink: ctrlWrapper(getDrink),
