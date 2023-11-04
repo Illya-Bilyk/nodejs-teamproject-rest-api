@@ -1,11 +1,7 @@
-// import queryString from "query-string";
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const querystring = require("node:querystring");
-
-// const queryString = require("query-string");
 const URL = require("url");
 const axios = require("axios");
 
@@ -47,12 +43,17 @@ const register = async (req, res) => {
   const accessToken = jwt.sign(payload, ACCESS_SECRET_JWT, {
     expiresIn: "12h",
   });
+  const refreshToken = jwt.sign(payload, REFRESH_SECRET_JWT, {
+    expiresIn: "7d",
+  });
   await User.findByIdAndUpdate(newUser._id, {
     accessToken,
+    refreshToken,
     sid: newSession._id,
   });
   res.status(201).json({
     accessToken,
+    refreshToken,
     sid: newSession._id,
     user: {
       name: newUser.name,
