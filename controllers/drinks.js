@@ -130,16 +130,19 @@ const getPopularDrinks = async (req, res) => {
   const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
 
   const result = await Recipe.find(
-    { alcoholic: alcohol },
+    {
+      alcoholic: alcohol,
+      category: ["Soft Drink", "Cocoa", "Beer", "Ordinary Drink"],
+    },
     {
       _id: 1,
       drink: 1,
       category: 1,
       alcoholic: 1,
-      glass: 1,
       drinkThumb: 1,
+      description: 1,
     }
-  ).limit(50);
+  ).limit(4);
 
   res.status(200).json(result);
 };
