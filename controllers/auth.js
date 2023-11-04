@@ -1,7 +1,11 @@
+// import queryString from "query-string";
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
-const queryString = require("query-string");
+const querystring = require("node:querystring");
+
+// const queryString = require("query-string");
 const URL = require("url");
 const axios = require("axios");
 
@@ -9,7 +13,13 @@ const { User } = require("../models/user");
 const { sessionModel } = require("../models/session");
 const { HttpError, ctrlWrapper } = require("../utils");
 
-const { ACCESS_SECRET_JWT, REFRESH_SECRET_JWT, BASE_URL } = process.env;
+const {
+  ACCESS_SECRET_JWT,
+  REFRESH_SECRET_JWT,
+  BASE_URL,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+} = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -117,6 +127,7 @@ const refreshTokens = async (req, res) => {
     }
     const user = await User.findById(payload.uid);
     const session = await sessionModel.findById(payload.sid);
+    console.log(session);
     if (!user) {
       throw HttpError(404, "Invalid user");
     }
@@ -156,9 +167,9 @@ const signout = async (req, res) => {
 };
 
 const googleAuth = async (req, res) => {
-  const stringifiedParams = queryString.stringify({
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    redirect_uri: ` ${process.env.BASE_URL}/auth/google-redirect`,
+  const stringifiedParams = querystring.stringify({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: `${BASE_URL}/auth/google-redirect`,
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -168,22 +179,22 @@ const googleAuth = async (req, res) => {
     prompt: "consent",
   });
   return res.redirect(
-    `    https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
+    `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
   );
 };
 
 const googleRedirect = async (req, res) => {
   const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
   const urlObj = new URL(fullUrl);
-  const urlParams = queryString.parse(urlObj.search);
+  const urlParams = querystring.parse(urlObj.search);
   const code = urlParams.code;
   console.log(code);
   const tokenData = await axios({
     url: `https://oauth2.googleapis.com/token`,
     method: "post",
     data: {
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
       redirect_uri: `${BASE_URL}/auth/google-redirect`,
       grant_type: "authorization_code",
       code,
@@ -221,7 +232,7 @@ const googleRedirect = async (req, res) => {
       expiresIn: "7d",
     }
   );
-  return res.redirect`    ${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`();
+  return res.redirect` ${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`();
 };
 
 module.exports = {
