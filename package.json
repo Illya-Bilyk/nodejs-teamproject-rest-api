@@ -24,7 +24,6 @@
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.9.7",
-    "query-string": "^8.1.0",
     "short-unique-id": "^5.0.3",
     "swagger-ui-express": "^5.0.0"
   },
