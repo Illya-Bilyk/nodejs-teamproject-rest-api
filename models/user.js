@@ -36,10 +36,10 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    avatarURL: {
-      type: String,
-      require: true,
-    },
+    favoriteDrinks: [{ type: Schema.Types.ObjectId, ref: "recipe" }],
+    // sid: {
+    //   type: String,
+    // },
   },
   { versionKey: false, timestamps: true }
 );

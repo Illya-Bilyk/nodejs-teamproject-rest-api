@@ -9,7 +9,6 @@ const {
 } = require("../../middlewares");
 
 const { schemasDrinks } = require("../../models/drinks");
-const { schemas } = require("../../models/user");
 
 router.get(
   "/mainpage",
@@ -17,13 +16,11 @@ router.get(
   ctrl.getMainpageDrinks
 );
 
-
 router.get(
   "/popular",
   // authenticate,
   ctrl.getPopularDrinks
 );
-
 
 router.get("/search", authenticate, ctrl.searchDrinks);
 
@@ -54,10 +51,8 @@ router.post(
   "/favorite/add/:drinkId",
   authenticate,
   isValidId,
-  validateBody(schemas.updatUserSchema),
   ctrl.addFavoriteDrink
 );
-
 router.delete(
   "/favorite/remove/:drinkId",
   authenticate,

@@ -798,87 +798,91 @@
         }
       }
     },
-    "/drinks/favorite/add": {
+    "/drinks/favorite/add/{drinkId}": {
       "post": {
         "tags": ["Drinks"],
         "summary": "Adding a cocktail to favorites",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/AddFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks/favorite/remove": {
+    "/drinks/favorite/remove/{drinkId}": {
       "delete": {
         "tags": ["Drinks"],
         "summary": "Removing a cocktail from favorites",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/AddFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -889,39 +893,49 @@
         "tags": ["Drinks"],
         "summary": "Receiving cocktails from the chosen ones",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / Users not found (invalid query) / Favorites drink not found ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -1003,7 +1017,7 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "qwerty12",
+            "example": "Qwerty?12",
             "minLength": 8,
             "maxLength": 100
           }
@@ -1060,7 +1074,7 @@
             "description": "User's password",
             "minLength": 8,
             "maxLength": 100,
-            "example": "qwerty12"
+            "example": "Qwerty?12"
           }
         }
       },
@@ -1134,6 +1148,82 @@
           }
         }
       },
+      "GetUserInfoRequest": {},
+      "GetUserInfoResponse": {},
+      "GetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "1"
+          },
+          "per_page": {
+            "type": "string",
+            "description": "Number of drinks per page",
+            "example": "9"
+          },
+          "max_page": {
+            "type": "string",
+            "description": "The number of drinks in the database according to the query criteria",
+            "example": "1"
+          },
+          "drinks": {
+            "type": "array",
+            "description": "The array of drinks in the database according to the query criteria",
+            "example": [
+              {
+                "_id": "639b6de9ff77d221f190c508",
+                "drink": "Irish Coffee",
+                "drinkAlternate": "Sorry, not specified",
+                "tags": "IBA,ContemporaryClassic",
+                "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
+                "category": "Coffee / Tea",
+                "IBA": "Contemporary Classics",
+                "alcoholic": "Alcoholic",
+                "glass": "Irish coffee cup",
+                "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
+                "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
+                "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
+                "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
+                "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
+                "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
+                "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
+                "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
+                "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
+                "ingredients": [
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d78",
+                    "title": "Irish whiskey",
+                    "measure": "1 1/2 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4c2"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d79",
+                    "title": "Coffee",
+                    "measure": "8 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4e7"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7a",
+                    "title": "Sugar",
+                    "measure": "1 tsp ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4bc"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7b",
+                    "title": "Whipped cream",
+                    "measure": "1 tblsp ",
+                    "ingredientId": "64f1d5c069d8333cf130fb38"
+                  }
+                ],
+                "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
+              }
+            ]
+          }
+        }
+      },
       "AddDrinkImgResponse": {
         "type": "object",
         "properties": {
@@ -1153,8 +1243,7 @@
           "description",
           "instructions",
           "drinkThumb",
-          "ingredients",
-          "shortDescription"
+          "ingredients"
         ],
         "type": "object",
         "properties": {
@@ -1227,13 +1316,6 @@
                 }
               }
             }
-          },
-          "shortDescription": {
-            "type": "string",
-            "description": "Drink's short description",
-            "minLength": 2,
-            "maxLength": 500,
-            "example": "A refreshing and citrusy cocktail with a hint of mint."
           }
         }
       },
@@ -1389,40 +1471,27 @@
           }
         }
       },
-      "GetUserInfoRequest": {},
-      "GetUserInfoResponse": {},
-      "GetSearchRequest": {
+      "AddFavoriteResponse": {
         "type": "object",
-        "in": "body",
         "properties": {
-          "page": {
+          "favoriteDrinks": {
             "type": "string",
-            "description": "Current page for pagination",
+            "description": "Number of favorite drinks",
             "example": "1"
-          },
-          "limit": {
-            "type": "string",
-            "description": "Number of drinks per page",
-            "example": "9"
-          },
-          "keyword": {
-            "type": "string",
-            "description": "A word from the search bar - Enter the text ...",
-            "example": "Ir"
-          },
-          "category": {
-            "type": "string",
-            "description": "A category from the category drop-down list, or an empty string",
-            "example": "Coffee / Tea"
-          },
-          "ingredient": {
-            "type": "string",
-            "description": "Ingredients from the ingredient drop-down list or an empty string",
-            "example": "Sugar"
           }
         }
       },
-      "GetSearchResponse": {
+      "DeleteFavoriteResponse": {
+        "type": "object",
+        "properties": {
+          "favoriteDrinks": {
+            "type": "string",
+            "description": "Number of favorite drinks",
+            "example": "1"
+          }
+        }
+      },
+      "GetFavoriteResponse": {
         "type": "object",
         "properties": {
           "page": {
