@@ -16,13 +16,11 @@ router.get(
   ctrl.getMainpageDrinks
 );
 
-
 router.get(
   "/popular",
   // authenticate,
   ctrl.getPopularDrinks
 );
-
 
 router.get("/search", authenticate, ctrl.searchDrinks);
 

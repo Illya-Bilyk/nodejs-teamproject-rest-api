@@ -56,12 +56,6 @@ const drinksSchema = new Schema(
         },
       },
     ],
-    shortDescription: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
     owner: { type: Schema.Types.ObjectId, ref: "user" },
   },
   { versionKey: false, timestamps: true }
