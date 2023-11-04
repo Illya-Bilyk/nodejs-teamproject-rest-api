@@ -1502,7 +1502,7 @@
           "per_page": {
             "type": "string",
             "description": "Number of drinks per page",
-            "example": "5"
+            "example": "9"
           },
           "max_page": {
             "type": "string",

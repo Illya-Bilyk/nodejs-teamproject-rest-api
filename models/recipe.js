@@ -126,7 +126,12 @@ const recipeSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "user",
     },
-    users: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    users: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
   },
   { versionKey: false, timestamps: true }
 );

@@ -37,9 +37,7 @@ const userSchema = new Schema(
       default: null,
     },
     favoriteDrinks: [{ type: Schema.Types.ObjectId, ref: "recipe" }],
-    // sid: {
-    //   type: String,
-    // },
+    // sid: { type: String, },
   },
   { versionKey: false, timestamps: true }
 );

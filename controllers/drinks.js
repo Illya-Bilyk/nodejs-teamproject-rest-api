@@ -278,9 +278,7 @@ const deleteDrink = async (req, res, next) => {
     next(HttpError(404, "Not found"));
   }
 
-  res.status(200).json({
-    message: "drink deleted",
-  });
+  res.status(200).json({ message: "drink deleted" });
 };
 
 const getDrink = async (req, res) => {

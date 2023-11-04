@@ -7,7 +7,6 @@ const {
   authenticate,
   upload,
 } = require("../../middlewares");
-
 const { schemasDrinks } = require("../../models/drinks");
 
 router.get(
