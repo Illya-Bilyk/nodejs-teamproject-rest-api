@@ -11,7 +11,7 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://drinks-whm4.onrender.com" }],
+  "servers": [{ "url": "http://localhost:3000" }],
   "tags": [
     {
       "name": "Auth",
@@ -767,7 +767,24 @@
         "tags": ["Drinks"],
         "summary": "Getting your own cocktails",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
+          }
+        ],
         "responses": {
           "201": {
             "description": "Successful operation",

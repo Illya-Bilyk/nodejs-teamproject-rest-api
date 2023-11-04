@@ -189,7 +189,7 @@ const searchDrinks = async (req, res) => {
   });
 
   if (!responseSizeArray) {
-    throw HttpError(404, "Search query not found (invalid query)");
+    throw HttpError(404, "Not found");
   }
 
   const size = Object.keys(responseSizeArray).length;
@@ -209,7 +209,7 @@ const searchDrinks = async (req, res) => {
   );
 
   if (!response) {
-    throw HttpError(404, "Search query not found (invalid query)");
+    throw HttpError(404, "Not found");
   }
 
   res.status(200).json({
@@ -283,16 +283,56 @@ const deleteDrink = async (req, res, next) => {
   });
 };
 
-const getDrink = async (req, res) => {
+const getDrink = async (req, res, next) => {
   const { _id } = req.user;
+  const { page = 1, limit = 9 } = req.query;
 
-  const response = await Drinks.find({ owner: _id });
+  const { birthday } = req.user;
 
-  if (!response) {
+  if (!birthday) {
+    next(HttpError(404, "Users not found (invalid query)"));
+  }
+
+  const birthdayReversed = birthday.split("/").reverse().join("/");
+  const age = dobToAge(birthdayReversed);
+  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
+
+  const skip = (page - 1) * limit;
+
+  const responseSizeArray = await Drinks.find({
+    owner: _id,
+    alcoholic: alcohol,
+  });
+
+  if (!responseSizeArray) {
     throw HttpError(404, "Not found");
   }
 
-  res.status(200).json(response);
+  const size = Object.keys(responseSizeArray).length;
+
+
+ const response = await Drinks.find(
+   {
+     owner: _id,
+     alcoholic: alcohol,
+   },
+   "-createdAt -updatedAt",
+   {
+     skip,
+     limit,
+   }
+ );
+
+  if (!response) {
+    next(HttpError(404, "Not found"));
+  }
+
+  res.status(200).json({
+    page: page,
+    per_page: limit,
+    max_page: size,
+    drinks: response,
+  });
 };
 
 const addFavoriteDrink = async (req, res, next) => {
