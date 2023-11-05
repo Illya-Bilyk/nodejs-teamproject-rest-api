@@ -5,11 +5,13 @@ const {
   getGlasses,
 } = require("../../controllers/filters");
 
+const { authenticate } = require("../../middlewares");
+
 const router = express.Router();
 
-// Роути
-router.get("/categories", getCategories);
-router.get("/ingredients", getIngredients);
-router.get("/glasses", getGlasses);
+// Routes
+router.get("/categories", authenticate, getCategories);
+router.get("/ingredients", authenticate, getIngredients);
+router.get("/glasses", authenticate, getGlasses);
 
 module.exports = router;
