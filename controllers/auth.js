@@ -31,7 +31,12 @@ const register = async (req, res) => {
   const avatar = await cloudinary.api.resource_by_asset_id(
     "7e0d1d99eb7335d69d04597fb62b082e"
   );
-  const avatarURL = avatar.url;
+
+  let avatarURL = "";
+
+  if (avatar) {
+    avatarURL = avatar.url;
+  }
 
   const newUser = await User.create({
     ...req.body,
