@@ -166,23 +166,22 @@ const getDrink = async (req, res, next) => {
   });
 
   if (!responseSizeArray) {
-    throw HttpError(404, "Not found");
+    next(HttpError(404, "Not found"));
   }
 
   const size = Object.keys(responseSizeArray).length;
 
-
- const response = await Drinks.find(
-   {
-     owner: _id,
-     alcoholic: alcohol,
-   },
-   "-createdAt -updatedAt",
-   {
-     skip,
-     limit,
-   }
- );
+  const response = await Drinks.find(
+    {
+      owner: _id,
+      alcoholic: alcohol,
+    },
+    "-createdAt -updatedAt",
+    {
+      skip,
+      limit,
+    }
+  );
 
   if (!response) {
     next(HttpError(404, "Not found"));
@@ -320,13 +319,58 @@ const getFavoriteDrink = async (req, res, next) => {
 const getDrinkById = async (req, res, next) => {
   const { drinkId } = req.params;
 
-  const response = await Recipe.findById(drinkId);
+  const response = (await Recipe.findById(drinkId)).toObject();
 
   if (!response) {
     next(HttpError(404, "Drink not found"));
   }
 
-  res.status(200).json(response);
+  const ingredientIDArray = response.ingredients.map((item) => {
+    const ingredientArray = item.ingredientId;
+    return ingredientArray;
+  });
+
+  const responseIngredientArray = await Ingredient.find({
+    _id: ingredientIDArray,
+  });
+  if (!responseIngredientArray) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const ingredientReferenceArray = responseIngredientArray.map((item) => {
+    const ingredientThumbArray = item.ingredientThumb;
+    return ingredientThumbArray;
+  });
+
+  const arrayIngredients = response.ingredients.map((item, index) => {
+    const arr = Object.assign(item, {
+      ingredientThumb: ingredientReferenceArray[index],
+    });
+    return arr;
+  });
+
+  const userId = req.user._id;
+
+  const userFavoriteDrinks = (await User.findById(userId)).toObject();
+
+  if (!userFavoriteDrinks) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const favoritesArray = userFavoriteDrinks.favoriteDrinks.map((item) => {
+    const favor = item._id.toString() === drinkId;
+    return favor;
+  });
+
+  const favorite = favoritesArray.includes(true);
+
+  const rezult = {
+    ...response,
+    ingredients: arrayIngredients,
+    favorite: favorite,
+  };
+
+  res.status(200).json(rezult);
 };
 
 module.exports = {
