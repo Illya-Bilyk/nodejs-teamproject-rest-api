@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const gravatar = require("gravatar");
 const querystring = require("node:querystring");
 const URL = require("url");
 const axios = require("axios");
+const cloudinary = require("cloudinary").v2;
 
 const { User } = require("../models/user");
 const { sessionModel } = require("../models/session");
@@ -27,7 +27,17 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email);
+
+  const avatar = await cloudinary.api.resource_by_asset_id(
+    "7e0d1d99eb7335d69d04597fb62b082e"
+  );
+
+  let avatarURL = "";
+
+  if (avatar) {
+    avatarURL = avatar.url;
+  }
+
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
