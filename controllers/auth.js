@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const querystring = require("node:querystring");
-const URL = require("url");
 const axios = require("axios");
 const cloudinary = require("cloudinary").v2;
 
@@ -41,7 +40,6 @@ const register = async (req, res) => {
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
   });
 
   const newSession = await sessionModel.create({
@@ -138,7 +136,6 @@ const refreshTokens = async (req, res) => {
     }
     const user = await User.findById(payload.uid);
     const session = await sessionModel.findById(payload.sid);
-    console.log(session);
     if (!user) {
       throw HttpError(404, "Invalid user");
     }
@@ -161,9 +158,19 @@ const refreshTokens = async (req, res) => {
       REFRESH_SECRET_JWT,
       { expiresIn: "7d" }
     );
-    return res
-      .status(200)
-      .send({ newAccessToken, newRefreshToken, newSid: newSession._id });
+    const { name, _id, birthday, email } = user;
+
+    return res.json({
+      sid: newSession._id,
+      user: {
+        _id,
+        name,
+        email,
+        birthday,
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      },
+    });
   }
   throw HttpError(400, "No token provided");
 };
@@ -171,7 +178,6 @@ const refreshTokens = async (req, res) => {
 const signout = async (req, res) => {
   const currentSession = req.session;
   const { id } = req.user;
-  console.log(id);
   await User.findByIdAndUpdate(id, { accessToken: "", refreshToken: "" });
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
@@ -198,8 +204,7 @@ const googleRedirect = async (req, res) => {
   const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
   const urlObj = new URL(fullUrl);
   const urlParams = querystring.parse(urlObj.search);
-  const code = urlParams.code;
-  console.log(code);
+  const code = Object.values(urlParams)[0];
   const tokenData = await axios({
     url: `https://oauth2.googleapis.com/token`,
     method: "post",
@@ -211,20 +216,19 @@ const googleRedirect = async (req, res) => {
       code,
     },
   });
+
   const userData = await axios({
     url: "https://www.googleapis.com/oauth2/v2/userinfo",
     method: "get",
     headers: {
-      Authorization: "Bearer"`${tokenData.data.access_token}`,
+      Authorization: `Bearer ${tokenData.data.access_token}`,
     },
   });
-  console.log(userData);
+
   const existingParent = await User.findOne({ email: userData.data.email });
-  if (!existingParent || !existingParent.originUrl) {
-    return res.status(403).send({
-      message:
-        "You should register from front-end first (not postman). Google/Facebook are only for sign-in",
-    });
+
+  if (!existingParent) {
+    return res.redirect(`${BASE_URL}/signup`);
   }
   const newSession = await sessionModel.create({
     uid: existingParent._id,
@@ -243,7 +247,9 @@ const googleRedirect = async (req, res) => {
       expiresIn: "7d",
     }
   );
-  return res.redirect` ${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`();
+  return res.redirect(
+    `${BASE_URL}/home?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
+  );
 };
 
 module.exports = {
