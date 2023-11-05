@@ -56,12 +56,6 @@ const drinksSchema = new Schema(
         },
       },
     ],
-    shortDescription: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
     owner: { type: Schema.Types.ObjectId, ref: "user" },
   },
   { versionKey: false, timestamps: true }
@@ -108,11 +102,6 @@ const addDrinkSchema = Joi.object({
   ingredients: Joi.array().items({
     title: Joi.string().min(2).max(100).required(),
     measure: Joi.string().min(2).max(100).required(),
-  }),
-  shortDescription: Joi.string().min(2).max(500).required().messages({
-    "any.required": `missing required name field`,
-    "string.empty": `"name" cannot be empty, min 2 max 500 letters`,
-    "string.base": `"name" must be string`,
   }),
 });
 

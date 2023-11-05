@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "DrinkMaster V1 API docs",
-    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/...) | [Privacy Policy](https://...)",
+    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/Illya-Bilyk/nodejs-teamproject-rest-api) | [Privacy Policy](https://...)",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
@@ -328,27 +328,16 @@
     "/filters/categories": {
       "get": {
         "tags": ["Filters"],
-        "summary": "Getting a list of cocktail categories",
+        "summary": "Get a list of drink categories",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetCategoriesResponse"
                 }
               }
             }
@@ -371,27 +360,16 @@
     "/filters/ingredients": {
       "get": {
         "tags": ["Filters"],
-        "summary": "Getting the ingredients list",
+        "summary": "Get a list of drink ingredients",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetIngredientsResponse"
                 }
               }
             }
@@ -414,27 +392,16 @@
     "/filters/glasses": {
       "get": {
         "tags": ["Filters"],
-        "summary": "Obtaining a list of containers for serving",
+        "summary": "Get a list of drink containers",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetGlassesResponse"
                 }
               }
             }
@@ -767,7 +734,24 @@
         "tags": ["Drinks"],
         "summary": "Getting your own cocktails",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
+          }
+        ],
         "responses": {
           "201": {
             "description": "Successful operation",
@@ -798,87 +782,91 @@
         }
       }
     },
-    "/drinks/favorite/add": {
+    "/drinks/favorite/add/{drinkId}": {
       "post": {
         "tags": ["Drinks"],
         "summary": "Adding a cocktail to favorites",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/AddFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks/favorite/remove": {
+    "/drinks/favorite/remove/{drinkId}": {
       "delete": {
         "tags": ["Drinks"],
         "summary": "Removing a cocktail from favorites",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/AddFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -889,39 +877,49 @@
         "tags": ["Drinks"],
         "summary": "Receiving cocktails from the chosen ones",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / Users not found (invalid query) / Favorites drink not found ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -938,7 +936,7 @@
             "name": "drinkId",
             "type": "string",
             "required": "true",
-            "default": "639b6de9ff77d221f190c51e",
+            "default": "639b6de9ff77d221f190c521",
             "description": "ID the selected drink"
           }
         ],
@@ -1003,7 +1001,7 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "qwerty12",
+            "example": "Qwerty?12",
             "minLength": 8,
             "maxLength": 100
           }
@@ -1060,7 +1058,7 @@
             "description": "User's password",
             "minLength": 8,
             "maxLength": 100,
-            "example": "qwerty12"
+            "example": "Qwerty?12"
           }
         }
       },
@@ -1134,6 +1132,82 @@
           }
         }
       },
+      "GetUserInfoRequest": {},
+      "GetUserInfoResponse": {},
+      "GetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "1"
+          },
+          "per_page": {
+            "type": "string",
+            "description": "Number of drinks per page",
+            "example": "9"
+          },
+          "max_page": {
+            "type": "string",
+            "description": "The number of drinks in the database according to the query criteria",
+            "example": "1"
+          },
+          "drinks": {
+            "type": "array",
+            "description": "The array of drinks in the database according to the query criteria",
+            "example": [
+              {
+                "_id": "639b6de9ff77d221f190c508",
+                "drink": "Irish Coffee",
+                "drinkAlternate": "Sorry, not specified",
+                "tags": "IBA,ContemporaryClassic",
+                "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
+                "category": "Coffee / Tea",
+                "IBA": "Contemporary Classics",
+                "alcoholic": "Alcoholic",
+                "glass": "Irish coffee cup",
+                "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
+                "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
+                "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
+                "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
+                "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
+                "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
+                "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
+                "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
+                "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
+                "ingredients": [
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d78",
+                    "title": "Irish whiskey",
+                    "measure": "1 1/2 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4c2"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d79",
+                    "title": "Coffee",
+                    "measure": "8 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4e7"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7a",
+                    "title": "Sugar",
+                    "measure": "1 tsp ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4bc"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7b",
+                    "title": "Whipped cream",
+                    "measure": "1 tblsp ",
+                    "ingredientId": "64f1d5c069d8333cf130fb38"
+                  }
+                ],
+                "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
+              }
+            ]
+          }
+        }
+      },
       "AddDrinkImgResponse": {
         "type": "object",
         "properties": {
@@ -1153,8 +1227,7 @@
           "description",
           "instructions",
           "drinkThumb",
-          "ingredients",
-          "shortDescription"
+          "ingredients"
         ],
         "type": "object",
         "properties": {
@@ -1227,13 +1300,6 @@
                 }
               }
             }
-          },
-          "shortDescription": {
-            "type": "string",
-            "description": "Drink's short description",
-            "minLength": 2,
-            "maxLength": 500,
-            "example": "A refreshing and citrusy cocktail with a hint of mint."
           }
         }
       },
@@ -1389,40 +1455,27 @@
           }
         }
       },
-      "GetUserInfoRequest": {},
-      "GetUserInfoResponse": {},
-      "GetSearchRequest": {
+      "AddFavoriteResponse": {
         "type": "object",
-        "in": "body",
         "properties": {
-          "page": {
+          "favoriteDrinks": {
             "type": "string",
-            "description": "Current page for pagination",
+            "description": "Number of favorite drinks",
             "example": "1"
-          },
-          "limit": {
-            "type": "string",
-            "description": "Number of drinks per page",
-            "example": "9"
-          },
-          "keyword": {
-            "type": "string",
-            "description": "A word from the search bar - Enter the text ...",
-            "example": "Ir"
-          },
-          "category": {
-            "type": "string",
-            "description": "A category from the category drop-down list, or an empty string",
-            "example": "Coffee / Tea"
-          },
-          "ingredient": {
-            "type": "string",
-            "description": "Ingredients from the ingredient drop-down list or an empty string",
-            "example": "Sugar"
           }
         }
       },
-      "GetSearchResponse": {
+      "DeleteFavoriteResponse": {
+        "type": "object",
+        "properties": {
+          "favoriteDrinks": {
+            "type": "string",
+            "description": "Number of favorite drinks",
+            "example": "1"
+          }
+        }
+      },
+      "GetFavoriteResponse": {
         "type": "object",
         "properties": {
           "page": {
@@ -1500,52 +1553,158 @@
         "type": "object",
         "example": [
           {
-            "_id": "639b6de9ff77d221f190c51e",
-            "drink": "Affair",
+            "users": [],
+            "_id": "639b6de9ff77d221f190c521",
+            "drink": "Abilene",
             "drinkAlternate": "Sorry, not specified",
-            "tags": "OrdinaryDrink,Alcoholic",
-            "video": "https://youtu.be/BGTB26zMxjw?si=hgl0lfGa9VgBK9mi",
+            "tags": "Sorry, not specified",
+            "video": "Sorry, not specified",
             "category": "Ordinary Drink",
             "IBA": "Sorry, not specified",
             "alcoholic": "Alcoholic",
             "glass": "Highball glass",
-            "description": "Affair is a seductive and sophisticated cocktail that combines a mix of spirits and fruit juices. It is made with vodka, peach schnapps, cranberry juice, and orange juice. The combination of flavors creates a balanced and tantalizing drink that is sure to impress. It is best enjoyed in the company of someone special.",
-            "instructions": "Pour schnapps, orange juice, and cranberry juice over ice in a highball glass. Top with club soda and serve.",
-            "instructionsES": "Vierta el Schnapps, el jugo de naranja y el jugo de arándano sobre hielo en un vaso alto. Complete con el agua carbonatada y sirva.",
-            "instructionsDE": "Gießen Sie Schnaps, Orangensaft und Cranberrysaft über Eis in ein Highball-Glas. Mit Club-Soda überziehen und servieren.",
-            "instructionsFR": "Verser le schnaps, le jus d'orange et le jus de canneberge sur de la glace dans un verre highball. Garnir de club soda et servir.",
-            "instructionsIT": "Versare la grappa, il succo d'arancia e il succo di mirtillo rosso sul ghiaccio in un bicchiere highball. Completare con la soda club e servire.",
-            "instructionsRU": "Налейте шнапс, апельсиновый сок и клюквенный сок со льдом в стакан хайбол. Долейте содовой и подавайте.",
-            "instructionsPL": "Wlej sznaps, sok pomarańczowy i sok żurawinowy do lodu w szklance typu highball. Na wierzch z sodą klubową i podawaj.",
-            "instructionsUK": "Розлийте шнапс, апельсиновий сік і журавлинний сік з льодом у келих хайбол. Зверху полийте газованою водою та подавайте.",
-            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Affair.jpg",
+            "description": "Abilene is a whiskey-based cocktail that offers a delightful balance of sweet and sour flavors. This classic drink combines whiskey, vermouth, and a touch of sweet grenadine, resulting in a sophisticated and well-rounded beverage. Sip on an Abilene cocktail and let the smooth whiskey and subtle sweetness transport you to a cozy lounge.",
+            "instructions": "Pour all of the ingredients into a highball glass almost filled with ice cubes. Stir well.",
+            "instructionsES": "Coloque todos los ingredientes en un vaso alto casi lleno de cubitos de hielo. Sacudir bien.",
+            "instructionsDE": "Alle Zutaten in ein fast mit Eiswürfeln gefülltes Longdrinkglas geben. Gut umrühren.",
+            "instructionsFR": "Verser tous les ingrédients dans un verre highball presque rempli de glaçons. Bien mélanger.",
+            "instructionsIT": "Versare tutti gli ingredienti in un bicchiere highball riempito di cubetti di ghiaccio. Mescolare bene.",
+            "instructionsRU": "Налейте все ингредиенты в хайболл, почти наполненный кубиками льда. Размешайте как следует.",
+            "instructionsPL": "Wlej wszystkie składniki do szklanki typu highball prawie wypełnionej kostkami lodu. Dobrze wymieszać.",
+            "instructionsUK": "Перелийте всі інгредієнти в стакан хайбол, майже наповнений кубиками льоду. Добре розмішати.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Abilene.jpg",
             "ingredients": [
               {
-                "_id": "653e988f5e22fd46dc6056d7",
-                "title": "Strawberry schnapps",
-                "measure": "2 oz ",
-                "ingredientId": "64aebb7f82d96cc69e0eb4a9"
+                "_id": "654798be02738307339ac0e3",
+                "title": "Dark rum",
+                "measure": "1 1/2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4a7",
+                "ingredientThumb": "https://ftp.goit.study/img/drinkify/ingredients/Dark_rum.png"
               },
               {
-                "_id": "653e988f5e22fd46dc6056d8",
+                "_id": "654798be02738307339ac0e4",
+                "title": "Peach nectar",
+                "measure": "2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4f5",
+                "ingredientThumb": "https://ftp.goit.study/img/drinkify/ingredients/Peach_nectar.png"
+              },
+              {
+                "_id": "654798be02738307339ac0e5",
                 "title": "Orange juice",
-                "measure": "2 oz ",
-                "ingredientId": "64f1d5c069d8333cf130fb3d"
-              },
-              {
-                "_id": "653e988f5e22fd46dc6056d9",
-                "title": "Cranberry juice",
-                "measure": "2 oz ",
-                "ingredientId": "64aebb7f82d96cc69e0eb4f1"
-              },
-              {
-                "_id": "653e988f5e22fd46dc6056da",
-                "title": "Club soda",
-                "ingredientId": "64f1d5c069d8333cf130fb40"
+                "measure": "3 oz ",
+                "ingredientId": "64f1d5c069d8333cf130fb3d",
+                "ingredientThumb": "https://ftp.goit.study/img/drinkify/ingredients/"
               }
             ],
-            "shortDescription": "A seductive and sophisticated cocktail with a mix of spirits and fruit juices."
+            "shortDescription": "A whiskey-based cocktail with a blend of sweet and sour flavors.",
+            "favorite": false
           }
+        ]
+      },
+      "GetCategoriesResponse": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Category name"
+        },
+        "example": [
+          "Beer",
+          "Cocktail",
+          "Cocoa",
+          "Coffee / Tea",
+          "Homemade Liqueur",
+          "Ordinary Drink",
+          "Other/Unknown",
+          "Punch / Party Drink",
+          "Shake",
+          "Shot",
+          "Soft Drink"
+        ]
+      },
+      "GetIngredientsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Ingredient ID number",
+              "example": "64aebb7f82d96cc69e0eb4c9"
+            },
+            "title": {
+              "type": "string",
+              "description": "Ingredient title",
+              "example": "Coffee brandy"
+            },
+            "ingredientThumb": {
+              "type": "string",
+              "description": "Ingredient image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy.png"
+            },
+            "thumb-medium": {
+              "type": "string",
+              "description": "Ingredient medium image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Medium.png"
+            },
+            "thumb-small": {
+              "type": "string",
+              "description": "Ingredient small image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Small.png"
+            },
+            "alcohol": {
+              "type": "string",
+              "description": "Content of alcohol",
+              "example": "Yes"
+            }
+          }
+        }
+      },
+      "GetGlassesResponse": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Glass name"
+        },
+        "example": [
+          "Balloon Glass",
+          "Beer Glass",
+          "Beer mug",
+          "Beer pilsner",
+          "Brandy snifter",
+          "Champagne Flute",
+          "Champagne flute",
+          "Cocktail Glass",
+          "Cocktail glass",
+          "Coffee Mug",
+          "Coffee mug",
+          "Collins Glass",
+          "Collins glass",
+          "Copper Mug",
+          "Cordial glass",
+          "Coupe Glass",
+          "Highball Glass",
+          "Highball glass",
+          "Hurricane glass",
+          "Irish coffee cup",
+          "Jar",
+          "Margarita glass",
+          "Margarita/Coupette glass",
+          "Martini Glass",
+          "Mason jar",
+          "Nick and Nora Glass",
+          "Old-Fashioned glass",
+          "Old-fashioned glass",
+          "Pint glass",
+          "Pitcher",
+          "Pousse cafe glass",
+          "Punch Bowl",
+          "Punch bowl",
+          "Shot Glass",
+          "Shot glass",
+          "Whiskey Glass",
+          "Whiskey sour glass",
+          "White wine glass",
+          "Wine Glass"
         ]
       }
     },

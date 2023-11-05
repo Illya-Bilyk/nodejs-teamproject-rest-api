@@ -2,147 +2,8 @@ const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
 const { Ingredient } = require("../models/ingredient");
 const { Drinks } = require("../models/drinks");
+const { User } = require("../models/user");
 const { ctrlWrapper, HttpError } = require("../utils");
-// const { ObjectId } = require("mongoose");
-
-const getMainpageDrinks = async (req, res) => {
-  // const { birthday } = req.user;
-
-  // if (!birthday) {
-  //   throw HttpError(404, "Users not found (invalid query)");
-  // }
-
-  // const birthdayReversed = birthday.split("/").reverse().join("/");
-  // const age = dobToAge(birthdayReversed);
-
-  const age = 35; // Temporarily set the age to 18+
-  const alcohol = age > 18;
-
-  // Request for all drinks
-  const resultAll = await Recipe.aggregate([
-    {
-      $match: {
-        category: {
-          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
-        },
-      },
-    },
-    { $group: { _id: "$category", drinks: { $push: "$$ROOT" } } },
-    {
-      $project: {
-        _id: 0,
-        category: "$_id",
-        drinks: {
-          $slice: ["$drinks", 3],
-        },
-      },
-    },
-    {
-      $project: {
-        category: 1,
-        drinks: {
-          $map: {
-            input: "$drinks",
-            as: "drink",
-            in: {
-              _id: "$$drink._id",
-              drink: "$$drink.drink",
-              category: "$$drink.category",
-              alcoholic: "$$drink.alcoholic",
-              drinkThumb: "$$drink.drinkThumb",
-            },
-          },
-        },
-      },
-    },
-    { $sort: { category: 1 } },
-  ]);
-
-  // Request only for non-alcoholic drinks
-
-  const resultNonAlko = await Recipe.aggregate([
-    {
-      $match: {
-        category: {
-          $in: ["Shake", "Other/Unknown", "Cocktail", "Ordinary Drink"],
-        },
-      },
-    },
-    { $group: { _id: "$category", drinks: { $push: "$$ROOT" } } },
-    {
-      $project: {
-        _id: 0,
-        category: "$_id",
-        drinks: {
-          $filter: {
-            input: "$drinks",
-            as: "drink",
-            cond: { $eq: ["$$drink.alcoholic", "Non alcoholic"] },
-          },
-        },
-      },
-    },
-    {
-      $project: {
-        category: 1,
-        drinks: {
-          $slice: ["$drinks", 3],
-        },
-      },
-    },
-    {
-      $project: {
-        category: 1,
-        drinks: {
-          $map: {
-            input: "$drinks",
-            as: "drink",
-            in: {
-              _id: "$$drink._id",
-              drink: "$$drink.drink",
-              category: "$$drink.category",
-              alcoholic: "$$drink.alcoholic",
-              drinkThumb: "$$drink.drinkThumb",
-            },
-          },
-        },
-      },
-    },
-    { $match: { "drinks.0": { $exists: true } } },
-    { $sort: { category: 1 } },
-  ]);
-
-  const result = alcohol ? resultAll : resultNonAlko;
-  res.status(200).json(result);
-};
-
-const getPopularDrinks = async (req, res) => {
-  // const { birthday } = req.user;
-
-  // if (!birthday) {
-  //   throw HttpError(404, "Users not found (invalid query)");
-  // }
-
-  // const birthdayReversed = birthday.split("/").reverse().join("/");
-  // const age = dobToAge(birthdayReversed);
-
-  const age = 27; // Temporarily set the age to 18+
-  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
-
-  const result = await Recipe.find(
-    { alcoholic: alcohol },
-    {
-      _id: 1,
-      drink: 1,
-      category: 1,
-      alcoholic: 1,
-      glass: 1,
-      drinkThumb: 1,
-    }
-  ).limit(50);
-
-  res.status(200).json(result);
-};
 
 const searchDrinks = async (req, res) => {
   const {
@@ -189,7 +50,7 @@ const searchDrinks = async (req, res) => {
   });
 
   if (!responseSizeArray) {
-    throw HttpError(404, "Search query not found (invalid query)");
+    throw HttpError(404, "Not found");
   }
 
   const size = Object.keys(responseSizeArray).length;
@@ -209,7 +70,7 @@ const searchDrinks = async (req, res) => {
   );
 
   if (!response) {
-    throw HttpError(404, "Search query not found (invalid query)");
+    throw HttpError(404, "Not found");
   }
 
   res.status(200).json({
@@ -220,11 +81,11 @@ const searchDrinks = async (req, res) => {
   });
 };
 
-const addDrinkImg = async (req, res) => {
+const addDrinkImg = async (req, res, next) => {
   const avatarURL = req.file.path;
 
   if (!avatarURL) {
-    throw HttpError(400, "Bad Request");
+    next(HttpError(400, "Bad Request"));
   }
 
   res.status(201).json({
@@ -254,17 +115,14 @@ const addDrink = async (req, res, next) => {
     return arr;
   });
 
-  const response = await Drinks.insertMany(
-    {
-      ...req.body,
-      ingredients: arrayIngredients,
-      owner,
-    },
-    { _id: false }
-  );
+  const response = await Drinks.insertMany({
+    ...req.body,
+    ingredients: arrayIngredients,
+    owner,
+  });
 
   if (!response) {
-    throw HttpError(404, "Add request not made (invalid request)");
+    next(HttpError(404, "Not found"));
   }
 
   res.status(200).json({
@@ -272,13 +130,13 @@ const addDrink = async (req, res, next) => {
   });
 };
 
-const deleteDrink = async (req, res) => {
+const deleteDrink = async (req, res, next) => {
   const { drinkId } = req.params;
 
   const response = await Drinks.findByIdAndRemove(drinkId);
 
   if (!response) {
-    throw HttpError(404, "Not found");
+    next(HttpError(404, "Not found"));
   }
 
   res.status(200).json({
@@ -286,45 +144,236 @@ const deleteDrink = async (req, res) => {
   });
 };
 
-const getDrink = async (req, res) => {
+const getDrink = async (req, res, next) => {
   const { _id } = req.user;
+  const { page = 1, limit = 9 } = req.query;
 
-  const response = await Drinks.find({ owner: _id });
+  const { birthday } = req.user;
 
-  if (!response) {
-    throw HttpError(404, "Not found");
+  if (!birthday) {
+    next(HttpError(404, "Users not found (invalid query)"));
   }
 
-  res.status(200).json(response);
+  const birthdayReversed = birthday.split("/").reverse().join("/");
+  const age = dobToAge(birthdayReversed);
+  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
+
+  const skip = (page - 1) * limit;
+
+  const responseSizeArray = await Drinks.find({
+    owner: _id,
+    alcoholic: alcohol,
+  });
+
+  if (!responseSizeArray) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const size = Object.keys(responseSizeArray).length;
+
+  const response = await Drinks.find(
+    {
+      owner: _id,
+      alcoholic: alcohol,
+    },
+    "-createdAt -updatedAt",
+    {
+      skip,
+      limit,
+    }
+  );
+
+  if (!response) {
+    next(HttpError(404, "Not found"));
+  }
+
+  res.status(200).json({
+    page: page,
+    per_page: limit,
+    max_page: size,
+    drinks: response,
+  });
 };
 
-const addFavoriteDrink = async (req, res) => {
-  res.status(200).json({});
-};
-
-const deleteFavoriteDrink = async (req, res) => {
-  res.status(200).json({});
-};
-
-const getFavoriteDrink = async (req, res) => {
-  res.status(200).json({});
-};
-
-const getDrinkById = async (req, res) => {
+const addFavoriteDrink = async (req, res, next) => {
+  const userId = req.user._id;
   const { drinkId } = req.params;
 
-  const response = await Recipe.findById(drinkId);
+  // const responseRecipe = await Recipe.updateOne(
+  //   { _id: drinkId },
+  //   { $addToSet: { users: userId } }
+  // );
 
-  if (!response) {
-    throw HttpError(404, "Drink not found");
+  // if (!responseRecipe) {
+  //   next(HttpError(404, "Add request not made (invalid request)"));
+  // }
+
+  const responseUser = await User.updateOne(
+    { _id: userId },
+    { $addToSet: { favoriteDrinks: drinkId } }
+  );
+
+  if (!responseUser) {
+    next(HttpError(404, "Not found"));
   }
 
-  res.status(200).json(response);
+  const userFavoriteDrinks = await User.findById(userId);
+
+  if (!userFavoriteDrinks) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const favoriteDrinksArrayLength = userFavoriteDrinks.favoriteDrinks.length;
+
+  res.status(200).json({ favoriteDrinks: `${favoriteDrinksArrayLength}` });
+};
+
+const deleteFavoriteDrink = async (req, res, next) => {
+  const userId = req.user._id;
+  const { drinkId } = req.params;
+
+  // const responseRecipe = await Recipe.updateOne(
+  //   { _id: drinkId },
+  //   { $pull: { users: userId } }
+  // );
+
+  // if (!responseRecipe) {
+  //   next(HttpError(404, "Add request not made (invalid request)"));
+  // }
+
+  const responseUser = await User.updateOne(
+    { _id: userId },
+    { $pull: { favoriteDrinks: drinkId } }
+  );
+
+  if (!responseUser) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const userFavoriteDrinks = await User.findById(userId);
+
+  if (!userFavoriteDrinks) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const favoriteDrinksArrayLength = userFavoriteDrinks.favoriteDrinks.length;
+
+  res.status(200).json({ favoriteDrinks: `${favoriteDrinksArrayLength}` });
+};
+
+const getFavoriteDrink = async (req, res, next) => {
+  const userId = req.user._id;
+  const { page = 1, limit = 9 } = req.query;
+
+  const { birthday } = req.user;
+
+  if (!birthday) {
+    throw HttpError(404, "Users not found (invalid query)");
+  }
+
+  const birthdayReversed = birthday.split("/").reverse().join("/");
+  const age = dobToAge(birthdayReversed);
+  const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
+
+  const skip = (page - 1) * limit;
+
+  const userFavoriteDrinks = await User.findById(userId);
+
+  if (!userFavoriteDrinks) {
+    next(HttpError(404, "Favorites drink not found"));
+  }
+
+  const favoriteDrinksArray = userFavoriteDrinks.favoriteDrinks;
+
+  const responseSizeArray = await Recipe.find({
+    _id: favoriteDrinksArray,
+    alcoholic: alcohol,
+  });
+
+  const size = Object.keys(responseSizeArray).length;
+
+  const response = await Recipe.find(
+    {
+      _id: favoriteDrinksArray,
+      alcoholic: alcohol,
+    },
+    "-createdAt -updatedAt",
+    {
+      skip,
+      limit,
+    }
+  );
+
+  if (!response) {
+    next(HttpError(404, "Not found"));
+  }
+
+  res.status(200).json({
+    page: page,
+    per_page: limit,
+    max_page: size,
+    favoriteDrinks: response,
+  });
+};
+
+const getDrinkById = async (req, res, next) => {
+  const { drinkId } = req.params;
+
+  const response = (await Recipe.findById(drinkId)).toObject();
+
+  if (!response) {
+    next(HttpError(404, "Drink not found"));
+  }
+
+  const ingredientIDArray = response.ingredients.map((item) => {
+    const ingredientArray = item.ingredientId;
+    return ingredientArray;
+  });
+
+  const responseIngredientArray = await Ingredient.find({
+    _id: ingredientIDArray,
+  });
+  if (!responseIngredientArray) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const ingredientReferenceArray = responseIngredientArray.map((item) => {
+    const ingredientThumbArray = item.ingredientThumb;
+    return ingredientThumbArray;
+  });
+
+  const arrayIngredients = response.ingredients.map((item, index) => {
+    const arr = Object.assign(item, {
+      ingredientThumb: ingredientReferenceArray[index],
+    });
+    return arr;
+  });
+
+  const userId = req.user._id;
+
+  const userFavoriteDrinks = (await User.findById(userId)).toObject();
+
+  if (!userFavoriteDrinks) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const favoritesArray = userFavoriteDrinks.favoriteDrinks.map((item) => {
+    const favor = item._id.toString() === drinkId;
+    return favor;
+  });
+
+  const favorite = favoritesArray.includes(true);
+
+  const rezult = {
+    ...response,
+    ingredients: arrayIngredients,
+    favorite: favorite,
+  };
+
+  res.status(200).json(rezult);
 };
 
 module.exports = {
-  getMainpageDrinks: ctrlWrapper(getMainpageDrinks),
-  getPopularDrinks: ctrlWrapper(getPopularDrinks),
   searchDrinks: ctrlWrapper(searchDrinks),
   addDrinkImg: ctrlWrapper(addDrinkImg),
   addDrink: ctrlWrapper(addDrink),
