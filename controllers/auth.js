@@ -1,8 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const gravatar = require("gravatar");
 const querystring = require("node:querystring");
-// const URL = require("url");
 const axios = require("axios");
 
 const { User } = require("../models/user");
@@ -27,11 +25,9 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email);
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
   });
 
   const newSession = await sessionModel.create({
@@ -128,7 +124,6 @@ const refreshTokens = async (req, res) => {
     }
     const user = await User.findById(payload.uid);
     const session = await sessionModel.findById(payload.sid);
-    console.log(session);
     if (!user) {
       throw HttpError(404, "Invalid user");
     }
@@ -151,9 +146,19 @@ const refreshTokens = async (req, res) => {
       REFRESH_SECRET_JWT,
       { expiresIn: "7d" }
     );
-    return res
-      .status(200)
-      .send({ newAccessToken, newRefreshToken, newSid: newSession._id });
+    const { name, _id, birthday, email } = user;
+
+    return res.json({
+      sid: newSession._id,
+      user: {
+        _id,
+        name,
+        email,
+        birthday,
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      },
+    });
   }
   throw HttpError(400, "No token provided");
 };
@@ -161,7 +166,6 @@ const refreshTokens = async (req, res) => {
 const signout = async (req, res) => {
   const currentSession = req.session;
   const { id } = req.user;
-  console.log(id);
   await User.findByIdAndUpdate(id, { accessToken: "", refreshToken: "" });
   await sessionModel.deleteOne({ _id: currentSession._id });
   return res.status(204).end();
