@@ -37,6 +37,9 @@ const userSchema = new Schema(
       default: null,
     },
     favoriteDrinks: [{ type: Schema.Types.ObjectId, ref: "recipe" }],
+    avatarURL: {
+      type: String,
+    },
     // sid: {
     //   type: String,
     // },
@@ -94,10 +97,9 @@ const emailSchema = Joi.object({
 });
 
 const updatUserSchema = Joi.object({
-  name: Joi.string().required().messages({
+  name: Joi.string().messages({
     "string.base": `name should be a type of 'text'`,
     "string.empty": `name cannot be an empty field`,
-    "any.required": `missing required name field`,
   }),
 });
 
