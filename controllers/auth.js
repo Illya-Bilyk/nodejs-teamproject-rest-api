@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const querystring = require("node:querystring");
-const URL = require("url");
+// const URL = require("url");
 const axios = require("axios");
 
 const { User } = require("../models/user");
@@ -188,8 +188,7 @@ const googleRedirect = async (req, res) => {
   const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
   const urlObj = new URL(fullUrl);
   const urlParams = querystring.parse(urlObj.search);
-  const code = urlParams.code;
-  console.log(code);
+  const code = Object.values(urlParams)[0];
   const tokenData = await axios({
     url: `https://oauth2.googleapis.com/token`,
     method: "post",
@@ -201,20 +200,19 @@ const googleRedirect = async (req, res) => {
       code,
     },
   });
+
   const userData = await axios({
     url: "https://www.googleapis.com/oauth2/v2/userinfo",
     method: "get",
     headers: {
-      Authorization: "Bearer"`${tokenData.data.access_token}`,
+      Authorization: `Bearer ${tokenData.data.access_token}`,
     },
   });
-  console.log(userData);
+
   const existingParent = await User.findOne({ email: userData.data.email });
-  if (!existingParent || !existingParent.originUrl) {
-    return res.status(403).send({
-      message:
-        "You should register from front-end first (not postman). Google/Facebook are only for sign-in",
-    });
+
+  if (!existingParent) {
+    return res.redirect(`${BASE_URL}/signup`);
   }
   const newSession = await sessionModel.create({
     uid: existingParent._id,
@@ -233,7 +231,9 @@ const googleRedirect = async (req, res) => {
       expiresIn: "7d",
     }
   );
-  return res.redirect` ${existingParent.originUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`();
+  return res.redirect(
+    `${BASE_URL}/home?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
+  );
 };
 
 module.exports = {
