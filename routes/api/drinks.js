@@ -11,17 +11,9 @@ const {
 
 const { schemasDrinks } = require("../../models/drinks");
 
-router.get(
-  "/mainpage",
-  // authenticate,
-  ctrl2.getMainpageDrinks
-);
+router.get("/mainpage", authenticate, ctrl2.getMainpageDrinks);
 
-router.get(
-  "/popular",
-  // authenticate,
-  ctrl2.getPopularDrinks
-);
+router.get("/popular", authenticate, ctrl2.getPopularDrinks);
 
 router.get("/search", authenticate, ctrl.searchDrinks);
 

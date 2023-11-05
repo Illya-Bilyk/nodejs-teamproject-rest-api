@@ -1,19 +1,16 @@
 const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
 const { ctrlWrapper, HttpError } = require("../utils");
-// const { ObjectId } = require("mongoose");
 
+// Mainpage drinks request
 const getMainpageDrinks = async (req, res) => {
-  // const { birthday } = req.user;
-
-  // if (!birthday) {
-  //   throw HttpError(404, "Users not found (invalid query)");
-  // }
-
-  // const birthdayReversed = birthday.split("/").reverse().join("/");
-  // const age = dobToAge(birthdayReversed);
-
-  const age = 35; // Temporarily set the age to 18+
+  // Age validation
+  const { birthday } = req.user;
+  if (!birthday) {
+    throw HttpError(404, "Users not found (invalid query)");
+  }
+  const birthdayReversed = birthday.split("/").reverse().join("/");
+  const age = dobToAge(birthdayReversed);
   const alcohol = age > 18;
 
   // Function for random array shuffling
@@ -25,7 +22,7 @@ const getMainpageDrinks = async (req, res) => {
     return array;
   };
 
-  // Request for all drinks
+  // Request for all drinks (18+ user)
   const resultAll = await Recipe.aggregate([
     {
       $match: {
@@ -80,8 +77,7 @@ const getMainpageDrinks = async (req, res) => {
     },
   ]);
 
-  // Request only for non-alcoholic drinks
-
+  // Request only for non-alcoholic drinks (underage user)
   const resultNonAlko = await Recipe.aggregate([
     {
       $match: {
@@ -159,19 +155,18 @@ const getMainpageDrinks = async (req, res) => {
   res.status(200).json(result);
 };
 
+// Popular drinks request
 const getPopularDrinks = async (req, res) => {
-  // const { birthday } = req.user;
-
-  // if (!birthday) {
-  //   throw HttpError(404, "Users not found (invalid query)");
-  // }
-
-  // const birthdayReversed = birthday.split("/").reverse().join("/");
-  // const age = dobToAge(birthdayReversed);
-
-  const age = 27; // Temporarily set the age to 18+
+  // Age validation
+  const { birthday } = req.user;
+  if (!birthday) {
+    throw HttpError(404, "Users not found (invalid query)");
+  }
+  const birthdayReversed = birthday.split("/").reverse().join("/");
+  const age = dobToAge(birthdayReversed);
   const alcohol = age > 18 ? ["Alcoholic", "Non alcoholic"] : ["Non alcoholic"];
 
+  // General Request (18+ user and underage user )
   const result = await Recipe.find(
     {
       alcoholic: alcohol,
