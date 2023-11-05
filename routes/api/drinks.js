@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../../controllers/drinks");
+const ctrl2 = require("../../controllers/mainPopularDrinks");
 const {
   validateBody,
   isValidId,
@@ -13,13 +14,13 @@ const { schemasDrinks } = require("../../models/drinks");
 router.get(
   "/mainpage",
   // authenticate,
-  ctrl.getMainpageDrinks
+  ctrl2.getMainpageDrinks
 );
 
 router.get(
   "/popular",
   // authenticate,
-  ctrl.getPopularDrinks
+  ctrl2.getPopularDrinks
 );
 
 router.get("/search", authenticate, ctrl.searchDrinks);
