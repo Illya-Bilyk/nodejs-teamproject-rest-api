@@ -41,13 +41,13 @@ const updatUser = async (req, res) => {
   const { id } = req.user;
 
   const result = await User.findByIdAndUpdate(id, req.body, { new: true });
-  console.log("updatUser -> result:", result);
 
   if (!result) {
     throw HttpError(404);
   }
 
   res.json({ message: "User updated successfully" });
+
 };
 
 module.exports = {

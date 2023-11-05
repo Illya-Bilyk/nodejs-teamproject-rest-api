@@ -16,4 +16,8 @@ router.post("/signout", authenticate, ctrl.signout);
 
 router.post("/refresh", ctrl.refreshTokens);
 
+router.get("/google", ctrl.googleAuth);
+
+router.get("/google-redirect", ctrl.googleRedirect);
+
 module.exports = router;

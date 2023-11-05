@@ -1,34 +1,22 @@
-const { Schema, model } = require("mongoose");
+const { model, Schema } = require("mongoose");
 const { handleMongooseError } = require("../utils");
 const Joi = require("joi");
 
-const recipeSchema = new Schema(
+const drinksSchema = new Schema(
   {
     drink: {
       type: String,
       required: [true, "Set name for drink"],
       minlength: 2,
       maxlength: 100,
+      unique: true,
     },
-    drinkAlternate: {
-      type: String,
-      default: "Sorry, not specified",
-      minlength: 2,
-      maxlength: 100,
-    },
-    tags: {
-      type: String,
-      minlength: 2,
-      maxlength: 254,
-    },
-    video: { type: String },
     category: {
       type: String,
       required: [true, "Choose category for a drink"],
       minlength: 2,
       maxlength: 100,
     },
-    IBA: { type: String },
     alcoholic: {
       type: String,
       required: true,
@@ -52,48 +40,6 @@ const recipeSchema = new Schema(
       minlength: 2,
       maxlength: 500,
     },
-    instructionsES: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    instructionsDE: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    instructionsFR: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    instructionsIT: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    instructionsRU: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    instructionsPL: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    instructionsUK: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
     drinkThumb: {
       type: String,
       required: true,
@@ -104,36 +50,20 @@ const recipeSchema = new Schema(
       {
         title: { type: String, required: true, minlength: 2, maxlength: 100 },
         measure: { type: String, required: true, minlength: 2, maxlength: 100 },
-        quantity: {
-          type: String,
-          required: true,
-          minlength: 2,
-          maxlength: 100,
-        },
         ingredientId: {
           type: Schema.Types.ObjectId,
-          ref: "ingredients",
+          ref: "ingredient",
         },
       },
     ],
-    shortDescription: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 500,
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
-    users: [{ type: Schema.Types.ObjectId, ref: "user" }],
+    owner: { type: Schema.Types.ObjectId, ref: "user" },
   },
   { versionKey: false, timestamps: true }
 );
 
-recipeSchema.post("save", handleMongooseError);
+drinksSchema.post("save", handleMongooseError);
 
-const addRecipesSchema = Joi.object({
+const addDrinkSchema = Joi.object({
   drink: Joi.string().min(2).max(100).required().messages({
     "any.required": `missing required name field`,
     "string.empty": `"name" cannot be empty, min 2 max 100 letters`,
@@ -175,11 +105,12 @@ const addRecipesSchema = Joi.object({
   }),
 });
 
-const Recipe = model("recipe", recipeSchema);
+const Drinks = model("drink", drinksSchema);
 
-const schemasRecipe = { addRecipesSchema };
+const schemasDrinks = { addDrinkSchema };
 
 module.exports = {
-  Recipe,
-  schemasRecipe,
+  Drinks,
+  schemasDrinks,
 };
+// { _id: false, versionKey: false, timestamps: true }

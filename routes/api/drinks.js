@@ -1,28 +1,33 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../../controllers/drinks");
-const { validateBody, isValidId, authenticate } = require("../../middlewares");
+const ctrl2 = require("../../controllers/mainPopularDrinks");
+const {
+  validateBody,
+  isValidId,
+  authenticate,
+  upload,
+} = require("../../middlewares");
 
-const { schemasRecipe } = require("../../models/recipe");
+const { schemasDrinks } = require("../../models/drinks");
 
-router.get(
-  "/mainpage",
-  // authenticate,
-  ctrl.getMainpageDrinks
-);
+router.get("/mainpage", authenticate, ctrl2.getMainpageDrinks);
 
-router.get("/popular",
-  // authenticate,
-  ctrl.getPopularDrinks);
+router.get("/popular", authenticate, ctrl2.getPopularDrinks);
 
 router.get("/search", authenticate, ctrl.searchDrinks);
-// router.get("/search", ctrl.searchDrinks);
+
+router.post(
+  "/own/add/img",
+  authenticate,
+  upload.single("cocktail"),
+  ctrl.addDrinkImg
+);
 
 router.post(
   "/own/add",
   authenticate,
-  isValidId,
-  validateBody(schemasRecipe.addSchema),
+  validateBody(schemasDrinks.addDrinkSchema),
   ctrl.addDrink
 );
 
@@ -33,21 +38,14 @@ router.delete(
   ctrl.deleteDrink
 );
 
-router.get(
-  "/own",
-  authenticate,
-  isValidId,
-  validateBody(schemasRecipe.addSchema),
-  ctrl.getDrink
-);
+router.get("/own", authenticate, ctrl.getDrink);
 
 router.post(
-  "/favorite/add",
+  "/favorite/add/:drinkId",
   authenticate,
-  validateBody(schemasRecipe.addSchema),
+  isValidId,
   ctrl.addFavoriteDrink
 );
-
 router.delete(
   "/favorite/remove/:drinkId",
   authenticate,

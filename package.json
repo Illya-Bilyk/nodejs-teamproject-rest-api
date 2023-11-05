@@ -17,6 +17,7 @@
     "dob-to-age": "^1.0.1",
     "dotenv": "^16.3.1",
     "express": "4.17.1",
+    "gravatar": "^1.8.2",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
@@ -25,6 +26,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.9.7",
     "query-string": "^8.1.0",
+    "short-unique-id": "^5.0.3",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
