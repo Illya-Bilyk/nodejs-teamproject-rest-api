@@ -5,6 +5,9 @@ const { handleMongooseError } = require("../utils");
 
 const emailRegexp = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
+const defaultAvatar =
+  "http://res.cloudinary.com/dgcn6drlb/image/upload/v1699189811/avatars/6547912a8a7737c671f4f9ed-c0KI8nGpaww898PsUmGgk.png";
+
 const userSchema = new Schema(
   {
     name: {
@@ -37,8 +40,9 @@ const userSchema = new Schema(
       default: null,
     },
     favoriteDrinks: [{ type: Schema.Types.ObjectId, ref: "recipe" }],
-    avatarURL: {
+    avatar: {
       type: String,
+      default: defaultAvatar,
     },
     // sid: {
     //   type: String,
