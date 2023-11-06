@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "DrinkMaster V1 API docs",
-    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/Illya-Bilyk/nodejs-teamproject-rest-api) | [Privacy Policy](https://...)",
+    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/Illya-Bilyk/nodejs-teamproject-rest-api) | [Privacy Policy](https://danylotytarenko.github.io/DrinkMaster/privacy)",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
@@ -218,38 +218,31 @@
         "summary": "Get user info",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetСurrentUserResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -267,32 +260,47 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
+                "$ref": "#/components/schemas/GetUserUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatars": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetUserUpdateResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -310,32 +318,36 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
+                "$ref": "#/components/schemas/GetUserSubscribeRequest"
               }
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetUserSubscribeResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / Subscription has already been send",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / User not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -511,7 +523,7 @@
             "content": {}
           },
           "404": {
-            "description": "Not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / There are no drinks in users' favorites ",
             "content": {}
           },
           "500": {
@@ -1171,8 +1183,71 @@
           }
         }
       },
-      "GetUserInfoRequest": {},
-      "GetUserInfoResponse": {},
+      "GetСurrentUserResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday",
+            "example": "01/01/2001"
+          }
+        }
+      },
+      "GetUserUpdateRequest": {
+        "required": "name",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "John"
+          }
+        }
+      },
+      "GetUserUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698760293/cocktails/653fa858149cd42514905850-2EmQibRWanpjmcqFMIbOK.jpg"
+          }
+        }
+      },
+      "GetUserSubscribeRequest": {
+        "required": ["email", "password"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 100
+          }
+        }
+      },
+      "GetUserSubscribeResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Subscription email sent"
+          }
+        }
+      },
       "GetCategoriesResponse": {
         "type": "array",
         "items": {
@@ -1465,6 +1540,13 @@
               "type": "string",
               "description": "Drink image link",
               "example": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg"
+            },
+            "users": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Glass name"
+              }
             }
           }
         },
@@ -1475,7 +1557,13 @@
             "category": "Ordinary Drink",
             "alcoholic": "Alcoholic",
             "description": "Porto flip is a rich and creamy cocktail that combines the flavors of port wine, brandy, and an egg yolk. It is made by shaking port wine, brandy, simple syrup, and an egg yolk together with ice. The result is a velvety smooth drink with a hint of sweetness and a touch of richness from the egg yolk. It's a sophisticated and indulgent choice for a special occasion.",
-            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg"
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg",
+            "users": [
+              "6546b40b762c21c2cdf2da68",
+              "65493713f7d46b23ebdeb598",
+              "654937e6f7d46b23ebdeb5b1",
+              "6547681c5b30566a4463eb85"
+            ]
           },
           {
             "_id": "639b6de9ff77d221f190c54e",
@@ -1483,7 +1571,12 @@
             "category": "Ordinary Drink",
             "alcoholic": "Alcoholic",
             "description": "Poppy Cocktail is a floral and aromatic cocktail that combines the flavors of gin, orange liqueur, grenadine, and lemon juice. It is made by shaking all the ingredients together with ice and straining it into a glass. The result is a vibrant and refreshing drink with a beautiful pink color. Sip on this delightful cocktail and let the floral notes transport you to a blooming garden.",
-            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Poppy_Cocktail.jpg"
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Poppy_Cocktail.jpg",
+            "users": [
+              "6546b40b762c21c2cdf2da68",
+              "65493713f7d46b23ebdeb598",
+              "6547681c5b30566a4463eb85"
+            ]
           },
           {
             "_id": "639b6de9ff77d221f190c521",
@@ -1491,7 +1584,8 @@
             "category": "Ordinary Drink",
             "alcoholic": "Alcoholic",
             "description": "Abilene is a whiskey-based cocktail that offers a delightful balance of sweet and sour flavors. This classic drink combines whiskey, vermouth, and a touch of sweet grenadine, resulting in a sophisticated and well-rounded beverage. Sip on an Abilene cocktail and let the smooth whiskey and subtle sweetness transport you to a cozy lounge.",
-            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Abilene.jpg"
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Abilene.jpg",
+            "users": ["6546d5944aa904c3fe3969de", "6547d73787427ccdb2f182f3"]
           },
           {
             "_id": "639b6de9ff77d221f190c545",
@@ -1499,7 +1593,8 @@
             "category": "Ordinary Drink",
             "alcoholic": "Alcoholic",
             "description": "Pink Lady is a delicate and elegant cocktail that showcases the delicate flavors of gin, apple brandy, grenadine, and a hint of lemon juice. It's a beautifully pink drink with a touch of sweetness and a subtle tartness. Sip on a Pink Lady cocktail and let its graceful flavors transport you to a glamorous era of cocktail culture.",
-            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Pink_Lady.jpg"
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Pink_Lady.jpg",
+            "users": ["654773025b30566a4463ebe4"]
           }
         ]
       },
