@@ -36,7 +36,6 @@ const storage = new CloudinaryStorage({
       folder: folder, // назва папки на cloudinary
       allowed_formats: ["jpeg", "jpg", "png"], // дозволений формат файлу
       public_id: fileData.originalname, // назва файлу в папці на cloudinary
-      asset_id: req.user.id,
       transformation: [
         { width: 350, height: 350 },
         { width: 700, height: 700 },
