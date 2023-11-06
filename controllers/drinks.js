@@ -2,7 +2,7 @@ const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
 const { Ingredient } = require("../models/ingredient");
 const { User } = require("../models/user");
-const { ctrlWrapper, HttpError } = require("../utils");
+const { ctrlWrapper, HttpError, deletePhoto } = require("../utils");
 
 const searchDrinks = async (req, res, next) => {
   const {
@@ -131,6 +131,17 @@ const addDrink = async (req, res, next) => {
 
 const deleteDrink = async (req, res, next) => {
   const { drinkId } = req.params;
+  const { _id } = req.user;
+
+  if (!drinkId || !_id) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const rezult = await deletePhoto("cocktails", _id);
+
+  if (!rezult) {
+    next(HttpError(400, "Bad request"));
+  }
 
   const response = await Recipe.findByIdAndRemove(drinkId);
 
@@ -267,7 +278,7 @@ const getFavoriteDrink = async (req, res, next) => {
   const { birthday } = req.user;
 
   if (!birthday) {
-    next( HttpError(404, "Users not found (invalid query)"));
+    next(HttpError(404, "Users not found (invalid query)"));
   }
 
   const birthdayReversed = birthday.split("/").reverse().join("/");
