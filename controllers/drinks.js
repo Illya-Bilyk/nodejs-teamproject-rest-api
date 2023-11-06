@@ -1,11 +1,10 @@
 const dobToAge = require("dob-to-age");
 const { Recipe } = require("../models/recipe");
 const { Ingredient } = require("../models/ingredient");
-const { Drinks } = require("../models/drinks");
 const { User } = require("../models/user");
 const { ctrlWrapper, HttpError } = require("../utils");
 
-const searchDrinks = async (req, res) => {
+const searchDrinks = async (req, res, next) => {
   const {
     page = 1,
     limit = 9,
@@ -17,7 +16,7 @@ const searchDrinks = async (req, res) => {
   const { birthday } = req.user;
 
   if (!birthday) {
-    throw HttpError(404, "Users not found (invalid query)");
+    next(HttpError(404, "Users not found (invalid query)"));
   }
 
   const birthdayReversed = birthday.split("/").reverse().join("/");
@@ -115,7 +114,7 @@ const addDrink = async (req, res, next) => {
     return arr;
   });
 
-  const response = await Drinks.insertMany({
+  const response = await Recipe.insertMany({
     ...req.body,
     ingredients: arrayIngredients,
     owner,
@@ -133,7 +132,7 @@ const addDrink = async (req, res, next) => {
 const deleteDrink = async (req, res, next) => {
   const { drinkId } = req.params;
 
-  const response = await Drinks.findByIdAndRemove(drinkId);
+  const response = await Recipe.findByIdAndRemove(drinkId);
 
   if (!response) {
     next(HttpError(404, "Not found"));
@@ -160,7 +159,7 @@ const getDrink = async (req, res, next) => {
 
   const skip = (page - 1) * limit;
 
-  const responseSizeArray = await Drinks.find({
+  const responseSizeArray = await Recipe.find({
     owner: _id,
     alcoholic: alcohol,
   });
@@ -171,7 +170,7 @@ const getDrink = async (req, res, next) => {
 
   const size = Object.keys(responseSizeArray).length;
 
-  const response = await Drinks.find(
+  const response = await Recipe.find(
     {
       owner: _id,
       alcoholic: alcohol,
@@ -199,14 +198,14 @@ const addFavoriteDrink = async (req, res, next) => {
   const userId = req.user._id;
   const { drinkId } = req.params;
 
-  // const responseRecipe = await Recipe.updateOne(
-  //   { _id: drinkId },
-  //   { $addToSet: { users: userId } }
-  // );
+  const responseRecipe = await Recipe.updateOne(
+    { _id: drinkId },
+    { $addToSet: { users: userId } }
+  );
 
-  // if (!responseRecipe) {
-  //   next(HttpError(404, "Add request not made (invalid request)"));
-  // }
+  if (!responseRecipe) {
+    next(HttpError(404, "Not found"));
+  }
 
   const responseUser = await User.updateOne(
     { _id: userId },
@@ -232,14 +231,14 @@ const deleteFavoriteDrink = async (req, res, next) => {
   const userId = req.user._id;
   const { drinkId } = req.params;
 
-  // const responseRecipe = await Recipe.updateOne(
-  //   { _id: drinkId },
-  //   { $pull: { users: userId } }
-  // );
+  const responseRecipe = await Recipe.updateOne(
+    { _id: drinkId },
+    { $pull: { users: userId } }
+  );
 
-  // if (!responseRecipe) {
-  //   next(HttpError(404, "Add request not made (invalid request)"));
-  // }
+  if (!responseRecipe) {
+    next(HttpError(404, "Not found"));
+  }
 
   const responseUser = await User.updateOne(
     { _id: userId },
@@ -268,7 +267,7 @@ const getFavoriteDrink = async (req, res, next) => {
   const { birthday } = req.user;
 
   if (!birthday) {
-    throw HttpError(404, "Users not found (invalid query)");
+    next( HttpError(404, "Users not found (invalid query)"));
   }
 
   const birthdayReversed = birthday.split("/").reverse().join("/");
@@ -357,17 +356,17 @@ const getDrinkById = async (req, res, next) => {
     next(HttpError(404, "Not found"));
   }
 
-  const favoritesArray = userFavoriteDrinks.favoriteDrinks.map((item) => {
+  const favoriteArrays = userFavoriteDrinks.favoriteDrinks.map((item) => {
     const favor = item._id.toString() === drinkId;
     return favor;
   });
 
-  const favorite = favoritesArray.includes(true);
+  const isFavorite = favoriteArrays.includes(true);
 
   const rezult = {
     ...response,
     ingredients: arrayIngredients,
-    favorite: favorite,
+    favorite: isFavorite,
   };
 
   res.status(200).json(rezult);
