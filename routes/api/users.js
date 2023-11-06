@@ -27,7 +27,7 @@ router.patch(
   authenticate,
   isValidId,
   upload.single("avatar"),
-  ctrl.updatUser
+  ctrl.updateUser
 );
 
 module.exports = router;
