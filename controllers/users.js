@@ -37,7 +37,7 @@ const sendSubscribeEmail = async (req, res) => {
   });
 };
 
-const updatUser = async (req, res) => {
+const updateUser = async (req, res) => {
   const { id } = req.user;
   const { name } = req.body;
 
@@ -51,6 +51,7 @@ const updatUser = async (req, res) => {
     }
 
     await deletePhoto("avatars", id);
+
     res.json({ name, avatar });
     return;
   }
@@ -83,5 +84,5 @@ const updatUser = async (req, res) => {
 module.exports = {
   getCurrent: ctrlWrapper(getCurrent),
   sendSubscribeEmail: ctrlWrapper(sendSubscribeEmail),
-  updatUser: ctrlWrapper(updatUser),
+  updateUser: ctrlWrapper(updateUser),
 };
