@@ -196,6 +196,22 @@
         }
       }
     },
+    "/auth/google": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Google authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
+        "responses": {
+          "200": {
+            "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user",
+            "content": {}
+          },
+          "403": {
+            "description": "Not registered or registered with postman",
+            "content": {}
+          }
+        }
+      }
+    },
     "/users/current": {
       "get": {
         "tags": ["Users"],
@@ -343,15 +359,19 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -375,15 +395,19 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -407,15 +431,19 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -427,38 +455,31 @@
         "summary": "Getting cocktails for the main page",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetMainpageDrinksResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -470,38 +491,31 @@
         "summary": "Getting popular cocktails",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Users object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetPopularDrinksResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Users not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -1115,25 +1129,380 @@
       "RefreshTokensResponse": {
         "type": "object",
         "properties": {
-          "newAccessToken": {
-            "type": "string",
-            "description": "Access token",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
-          },
-          "newRefreshToken": {
-            "type": "string",
-            "description": "Refresh token",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
-          },
-          "newSid": {
+          "sid": {
             "type": "string",
             "description": "New session's id",
             "example": "507f1f77bcf86cd799439011"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User ID",
+                "example": "6546d5944aa904c3fe3969de"
+              },
+              "name": {
+                "type": "string",
+                "description": "User's name",
+                "example": "Jack"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "example": "user@example.com"
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "01/11/1998"
+              },
+              "accessToken": {
+                "type": "string",
+                "description": "New access token",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+              },
+              "refreshToken": {
+                "type": "string",
+                "description": "New refresh token",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
+              }
+            }
           }
         }
       },
       "GetUserInfoRequest": {},
       "GetUserInfoResponse": {},
+      "GetCategoriesResponse": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Category name"
+        },
+        "example": [
+          "Beer",
+          "Cocktail",
+          "Cocoa",
+          "Coffee / Tea",
+          "Homemade Liqueur",
+          "Ordinary Drink",
+          "Other/Unknown",
+          "Punch / Party Drink",
+          "Shake",
+          "Shot",
+          "Soft Drink"
+        ]
+      },
+      "GetIngredientsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Ingredient ID number",
+              "example": "64aebb7f82d96cc69e0eb4c9"
+            },
+            "title": {
+              "type": "string",
+              "description": "Ingredient title",
+              "example": "Coffee brandy"
+            },
+            "ingredientThumb": {
+              "type": "string",
+              "description": "Ingredient image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy.png"
+            },
+            "thumb-medium": {
+              "type": "string",
+              "description": "Ingredient medium image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Medium.png"
+            },
+            "thumb-small": {
+              "type": "string",
+              "description": "Ingredient small image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Small.png"
+            },
+            "alcohol": {
+              "type": "string",
+              "description": "Content of alcohol",
+              "example": "Yes"
+            }
+          }
+        }
+      },
+      "GetGlassesResponse": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Glass name"
+        },
+        "example": [
+          "Balloon Glass",
+          "Beer Glass",
+          "Beer mug",
+          "Beer pilsner",
+          "Brandy snifter",
+          "Champagne Flute",
+          "Champagne flute",
+          "Cocktail Glass",
+          "Cocktail glass",
+          "Coffee Mug",
+          "Coffee mug",
+          "Collins Glass",
+          "Collins glass",
+          "Copper Mug",
+          "Cordial glass",
+          "Coupe Glass",
+          "Highball Glass",
+          "Highball glass",
+          "Hurricane glass",
+          "Irish coffee cup",
+          "Jar",
+          "Margarita glass",
+          "Margarita/Coupette glass",
+          "Martini Glass",
+          "Mason jar",
+          "Nick and Nora Glass",
+          "Old-Fashioned glass",
+          "Old-fashioned glass",
+          "Pint glass",
+          "Pitcher",
+          "Pousse cafe glass",
+          "Punch Bowl",
+          "Punch bowl",
+          "Shot Glass",
+          "Shot glass",
+          "Whiskey Glass",
+          "Whiskey sour glass",
+          "White wine glass",
+          "Wine Glass"
+        ]
+      },
+      "GetMainpageDrinksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Drink category",
+              "example": "Ordinary Drink"
+            },
+            "drinks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "description": "Drink ID number",
+                    "example": "639b6de9ff77d221f190c645"
+                  },
+                  "drink": {
+                    "type": "string",
+                    "description": "Drink title",
+                    "example": "Karsk"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Drink category",
+                    "example": "Ordinary Drink"
+                  },
+                  "alcoholic": {
+                    "type": "string",
+                    "description": "Content of alcohol",
+                    "example": "Alcoholic"
+                  },
+                  "drinkThumb": {
+                    "type": "string",
+                    "description": "Drink image link",
+                    "example": "https://ftp.goit.study/img/drinkify/recipes/Karsk.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "category": "Ordinary Drink",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c645",
+                "drink": "Karsk",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Karsk.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c5be",
+                "drink": "Clover Club",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Clover_Club.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c5d5",
+                "drink": "Rusty Nail",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Rusty_Nail.jpg"
+              }
+            ]
+          },
+          {
+            "category": "Cocktail",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c5ea",
+                "drink": "New York Lemonade",
+                "category": "Cocktail",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/New_York_Lemonade.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c586",
+                "drink": "Vodka Tonic",
+                "category": "Cocktail",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Vodka_Tonic.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c522",
+                "drink": "Addison",
+                "category": "Cocktail",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Addison.jpg"
+              }
+            ]
+          },
+          {
+            "category": "Shake",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c56a",
+                "drink": "151 Florida Bushwacker",
+                "category": "Shake",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/151_Florida_Bushwacker.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c563",
+                "drink": "Just a Moonmint",
+                "category": "Shake",
+                "alcoholic": "Non alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Just_a_Moonmint.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c620",
+                "drink": "Sweet Tooth",
+                "category": "Shake",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Sweet_Tooth.jpg"
+              }
+            ]
+          },
+          {
+            "category": "Other/Unknown",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c592",
+                "drink": "Lassi Khara",
+                "category": "Other/Unknown",
+                "alcoholic": "Non alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Lassi_Khara.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c60a",
+                "drink": "Bible Belt",
+                "category": "Other/Unknown",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Bible_Belt.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c559",
+                "drink": "Pineapple Gingerale Smoothie",
+                "category": "Other/Unknown",
+                "alcoholic": "Non alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Pineapple_Gingerale_Smoothie.jpg"
+              }
+            ]
+          }
+        ]
+      },
+      "GetPopularDrinksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Drink ID number",
+              "example": "639b6de9ff77d221f190c549"
+            },
+            "drink": {
+              "type": "string",
+              "description": "Drink title",
+              "example": "Porto flip"
+            },
+            "category": {
+              "type": "string",
+              "description": "Drink category",
+              "example": "Ordinary Drink"
+            },
+            "alcoholic": {
+              "type": "string",
+              "description": "Content of alcohol",
+              "example": "Alcoholic"
+            },
+            "description": {
+              "type": "string",
+              "description": "Drink description",
+              "example": "Porto flip is a rich and creamy cocktail that combines the flavors of port wine, brandy, and an egg yolk. It is made by shaking port wine, brandy, simple syrup, and an egg yolk together with ice. The result is a velvety smooth drink with a hint of sweetness and a touch of richness from the egg yolk. It's a sophisticated and indulgent choice for a special occasion."
+            },
+            "drinkThumb": {
+              "type": "string",
+              "description": "Drink image link",
+              "example": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg"
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "639b6de9ff77d221f190c549",
+            "drink": "Porto flip",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Porto flip is a rich and creamy cocktail that combines the flavors of port wine, brandy, and an egg yolk. It is made by shaking port wine, brandy, simple syrup, and an egg yolk together with ice. The result is a velvety smooth drink with a hint of sweetness and a touch of richness from the egg yolk. It's a sophisticated and indulgent choice for a special occasion.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg"
+          },
+          {
+            "_id": "639b6de9ff77d221f190c54e",
+            "drink": "Poppy Cocktail",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Poppy Cocktail is a floral and aromatic cocktail that combines the flavors of gin, orange liqueur, grenadine, and lemon juice. It is made by shaking all the ingredients together with ice and straining it into a glass. The result is a vibrant and refreshing drink with a beautiful pink color. Sip on this delightful cocktail and let the floral notes transport you to a blooming garden.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Poppy_Cocktail.jpg"
+          },
+          {
+            "_id": "639b6de9ff77d221f190c521",
+            "drink": "Abilene",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Abilene is a whiskey-based cocktail that offers a delightful balance of sweet and sour flavors. This classic drink combines whiskey, vermouth, and a touch of sweet grenadine, resulting in a sophisticated and well-rounded beverage. Sip on an Abilene cocktail and let the smooth whiskey and subtle sweetness transport you to a cozy lounge.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Abilene.jpg"
+          },
+          {
+            "_id": "639b6de9ff77d221f190c545",
+            "drink": "Pink Lady",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Pink Lady is a delicate and elegant cocktail that showcases the delicate flavors of gin, apple brandy, grenadine, and a hint of lemon juice. It's a beautifully pink drink with a touch of sweetness and a subtle tartness. Sip on a Pink Lady cocktail and let its graceful flavors transport you to a glamorous era of cocktail culture.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Pink_Lady.jpg"
+          }
+        ]
+      },
       "GetSearchResponse": {
         "type": "object",
         "properties": {
@@ -1599,112 +1968,6 @@
             "shortDescription": "A whiskey-based cocktail with a blend of sweet and sour flavors.",
             "favorite": false
           }
-        ]
-      },
-      "GetCategoriesResponse": {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "description": "Category name"
-        },
-        "example": [
-          "Beer",
-          "Cocktail",
-          "Cocoa",
-          "Coffee / Tea",
-          "Homemade Liqueur",
-          "Ordinary Drink",
-          "Other/Unknown",
-          "Punch / Party Drink",
-          "Shake",
-          "Shot",
-          "Soft Drink"
-        ]
-      },
-      "GetIngredientsResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "description": "Ingredient ID number",
-              "example": "64aebb7f82d96cc69e0eb4c9"
-            },
-            "title": {
-              "type": "string",
-              "description": "Ingredient title",
-              "example": "Coffee brandy"
-            },
-            "ingredientThumb": {
-              "type": "string",
-              "description": "Ingredient image link",
-              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy.png"
-            },
-            "thumb-medium": {
-              "type": "string",
-              "description": "Ingredient medium image link",
-              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Medium.png"
-            },
-            "thumb-small": {
-              "type": "string",
-              "description": "Ingredient small image link",
-              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Small.png"
-            },
-            "alcohol": {
-              "type": "string",
-              "description": "Content of alcohol",
-              "example": "Yes"
-            }
-          }
-        }
-      },
-      "GetGlassesResponse": {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "description": "Glass name"
-        },
-        "example": [
-          "Balloon Glass",
-          "Beer Glass",
-          "Beer mug",
-          "Beer pilsner",
-          "Brandy snifter",
-          "Champagne Flute",
-          "Champagne flute",
-          "Cocktail Glass",
-          "Cocktail glass",
-          "Coffee Mug",
-          "Coffee mug",
-          "Collins Glass",
-          "Collins glass",
-          "Copper Mug",
-          "Cordial glass",
-          "Coupe Glass",
-          "Highball Glass",
-          "Highball glass",
-          "Hurricane glass",
-          "Irish coffee cup",
-          "Jar",
-          "Margarita glass",
-          "Margarita/Coupette glass",
-          "Martini Glass",
-          "Mason jar",
-          "Nick and Nora Glass",
-          "Old-Fashioned glass",
-          "Old-fashioned glass",
-          "Pint glass",
-          "Pitcher",
-          "Pousse cafe glass",
-          "Punch Bowl",
-          "Punch bowl",
-          "Shot Glass",
-          "Shot glass",
-          "Whiskey Glass",
-          "Whiskey sour glass",
-          "White wine glass",
-          "Wine Glass"
         ]
       }
     },
