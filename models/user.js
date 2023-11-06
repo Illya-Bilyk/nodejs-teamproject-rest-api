@@ -100,18 +100,10 @@ const emailSchema = Joi.object({
   }),
 });
 
-const updatUserSchema = Joi.object({
-  name: Joi.string().messages({
-    "string.base": `name should be a type of 'text'`,
-    "string.empty": `name cannot be an empty field`,
-  }),
-});
-
 const schemas = {
   registerSchema,
   loginSchema,
   emailSchema,
-  updatUserSchema,
 };
 const User = model("user", userSchema);
 

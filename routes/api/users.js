@@ -27,7 +27,6 @@ router.patch(
   authenticate,
   isValidId,
   upload.single("avatar"),
-  validateBody(schemas.updatUserSchema),
   ctrl.updatUser
 );
 
