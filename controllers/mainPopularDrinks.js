@@ -147,6 +147,10 @@ const getMainpageDrinks = async (req, res) => {
 
   const result = alcohol ? resultAll : resultNonAlko;
 
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+
   // Mixing the elements of the drinks array in each category and trimming it to three elements
   result.forEach((category) => {
     category.drinks = shuffleArray(category.drinks).slice(0, 3);
@@ -170,7 +174,7 @@ const getPopularDrinks = async (req, res) => {
   const result = await Recipe.find(
     {
       alcoholic: alcohol,
-      category: ["Soft Drink", "Cocoa", "Beer", "Ordinary Drink"],
+      users: { $exists: true, $ne: [] },
     },
     {
       _id: 1,
@@ -179,8 +183,19 @@ const getPopularDrinks = async (req, res) => {
       alcoholic: 1,
       drinkThumb: 1,
       description: 1,
+      users: 1,
     }
-  ).limit(4);
+  )
+    .sort({ users: -1 })
+    .limit(4);
+
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+
+  if (result.length === 0) {
+    throw HttpError(404, "There are no drinks in users' favorites");
+  }
 
   res.status(200).json(result);
 };
