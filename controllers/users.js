@@ -41,15 +41,15 @@ const updatUser = async (req, res) => {
   const { id } = req.user;
   const { name } = req.body;
 
-  const avatarURL = req.file.path;
+  const avatar = req.file.path;
 
-  const result = await User.findByIdAndUpdate(id, { ...req.body, avatarURL });
+  const result = await User.findByIdAndUpdate(id, { ...req.body, avatar });
 
   if (!result) {
     throw HttpError(404);
   }
 
-  res.json({ name, avatarURL });
+  res.json({ name, avatar });
 };
 
 module.exports = {
