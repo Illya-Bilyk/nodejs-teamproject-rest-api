@@ -9,7 +9,11 @@ const deletePhoto = async (file, id) => {
 
     return result.deleted_counts;
   } catch (error) {
-    console.log(error.mesage, "\n", `/Not found photo by ${id}`);
+    console.log(
+      error.mesage,
+      "\n",
+      `No photo was found for this path ${file}/${id}`
+    );
   }
 };
 
