@@ -1,5 +1,5 @@
 const { User } = require("../models/user");
-const { HttpError, ctrlWrapper, sendEmail } = require("../utils");
+const { HttpError, ctrlWrapper, sendEmail, deletePhoto } = require("../utils");
 
 const getCurrent = (req, res) => {
   const { email, birthday } = req.user;
@@ -50,6 +50,7 @@ const updatUser = async (req, res) => {
       throw HttpError(404);
     }
 
+    await deletePhoto("avatars", id);
     res.json({ name, avatar });
     return;
   }
@@ -72,6 +73,8 @@ const updatUser = async (req, res) => {
     if (!result) {
       throw HttpError(404);
     }
+
+    await deletePhoto("avatars", id);
 
     res.json({ avatar });
   }
