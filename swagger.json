@@ -267,7 +267,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "avatars": {
+                  "avatar": {
                     "type": "string",
                     "format": "binary"
                   }
@@ -681,7 +681,7 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful operation",
             "content": {
               "application/json": {
