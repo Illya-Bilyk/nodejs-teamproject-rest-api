@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "DrinkMaster V1 API docs",
-    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/...) | [Privacy Policy](https://...)",
+    "description": "API documentation for Team project 'DrinkMaster' team 4. [Backend github repository](https://github.com/Illya-Bilyk/nodejs-teamproject-rest-api) | [Privacy Policy](https://danylotytarenko.github.io/DrinkMaster/privacy)",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
@@ -11,7 +11,7 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://..." }],
+  "servers": [{ "url": "https://drinks-whm4.onrender.com" }],
   "tags": [
     {
       "name": "Auth",
@@ -58,12 +58,16 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request (invalid request body)",
+          "404": {
+            "description": "Not found",
             "content": {}
           },
           "409": {
             "description": "Provided email already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -97,11 +101,19 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "No token provided",
             "content": {}
           },
-          "403": {
-            "description": "Email doesn't exist / Password is wrong",
+          "401": {
+            "description": "Unauthorized / Email or password is wrong",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -123,11 +135,15 @@
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -162,15 +178,19 @@
             }
           },
           "400": {
-            "description": "Invalid request body / No token provided",
+            "description": "No token provided",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid refresh token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -192,60 +212,37 @@
         }
       }
     },
-    "/auth/facebook": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Facebook authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
-        "responses": {
-          "200": {
-            "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user",
-            "content": {}
-          },
-          "403": {
-            "description": "Not registered or registered with postman",
-            "content": {}
-          }
-        }
-      }
-    },
     "/users/current": {
       "get": {
         "tags": ["Users"],
         "summary": "Get user info",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserInfoRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                  "$ref": "#/components/schemas/GetСurrentUserResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -258,37 +255,52 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatars": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserUpdateResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -301,37 +313,41 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/GetUserSubscribeRequest"
               }
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetUserSubscribeResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / Subscription has already been send",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / User not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -340,41 +356,34 @@
     "/filters/categories": {
       "get": {
         "tags": ["Filters"],
-        "summary": "Getting a list of cocktail categories",
+        "summary": "Get a list of drink categories",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetCategoriesResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -383,41 +392,34 @@
     "/filters/ingredients": {
       "get": {
         "tags": ["Filters"],
-        "summary": "Getting the ingredients list",
+        "summary": "Get a list of drink ingredients",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetIngredientsResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -426,41 +428,34 @@
     "/filters/glasses": {
       "get": {
         "tags": ["Filters"],
-        "summary": "Obtaining a list of containers for serving",
+        "summary": "Get a list of drink containers",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetGlassesResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -472,38 +467,31 @@
         "summary": "Getting cocktails for the main page",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetMainpageDrinksResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -515,38 +503,31 @@
         "summary": "Getting popular cocktails",
         "security": [{ "Bearer": [] }],
         "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetPopularDrinksResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / There are no drinks in users' favorites ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -557,14 +538,97 @@
         "tags": ["Drinks"],
         "summary": "Getting cocktails by category + ingredient + keyword",
         "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
+          },
+          {
+            "in": "query",
+            "name": "keyword",
+            "type": "string",
+            "required": "true",
+            "default": "Ir",
+            "description": "A word from the search bar - Enter the text ..."
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "type": "string",
+            "required": "true",
+            "default": "Coffee / Tea",
+            "description": "A category from the category drop-down list, or an empty string"
+          },
+          {
+            "in": "query",
+            "name": "ingredient",
+            "type": "string",
+            "required": "true",
+            "default": "Sugar",
+            "description": "Ingredients from the ingredient drop-down list or an empty string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found / Invalid user / Invalid session / Users not found (invalid query) / Search query not found (invalid query)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/drinks/own/add/img": {
+      "post": {
+        "tags": ["Drinks"],
+        "summary": "Adding your image to your own cocktail",
+        "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users files",
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "type": "object",
+                "properties": {
+                  "cocktail": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
               }
             }
           }
@@ -575,21 +639,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/AddDrinkImgResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / File is missing",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -602,80 +670,86 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Child's object",
+          "description": "Users object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
+                "$ref": "#/components/schemas/AddDrinkRequest"
               }
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/AddDrinkResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / Add request not made (invalid request)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks/own/remove": {
+    "/drinks/own/remove/{drinkId}": {
       "delete": {
         "tags": ["Drinks"],
         "summary": "Deleting your own cocktail",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/RemoveDrinkResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -686,125 +760,139 @@
         "tags": ["Drinks"],
         "summary": "Getting your own cocktails",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
           }
-        },
+        ],
         "responses": {
           "201": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetDrinkResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks/favorite/add": {
+    "/drinks/favorite/add/{drinkId}": {
       "post": {
         "tags": ["Drinks"],
         "summary": "Adding a cocktail to favorites",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/AddFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks/favorite/remove": {
+    "/drinks/favorite/remove/{drinkId}": {
       "delete": {
         "tags": ["Drinks"],
         "summary": "Removing a cocktail from favorites",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c51e",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/AddFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request / {drinkId} is not valid id",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -815,82 +903,94 @@
         "tags": ["Drinks"],
         "summary": "Receiving cocktails from the chosen ones",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "string",
+            "required": "true",
+            "default": "1",
+            "description": "Current page for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string",
+            "required": "true",
+            "default": "9",
+            "description": "Number of drinks per page"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetFavoriteResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided / Bad request ",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / Users not found (invalid query) / Favorites drink not found ",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
       }
     },
-    "/drinks": {
+    "/drinks/{drinkId}": {
       "get": {
         "tags": ["Drinks"],
         "summary": "Get one cocktail per ID",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
-        "requestBody": {
-          "description": "Child's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChildRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "path",
+            "name": "drinkId",
+            "type": "string",
+            "required": "true",
+            "default": "639b6de9ff77d221f190c521",
+            "description": "ID the selected drink"
           }
-        },
+        ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChildResponse"
+                  "$ref": "#/components/schemas/GetByIDResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body) / No token provided",
+            "description": "No token provided",
             "content": {}
           },
           "401": {
-            "description": "Unauthorized (invalid access token)",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Child not found / Invalid user / Invalid session",
+            "description": "Not found / Invalid user / Invalid session / Drink not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -900,10 +1000,10 @@
   "components": {
     "schemas": {
       "RegistrationRequest": {
-        "required": ["username", "birthday", "email", "password"],
+        "required": ["name", "birthday", "email", "password"],
         "type": "object",
         "properties": {
-          "username": {
+          "name": {
             "type": "string",
             "description": "User's name",
             "minLength": 2,
@@ -927,7 +1027,7 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "qwerty12",
+            "example": "Qwerty?12",
             "minLength": 8,
             "maxLength": 100
           }
@@ -936,20 +1036,35 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "username": {
+          "accessToken": {
             "type": "string",
-            "description": "User's name",
-            "example": "John"
+            "description": "Session's access token (needed for all requests)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
           },
-          "email": {
+          "sid": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "description": "Session's id (needed for /auth/refresh)",
+            "example": "65423c61f2c5a9d94a44c85c"
           },
-          "id": {
-            "type": "string",
-            "description": "User's id",
-            "example": "507f1f77bcf86cd799439011"
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "User name",
+                "example": "John"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "01/01/2001"
+              }
+            }
           }
         }
       },
@@ -969,7 +1084,7 @@
             "description": "User's password",
             "minLength": 8,
             "maxLength": 100,
-            "example": "qwerty12"
+            "example": "Qwerty?12"
           }
         }
       },
@@ -991,192 +1106,23 @@
             "description": "Session's id (needed for /auth/refresh)",
             "example": "507f1f77bcf86cd799439011"
           },
-          "data": {
+          "user": {
             "type": "object",
             "properties": {
+              "name": {
+                "type": "string",
+                "description": "User name",
+                "example": "John"
+              },
               "email": {
                 "type": "string",
                 "description": "User's email",
                 "format": "email"
               },
-              "username": {
+              "birthday": {
                 "type": "string",
-                "description": "User's name",
-                "example": "John"
-              },
-              "id": {
-                "type": "string",
-                "description": "User's id",
-                "example": "507f1f77bcf86cd799439012"
-              },
-              "children": {
-                "type": "array",
-                "description": "User's children",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "rewards": {
-                      "type": "integer",
-                      "description": "Child's rewards"
-                    },
-                    "habits": {
-                      "type": "array",
-                      "description": "Child's habits",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "days": {
-                            "type": "array",
-                            "description": "Habit days",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "date": {
-                                  "type": "string",
-                                  "description": "Day's date",
-                                  "example": "2020-12-31"
-                                },
-                                "isCompleted": {
-                                  "type": "string",
-                                  "description": "Day's status",
-                                  "enum": ["unknown", "confirmed", "canceled"]
-                                }
-                              }
-                            }
-                          },
-                          "_id": {
-                            "type": "string",
-                            "description": "Habit's id",
-                            "example": "507f1f77bcf86cd799439011"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "Habit's name",
-                            "example": "Name of the habit"
-                          },
-                          "rewardPerDay": {
-                            "type": "integer",
-                            "description": "Habit's reward for a single day",
-                            "example": 1
-                          },
-                          "childId": {
-                            "type": "string",
-                            "description": "Id of the child whose habit it is",
-                            "example": "507f1f77bcf86cd799439011"
-                          },
-                          "__v": {
-                            "type": "integer",
-                            "description": "MongoDB document service versionKey (ignore)"
-                          }
-                        }
-                      }
-                    },
-                    "tasks": {
-                      "type": "array",
-                      "description": "Child's tasks",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "_id": {
-                            "type": "string",
-                            "description": "Task's id",
-                            "example": "507f1f77bcf86cd799439011"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "Task's name",
-                            "example": "Name of the task"
-                          },
-                          "reward": {
-                            "type": "string",
-                            "description": "Task's reward",
-                            "example": 1
-                          },
-                          "isCompleted": {
-                            "type": "string",
-                            "description": "Task's status",
-                            "enum": ["unknown", "confirmed", "canceled"]
-                          },
-                          "childId": {
-                            "type": "string",
-                            "description": "Id of the child whose task it is",
-                            "example": "507f1f77bcf86cd799439011"
-                          },
-                          "daysToComplete": {
-                            "type": "integer",
-                            "description": "Amount of days to complete this task (optional)",
-                            "example": 1
-                          },
-                          "__v": {
-                            "type": "integer",
-                            "description": "MongoDB document service versionKey (ignore)"
-                          }
-                        }
-                      }
-                    },
-                    "gifts": {
-                      "type": "array",
-                      "description": "Child's gifts",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "_id": {
-                            "type": "string",
-                            "description": "Gift's id",
-                            "example": "507f1f77bcf86cd799439011"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "Gift's name",
-                            "example": "Name of the gift"
-                          },
-                          "price": {
-                            "type": "integer",
-                            "description": "Gift's price",
-                            "minimum": 1,
-                            "example": 1
-                          },
-                          "isPurchased": {
-                            "type": "boolean",
-                            "description": "Gift's status"
-                          },
-                          "imageUrl": {
-                            "type": "string",
-                            "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
-                          },
-                          "childId": {
-                            "type": "string",
-                            "description": "Id of the child this gift was created for",
-                            "example": "507f1f77bcf86cd799439011"
-                          },
-                          "__v": {
-                            "type": "integer",
-                            "description": "MongoDB document service versionKey (ignore)"
-                          }
-                        }
-                      }
-                    },
-                    "_id": {
-                      "type": "string",
-                      "description": "Child's id",
-                      "example": "507f1f77bcf86cd799439011"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Child's name",
-                      "example": "John"
-                    },
-                    "gender": {
-                      "type": "string",
-                      "description": "Child's gender",
-                      "enum": ["male", "female"]
-                    },
-                    "__v": {
-                      "type": "integer",
-                      "description": "MongoDB document service versionKey (ignore)"
-                    }
-                  }
-                }
+                "description": "User's birthday",
+                "example": "01/01/2001"
               }
             }
           }
@@ -1195,24 +1141,49 @@
       "RefreshTokensResponse": {
         "type": "object",
         "properties": {
-          "accessToken": {
-            "type": "string",
-            "description": "Access token",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
-          },
-          "refreshToken": {
-            "type": "string",
-            "description": "Refresh token",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
-          },
-          "newSid": {
+          "sid": {
             "type": "string",
             "description": "New session's id",
             "example": "507f1f77bcf86cd799439011"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User ID",
+                "example": "6546d5944aa904c3fe3969de"
+              },
+              "name": {
+                "type": "string",
+                "description": "User's name",
+                "example": "Jack"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "example": "user@example.com"
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "01/11/1998"
+              },
+              "accessToken": {
+                "type": "string",
+                "description": "New access token",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+              },
+              "refreshToken": {
+                "type": "string",
+                "description": "New refresh token",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXB"
+              }
+            }
           }
         }
       },
-      "GetUserInfoRequest": {
+      "GetСurrentUserResponse": {
         "type": "object",
         "properties": {
           "email": {
@@ -1220,377 +1191,879 @@
             "description": "User's email",
             "format": "email"
           },
-          "username": {
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday",
+            "example": "01/01/2001"
+          }
+        }
+      },
+      "GetUserUpdateRequest": {
+        "required": "name",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "John"
+          }
+        }
+      },
+      "GetUserUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
             "type": "string",
             "description": "User's name",
             "example": "John"
           },
-          "id": {
+          "avatarURL": {
             "type": "string",
-            "description": "User's id",
-            "example": "507f1f77bcf86cd799439012"
+            "description": "Current page for pagination",
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698760293/cocktails/653fa858149cd42514905850-2EmQibRWanpjmcqFMIbOK.jpg"
+          }
+        }
+      },
+      "GetUserSubscribeRequest": {
+        "required": ["email", "password"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "minLength": 3,
+            "maxLength": 100
+          }
+        }
+      },
+      "GetUserSubscribeResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Subscription email sent"
+          }
+        }
+      },
+      "GetCategoriesResponse": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Category name"
+        },
+        "example": [
+          "Beer",
+          "Cocktail",
+          "Cocoa",
+          "Coffee / Tea",
+          "Homemade Liqueur",
+          "Ordinary Drink",
+          "Other/Unknown",
+          "Punch / Party Drink",
+          "Shake",
+          "Shot",
+          "Soft Drink"
+        ]
+      },
+      "GetIngredientsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Ingredient ID number",
+              "example": "64aebb7f82d96cc69e0eb4c9"
+            },
+            "title": {
+              "type": "string",
+              "description": "Ingredient title",
+              "example": "Coffee brandy"
+            },
+            "ingredientThumb": {
+              "type": "string",
+              "description": "Ingredient image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy.png"
+            },
+            "thumb-medium": {
+              "type": "string",
+              "description": "Ingredient medium image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Medium.png"
+            },
+            "thumb-small": {
+              "type": "string",
+              "description": "Ingredient small image link",
+              "example": "https://ftp.goit.study/img/drinkify/ingredients/Coffee_brandy-Small.png"
+            },
+            "alcohol": {
+              "type": "string",
+              "description": "Content of alcohol",
+              "example": "Yes"
+            }
+          }
+        }
+      },
+      "GetGlassesResponse": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "description": "Glass name"
+        },
+        "example": [
+          "Balloon Glass",
+          "Beer Glass",
+          "Beer mug",
+          "Beer pilsner",
+          "Brandy snifter",
+          "Champagne Flute",
+          "Champagne flute",
+          "Cocktail Glass",
+          "Cocktail glass",
+          "Coffee Mug",
+          "Coffee mug",
+          "Collins Glass",
+          "Collins glass",
+          "Copper Mug",
+          "Cordial glass",
+          "Coupe Glass",
+          "Highball Glass",
+          "Highball glass",
+          "Hurricane glass",
+          "Irish coffee cup",
+          "Jar",
+          "Margarita glass",
+          "Margarita/Coupette glass",
+          "Martini Glass",
+          "Mason jar",
+          "Nick and Nora Glass",
+          "Old-Fashioned glass",
+          "Old-fashioned glass",
+          "Pint glass",
+          "Pitcher",
+          "Pousse cafe glass",
+          "Punch Bowl",
+          "Punch bowl",
+          "Shot Glass",
+          "Shot glass",
+          "Whiskey Glass",
+          "Whiskey sour glass",
+          "White wine glass",
+          "Wine Glass"
+        ]
+      },
+      "GetMainpageDrinksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Drink category",
+              "example": "Ordinary Drink"
+            },
+            "drinks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "description": "Drink ID number",
+                    "example": "639b6de9ff77d221f190c645"
+                  },
+                  "drink": {
+                    "type": "string",
+                    "description": "Drink title",
+                    "example": "Karsk"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Drink category",
+                    "example": "Ordinary Drink"
+                  },
+                  "alcoholic": {
+                    "type": "string",
+                    "description": "Content of alcohol",
+                    "example": "Alcoholic"
+                  },
+                  "drinkThumb": {
+                    "type": "string",
+                    "description": "Drink image link",
+                    "example": "https://ftp.goit.study/img/drinkify/recipes/Karsk.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "category": "Ordinary Drink",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c645",
+                "drink": "Karsk",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Karsk.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c5be",
+                "drink": "Clover Club",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Clover_Club.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c5d5",
+                "drink": "Rusty Nail",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Rusty_Nail.jpg"
+              }
+            ]
           },
-
-          "children": {
+          {
+            "category": "Cocktail",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c5ea",
+                "drink": "New York Lemonade",
+                "category": "Cocktail",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/New_York_Lemonade.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c586",
+                "drink": "Vodka Tonic",
+                "category": "Cocktail",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Vodka_Tonic.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c522",
+                "drink": "Addison",
+                "category": "Cocktail",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Addison.jpg"
+              }
+            ]
+          },
+          {
+            "category": "Shake",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c56a",
+                "drink": "151 Florida Bushwacker",
+                "category": "Shake",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/151_Florida_Bushwacker.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c563",
+                "drink": "Just a Moonmint",
+                "category": "Shake",
+                "alcoholic": "Non alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Just_a_Moonmint.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c620",
+                "drink": "Sweet Tooth",
+                "category": "Shake",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Sweet_Tooth.jpg"
+              }
+            ]
+          },
+          {
+            "category": "Other/Unknown",
+            "drinks": [
+              {
+                "_id": "639b6de9ff77d221f190c592",
+                "drink": "Lassi Khara",
+                "category": "Other/Unknown",
+                "alcoholic": "Non alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Lassi_Khara.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c60a",
+                "drink": "Bible Belt",
+                "category": "Other/Unknown",
+                "alcoholic": "Alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Bible_Belt.jpg"
+              },
+              {
+                "_id": "639b6de9ff77d221f190c559",
+                "drink": "Pineapple Gingerale Smoothie",
+                "category": "Other/Unknown",
+                "alcoholic": "Non alcoholic",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Pineapple_Gingerale_Smoothie.jpg"
+              }
+            ]
+          }
+        ]
+      },
+      "GetPopularDrinksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Drink ID number",
+              "example": "639b6de9ff77d221f190c549"
+            },
+            "drink": {
+              "type": "string",
+              "description": "Drink title",
+              "example": "Porto flip"
+            },
+            "category": {
+              "type": "string",
+              "description": "Drink category",
+              "example": "Ordinary Drink"
+            },
+            "alcoholic": {
+              "type": "string",
+              "description": "Content of alcohol",
+              "example": "Alcoholic"
+            },
+            "description": {
+              "type": "string",
+              "description": "Drink description",
+              "example": "Porto flip is a rich and creamy cocktail that combines the flavors of port wine, brandy, and an egg yolk. It is made by shaking port wine, brandy, simple syrup, and an egg yolk together with ice. The result is a velvety smooth drink with a hint of sweetness and a touch of richness from the egg yolk. It's a sophisticated and indulgent choice for a special occasion."
+            },
+            "drinkThumb": {
+              "type": "string",
+              "description": "Drink image link",
+              "example": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg"
+            },
+            "users": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Glass name"
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "639b6de9ff77d221f190c549",
+            "drink": "Porto flip",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Porto flip is a rich and creamy cocktail that combines the flavors of port wine, brandy, and an egg yolk. It is made by shaking port wine, brandy, simple syrup, and an egg yolk together with ice. The result is a velvety smooth drink with a hint of sweetness and a touch of richness from the egg yolk. It's a sophisticated and indulgent choice for a special occasion.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Porto_flip.jpg",
+            "users": [
+              "6546b40b762c21c2cdf2da68",
+              "65493713f7d46b23ebdeb598",
+              "654937e6f7d46b23ebdeb5b1",
+              "6547681c5b30566a4463eb85"
+            ]
+          },
+          {
+            "_id": "639b6de9ff77d221f190c54e",
+            "drink": "Poppy Cocktail",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Poppy Cocktail is a floral and aromatic cocktail that combines the flavors of gin, orange liqueur, grenadine, and lemon juice. It is made by shaking all the ingredients together with ice and straining it into a glass. The result is a vibrant and refreshing drink with a beautiful pink color. Sip on this delightful cocktail and let the floral notes transport you to a blooming garden.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Poppy_Cocktail.jpg",
+            "users": [
+              "6546b40b762c21c2cdf2da68",
+              "65493713f7d46b23ebdeb598",
+              "6547681c5b30566a4463eb85"
+            ]
+          },
+          {
+            "_id": "639b6de9ff77d221f190c521",
+            "drink": "Abilene",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Abilene is a whiskey-based cocktail that offers a delightful balance of sweet and sour flavors. This classic drink combines whiskey, vermouth, and a touch of sweet grenadine, resulting in a sophisticated and well-rounded beverage. Sip on an Abilene cocktail and let the smooth whiskey and subtle sweetness transport you to a cozy lounge.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Abilene.jpg",
+            "users": ["6546d5944aa904c3fe3969de", "6547d73787427ccdb2f182f3"]
+          },
+          {
+            "_id": "639b6de9ff77d221f190c545",
+            "drink": "Pink Lady",
+            "category": "Ordinary Drink",
+            "alcoholic": "Alcoholic",
+            "description": "Pink Lady is a delicate and elegant cocktail that showcases the delicate flavors of gin, apple brandy, grenadine, and a hint of lemon juice. It's a beautifully pink drink with a touch of sweetness and a subtle tartness. Sip on a Pink Lady cocktail and let its graceful flavors transport you to a glamorous era of cocktail culture.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Pink_Lady.jpg",
+            "users": ["654773025b30566a4463ebe4"]
+          }
+        ]
+      },
+      "GetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "1"
+          },
+          "per_page": {
+            "type": "string",
+            "description": "Number of drinks per page",
+            "example": "9"
+          },
+          "max_page": {
+            "type": "string",
+            "description": "The number of drinks in the database according to the query criteria",
+            "example": "1"
+          },
+          "drinks": {
             "type": "array",
-            "description": "User's children",
+            "description": "The array of drinks in the database according to the query criteria",
+            "example": [
+              {
+                "_id": "639b6de9ff77d221f190c508",
+                "drink": "Irish Coffee",
+                "drinkAlternate": "Sorry, not specified",
+                "tags": "IBA,ContemporaryClassic",
+                "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
+                "category": "Coffee / Tea",
+                "IBA": "Contemporary Classics",
+                "alcoholic": "Alcoholic",
+                "glass": "Irish coffee cup",
+                "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
+                "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
+                "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
+                "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
+                "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
+                "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
+                "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
+                "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
+                "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
+                "ingredients": [
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d78",
+                    "title": "Irish whiskey",
+                    "measure": "1 1/2 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4c2"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d79",
+                    "title": "Coffee",
+                    "measure": "8 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4e7"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7a",
+                    "title": "Sugar",
+                    "measure": "1 tsp ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4bc"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7b",
+                    "title": "Whipped cream",
+                    "measure": "1 tblsp ",
+                    "ingredientId": "64f1d5c069d8333cf130fb38"
+                  }
+                ],
+                "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
+              }
+            ]
+          }
+        }
+      },
+      "AddDrinkImgResponse": {
+        "type": "object",
+        "properties": {
+          "avatarURL": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698760293/cocktails/653fa858149cd42514905850-2EmQibRWanpjmcqFMIbOK.jpg"
+          }
+        }
+      },
+      "AddDrinkRequest": {
+        "required": [
+          "drink",
+          "category",
+          "alcoholic",
+          "glass",
+          "description",
+          "instructions",
+          "drinkThumb",
+          "ingredients"
+        ],
+        "type": "object",
+        "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Drink's name",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "Strong"
+          },
+          "category": {
+            "type": "string",
+            "description": "Drink's category",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "Ordinary Drink"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "The presence of alcohol",
+            "enum": ["Alcoholic", "Non alcoholic"]
+          },
+          "glass": {
+            "type": "string",
+            "description": "User's password",
+            "example": "A glass of drink",
+            "minLength": 2,
+            "maxLength": 150
+          },
+          "description": {
+            "type": "string",
+            "description": "Drink's description",
+            "minLength": 2,
+            "maxLength": 1000,
+            "example": "Strong is a refreshing cocktail that combines the flavors of citrus and mint. It is made with fresh lime juice, orange liqueur, and a touch of mint syrup. The drink is served over ice and garnished with a sprig of mint. It is the perfect beverage for a hot summer day."
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Drink's instructions",
+            "minLength": 2,
+            "maxLength": 2000,
+            "example": "In a shaker half-filled with ice cubes, combine the rum, Kahlua, and cream. Shake well. Strain into a cocktail glass and garnish with the nutmeg."
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "Drink's image",
+            "minLength": 2,
+            "maxLength": 500,
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698926456/cocktails/65436e6f6db048cb734906eb.jpg"
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "Array of ingredients",
             "items": {
               "type": "object",
               "properties": {
-                "rewards": {
-                  "type": "integer",
-                  "description": "Child's rewards"
-                },
-                "habits": {
-                  "type": "array",
-                  "description": "Child's habits",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "days": {
-                        "type": "array",
-                        "description": "Habit days",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "date": {
-                              "type": "string",
-                              "description": "Day's date",
-                              "example": "2020-12-31"
-                            },
-                            "isCompleted": {
-                              "type": "string",
-                              "description": "Day's status",
-                              "enum": ["unknown", "confirmed", "canceled"]
-                            }
-                          }
-                        }
-                      },
-                      "_id": {
-                        "type": "string",
-                        "description": "Habit's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Habit's name",
-                        "example": "Name of the habit"
-                      },
-                      "rewardPerDay": {
-                        "type": "integer",
-                        "description": "Habit's reward for a single day",
-                        "example": 1
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose habit it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "tasks": {
-                  "type": "array",
-                  "description": "Child's tasks",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Task's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Task's name",
-                        "example": "Name of the task"
-                      },
-                      "reward": {
-                        "type": "string",
-                        "description": "Task's reward",
-                        "example": 1
-                      },
-                      "isCompleted": {
-                        "type": "string",
-                        "description": "Task's status",
-                        "enum": ["unknown", "confirmed", "canceled"]
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose task it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "daysToComplete": {
-                        "type": "integer",
-                        "description": "Amount of days to complete this task (optional)",
-                        "example": 1
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "gifts": {
-                  "type": "array",
-                  "description": "Child's gifts",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Gift's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Gift's name",
-                        "example": "Name of the gift"
-                      },
-                      "price": {
-                        "type": "integer",
-                        "description": "Gift's price",
-                        "minimum": 1,
-                        "example": 1
-                      },
-                      "isPurchased": {
-                        "type": "boolean",
-                        "description": "Gift's status"
-                      },
-                      "imageUrl": {
-                        "type": "string",
-                        "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child this gift was created for",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "_id": {
+                "title": {
                   "type": "string",
-                  "description": "Child's id",
-                  "example": "507f1f77bcf86cd799439011"
+                  "description": "Drink's ingredients title",
+                  "minLength": 2,
+                  "maxLength": 100,
+                  "example": "Club soda"
                 },
-                "name": {
+                "measure": {
                   "type": "string",
-                  "description": "Child's name",
-                  "example": "John"
-                },
-                "gender": {
-                  "type": "string",
-                  "description": "Child's gender",
-                  "enum": ["male", "female"]
-                },
-                "__v": {
-                  "type": "integer",
-                  "description": "MongoDB document service versionKey (ignore)"
+                  "description": "Drink's ingredients measure",
+                  "minLength": 2,
+                  "maxLength": 100,
+                  "example": "1 1/2 oz"
                 }
               }
             }
           }
         }
       },
-      "GetUserInfoResponse": {
+      "AddDrinkResponse": {
         "type": "object",
         "properties": {
-          "email": {
+          "message": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
-          },
-          "username": {
+            "example": "drink added"
+          }
+        }
+      },
+      "RemoveDrinkResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
             "type": "string",
-            "description": "User's name",
-            "example": "John"
-          },
-          "id": {
+            "example": "drink deleted"
+          }
+        }
+      },
+      "GetDrinkResponse": {
+        "type": "object",
+        "properties": {
+          "drink": {
             "type": "string",
-            "description": "User's id",
-            "example": "507f1f77bcf86cd799439012"
+            "description": "Drink's name",
+            "example": "Summer apple"
           },
-
-          "children": {
+          "category": {
+            "type": "string",
+            "description": "Drink's category",
+            "example": "Ordinary Drink"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "The presence of alcohol",
+            "example": "Alcoholic"
+          },
+          "glass": {
+            "type": "string",
+            "description": "A glass of drink",
+            "example": "Cocktail glass"
+          },
+          "description": {
+            "type": "string",
+            "description": "Drink's description",
+            "example": "Quentin is a refreshing cocktail that combines the flavors of citrus a…"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Drink's instructions",
+            "example": "In a shaker half-filled with ice cubes, combine the rum, Kahlua, and cream. Shake well. Strain into a cocktail glass and garnish with the nutmeg."
+          },
+          "drinkThumb": {
+            "type": "string",
+            "description": "Drink's image",
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698918620/cocktails/65436e6f6db048cb734906eb-wzK6R4B5iNNi8JvAAwu1R.jpg"
+          },
+          "ingredients": {
             "type": "array",
-            "description": "User's children",
-            "items": {
-              "type": "object",
-              "properties": {
-                "rewards": {
-                  "type": "integer",
-                  "description": "Child's rewards"
+            "description": "Array of ingredients",
+            "example": [
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Dark rum"
                 },
-                "habits": {
-                  "type": "array",
-                  "description": "Child's habits",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "days": {
-                        "type": "array",
-                        "description": "Habit days",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "date": {
-                              "type": "string",
-                              "description": "Day's date",
-                              "example": "2020-12-31"
-                            },
-                            "isCompleted": {
-                              "type": "string",
-                              "description": "Day's status",
-                              "enum": ["unknown", "confirmed", "canceled"]
-                            }
-                          }
-                        }
-                      },
-                      "_id": {
-                        "type": "string",
-                        "description": "Habit's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Habit's name",
-                        "example": "Name of the habit"
-                      },
-                      "rewardPerDay": {
-                        "type": "integer",
-                        "description": "Habit's reward for a single day",
-                        "example": 1
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose habit it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "tasks": {
-                  "type": "array",
-                  "description": "Child's tasks",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Task's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Task's name",
-                        "example": "Name of the task"
-                      },
-                      "reward": {
-                        "type": "string",
-                        "description": "Task's reward",
-                        "example": 1
-                      },
-                      "isCompleted": {
-                        "type": "string",
-                        "description": "Task's status",
-                        "enum": ["unknown", "confirmed", "canceled"]
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child whose task it is",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "daysToComplete": {
-                        "type": "integer",
-                        "description": "Amount of days to complete this task (optional)",
-                        "example": 1
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
-                },
-                "gifts": {
-                  "type": "array",
-                  "description": "Child's gifts",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "description": "Gift's id",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Gift's name",
-                        "example": "Name of the gift"
-                      },
-                      "price": {
-                        "type": "integer",
-                        "description": "Gift's price",
-                        "minimum": 1,
-                        "example": 1
-                      },
-                      "isPurchased": {
-                        "type": "boolean",
-                        "description": "Gift's status"
-                      },
-                      "imageUrl": {
-                        "type": "string",
-                        "description": "Gift's image url (created if 'file' field was provided while adding new gift)"
-                      },
-                      "childId": {
-                        "type": "string",
-                        "description": "Id of the child this gift was created for",
-                        "example": "507f1f77bcf86cd799439011"
-                      },
-                      "__v": {
-                        "type": "integer",
-                        "description": "MongoDB document service versionKey (ignore)"
-                      }
-                    }
-                  }
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1 1/2 oz"
                 },
                 "_id": {
                   "type": "string",
-                  "description": "Child's id",
-                  "example": "507f1f77bcf86cd799439011"
-                },
-                "name": {
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186a"
+                }
+              },
+              {
+                "title": {
                   "type": "string",
-                  "description": "Child's name",
-                  "example": "John"
+                  "description": "Drink's ingredients title",
+                  "example": "Kahlua"
                 },
-                "gender": {
+                "measure": {
                   "type": "string",
-                  "description": "Child's gender",
-                  "enum": ["male", "female"]
+                  "description": "Drink's ingredients measure",
+                  "example": "1/2 oz"
                 },
-                "__v": {
-                  "type": "integer",
-                  "description": "MongoDB document service versionKey (ignore)"
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186b"
+                }
+              },
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Light cream"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1 oz"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186c"
+                }
+              },
+              {
+                "title": {
+                  "type": "string",
+                  "description": "Drink's ingredients title",
+                  "example": "Nutmeg"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "Drink's ingredients measure",
+                  "example": "1/8 tsp grated"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Ingredients ID",
+                  "example": "65424135aced313723e9186d"
                 }
               }
-            }
+            ]
+          },
+          "shortDescription": {
+            "type": "string",
+            "description": "Drink's short description",
+            "example": "A refreshing and citrusy cocktail with a hint of mint."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner's ID",
+            "example": "6543c84e61d98501f9f42ff3"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Data created",
+            "example": "2023-11-01T12:14:45.965Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Data last updated",
+            "example": "2023-11-01T12:14:45.965Z"
           }
         }
+      },
+      "AddFavoriteResponse": {
+        "type": "object",
+        "properties": {
+          "favoriteDrinks": {
+            "type": "string",
+            "description": "Number of favorite drinks",
+            "example": "1"
+          }
+        }
+      },
+      "DeleteFavoriteResponse": {
+        "type": "object",
+        "properties": {
+          "favoriteDrinks": {
+            "type": "string",
+            "description": "Number of favorite drinks",
+            "example": "1"
+          }
+        }
+      },
+      "GetFavoriteResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "description": "Current page for pagination",
+            "example": "1"
+          },
+          "per_page": {
+            "type": "string",
+            "description": "Number of drinks per page",
+            "example": "9"
+          },
+          "max_page": {
+            "type": "string",
+            "description": "The number of drinks in the database according to the query criteria",
+            "example": "1"
+          },
+          "drinks": {
+            "type": "array",
+            "description": "The array of drinks in the database according to the query criteria",
+            "example": [
+              {
+                "_id": "639b6de9ff77d221f190c508",
+                "drink": "Irish Coffee",
+                "drinkAlternate": "Sorry, not specified",
+                "tags": "IBA,ContemporaryClassic",
+                "video": "https://youtu.be/9xwtCHELxMA?si=j9qrBEoFTqqgPVCr",
+                "category": "Coffee / Tea",
+                "IBA": "Contemporary Classics",
+                "alcoholic": "Alcoholic",
+                "glass": "Irish coffee cup",
+                "description": "Irish Coffee is a classic hot cocktail that combines the richness of coffee with the smoothness of Irish whiskey. It is made by pouring hot coffee into a glass, adding a shot of Irish whiskey, and topping it off with a dollop of whipped cream. The warmth of the drink and the sweetness of the cream make it a comforting and indulgent treat.",
+                "instructions": "Heat the coffee, whiskey and sugar; do not boil. Pour into glass and top with cream; serve hot.",
+                "instructionsES": "Calienta el café, el whisky y el azúcar; no hierva. Vierta en un vaso y cubra con crema; servir caliente.",
+                "instructionsDE": "Kaffee, Whiskey und Zucker erhitzen; nicht kochen lassen. In ein Glas geben und mit Sahne übergießen; heiß servieren.",
+                "instructionsFR": "Faire chauffer le café, le whisky et le sucre ; ne pas faire bouillir. Verser dans un verre et garnir de crème; Servir chaud.",
+                "instructionsIT": "Riscaldare il caffè, il whisky e lo zucchero; non bollire. Versare nel bicchiere e ricoprire con la panna; servito caldo.",
+                "instructionsRU": "Нагрейте кофе, виски и сахар; не кипятить. Перелейте в стакан и украсьте сливками; подавать горячим.",
+                "instructionsPL": "Podgrzej kawę, whisky i cukier; nie gotuj. Wlać do szklanki i posypać śmietaną; podawać na gorąco.",
+                "instructionsUK": "Розігріти каву, віскі і цукор; не кип'ятити. Перелити в келих і зверху полити кремом; подавати гарячим.",
+                "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Irish_Coffee.jpg",
+                "ingredients": [
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d78",
+                    "title": "Irish whiskey",
+                    "measure": "1 1/2 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4c2"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d79",
+                    "title": "Coffee",
+                    "measure": "8 oz ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4e7"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7a",
+                    "title": "Sugar",
+                    "measure": "1 tsp ",
+                    "ingredientId": "64aebb7f82d96cc69e0eb4bc"
+                  },
+                  {
+                    "_id": "653e4aacf694b8bfbdce6d7b",
+                    "title": "Whipped cream",
+                    "measure": "1 tblsp ",
+                    "ingredientId": "64f1d5c069d8333cf130fb38"
+                  }
+                ],
+                "shortDescription": "A classic hot cocktail with coffee, Irish whiskey, and whipped cream."
+              }
+            ]
+          }
+        }
+      },
+      "GetByIDResponse": {
+        "type": "object",
+        "example": [
+          {
+            "users": [],
+            "_id": "639b6de9ff77d221f190c521",
+            "drink": "Abilene",
+            "drinkAlternate": "Sorry, not specified",
+            "tags": "Sorry, not specified",
+            "video": "Sorry, not specified",
+            "category": "Ordinary Drink",
+            "IBA": "Sorry, not specified",
+            "alcoholic": "Alcoholic",
+            "glass": "Highball glass",
+            "description": "Abilene is a whiskey-based cocktail that offers a delightful balance of sweet and sour flavors. This classic drink combines whiskey, vermouth, and a touch of sweet grenadine, resulting in a sophisticated and well-rounded beverage. Sip on an Abilene cocktail and let the smooth whiskey and subtle sweetness transport you to a cozy lounge.",
+            "instructions": "Pour all of the ingredients into a highball glass almost filled with ice cubes. Stir well.",
+            "instructionsES": "Coloque todos los ingredientes en un vaso alto casi lleno de cubitos de hielo. Sacudir bien.",
+            "instructionsDE": "Alle Zutaten in ein fast mit Eiswürfeln gefülltes Longdrinkglas geben. Gut umrühren.",
+            "instructionsFR": "Verser tous les ingrédients dans un verre highball presque rempli de glaçons. Bien mélanger.",
+            "instructionsIT": "Versare tutti gli ingredienti in un bicchiere highball riempito di cubetti di ghiaccio. Mescolare bene.",
+            "instructionsRU": "Налейте все ингредиенты в хайболл, почти наполненный кубиками льда. Размешайте как следует.",
+            "instructionsPL": "Wlej wszystkie składniki do szklanki typu highball prawie wypełnionej kostkami lodu. Dobrze wymieszać.",
+            "instructionsUK": "Перелийте всі інгредієнти в стакан хайбол, майже наповнений кубиками льоду. Добре розмішати.",
+            "drinkThumb": "https://ftp.goit.study/img/drinkify/recipes/Abilene.jpg",
+            "ingredients": [
+              {
+                "_id": "654798be02738307339ac0e3",
+                "title": "Dark rum",
+                "measure": "1 1/2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4a7",
+                "ingredientThumb": "https://ftp.goit.study/img/drinkify/ingredients/Dark_rum.png"
+              },
+              {
+                "_id": "654798be02738307339ac0e4",
+                "title": "Peach nectar",
+                "measure": "2 oz ",
+                "ingredientId": "64aebb7f82d96cc69e0eb4f5",
+                "ingredientThumb": "https://ftp.goit.study/img/drinkify/ingredients/Peach_nectar.png"
+              },
+              {
+                "_id": "654798be02738307339ac0e5",
+                "title": "Orange juice",
+                "measure": "3 oz ",
+                "ingredientId": "64f1d5c069d8333cf130fb3d",
+                "ingredientThumb": "https://ftp.goit.study/img/drinkify/ingredients/"
+              }
+            ],
+            "shortDescription": "A whiskey-based cocktail with a blend of sweet and sour flavors.",
+            "favorite": false
+          }
+        ]
       }
     },
     "securitySchemes": {
