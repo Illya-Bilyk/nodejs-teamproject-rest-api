@@ -19,7 +19,6 @@ const register = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-
   if (user) {
     throw HttpError(409, "Email in use");
   }
@@ -48,6 +47,7 @@ const register = async (req, res) => {
     refreshToken,
     sid: newSession._id,
   });
+  const { avatar } = newUser;
   res.status(201).json({
     accessToken,
     refreshToken,
@@ -56,6 +56,7 @@ const register = async (req, res) => {
       name: newUser.name,
       email: newUser.email,
       birthday: newUser.birthday,
+      avatar,
     },
   });
 };
@@ -88,7 +89,7 @@ const login = async (req, res) => {
     expiresIn: "7d",
   });
 
-  const { name, birthday } = user;
+  const { name, birthday, avatar } = user;
 
   await User.findByIdAndUpdate(user._id, {
     accessToken: accessToken,
@@ -104,6 +105,7 @@ const login = async (req, res) => {
       email,
       name,
       birthday,
+      avatar,
     },
   });
 };
@@ -217,7 +219,9 @@ const googleRedirect = async (req, res) => {
   const existingParent = await User.findOne({ email: userData.data.email });
 
   if (!existingParent) {
-    return res.redirect(`https://danylotytarenko.github.io/DrinkMaster/signup`);
+    return res.redirect(
+      `https://danylotytarenko.github.io/DrinkMaster/auth/signup`
+    );
   }
   const newSession = await sessionModel.create({
     uid: existingParent._id,
