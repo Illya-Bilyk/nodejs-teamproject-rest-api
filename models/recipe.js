@@ -45,46 +45,46 @@ const recipeSchema = new Schema(
       type: String,
       required: true,
       minlength: 2,
-      maxlength: 500,
+      maxlength: 1000,
     },
     instructions: {
       type: String,
       required: true,
       minlength: 2,
-      maxlength: 500,
+      maxlength: 2000,
     },
     instructionsES: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
     instructionsDE: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
     instructionsFR: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
     instructionsIT: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
     instructionsRU: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
     instructionsPL: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
     instructionsUK: {
-      type: String,      
+      type: String,
       minlength: 2,
       maxlength: 500,
     },
@@ -99,7 +99,7 @@ const recipeSchema = new Schema(
         title: { type: String, required: true, minlength: 2, maxlength: 100 },
         measure: { type: String, required: true, minlength: 2, maxlength: 100 },
         quantity: {
-          type: String,          
+          type: String,
           minlength: 2,
           maxlength: 100,
         },
@@ -141,12 +141,12 @@ const addRecipesSchema = Joi.object({
     "string.empty": `"name" cannot be empty, min 2 max 100 letters`,
     "string.base": `"name" must be string`,
   }),
-  description: Joi.string().min(2).max(500).required().messages({
+  description: Joi.string().min(2).max(1000).required().messages({
     "any.required": `missing required name field`,
     "string.empty": `"name" cannot be empty, min 2 max 500 letters`,
     "string.base": `"name" must be string`,
   }),
-  instructions: Joi.string().min(2).max(500).required().messages({
+  instructions: Joi.string().min(2).max(2000).required().messages({
     "any.required": `missing required name field`,
     "string.empty": `"name" cannot be empty, min 2 max 500 letters`,
     "string.base": `"name" must be string`,
