@@ -104,7 +104,21 @@ const addDrink = async (req, res, next) => {
     title: ingredientTitleArray,
   });
 
-  const ingredientIDArray = responseIngredientArray.map((item) => {
+  const responseIngredientArraySorted = () => {
+    const sorted = ingredientTitleArray.map((item) => {
+      console.log("item", item);
+      const tempSortArr = responseIngredientArray.find(
+        (element) => element.title === item
+      );
+      console.log("tempSortArr", tempSortArr);
+      return tempSortArr;
+    });
+    return sorted;
+  };
+
+  const arraySorted = responseIngredientArraySorted();
+
+  const ingredientIDArray = arraySorted.map((item) => {
     const ingrIDArray = item._id;
     return ingrIDArray;
   });
@@ -343,7 +357,19 @@ const getDrinkById = async (req, res, next) => {
     next(HttpError(404, "Not found"));
   }
 
-  const ingredientReferenceArray = responseIngredientArray.map((item) => {
+  const responseIngredientArraySorted = () => {
+    const sorted = ingredientIDArray.map((item) => {      
+      const tempSortArr = responseIngredientArray.find(
+        (element) => element._id.toString() === item.toString()
+      );
+      return tempSortArr;
+    });
+    return sorted;
+  };
+
+  const responseArraySorted = responseIngredientArraySorted();
+
+  const ingredientReferenceArray = responseArraySorted.map((item) => {
     const ingredientThumbArray = item.ingredientThumb;
     return ingredientThumbArray;
   });
