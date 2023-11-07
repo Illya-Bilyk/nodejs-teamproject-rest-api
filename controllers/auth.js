@@ -149,7 +149,7 @@ const refreshTokens = async (req, res) => {
       REFRESH_SECRET_JWT,
       { expiresIn: "7d" }
     );
-    const { name, _id, birthday, email } = user;
+    const { name, _id, birthday, email, avatar } = user;
 
     return res.json({
       sid: newSession._id,
@@ -158,6 +158,7 @@ const refreshTokens = async (req, res) => {
         name,
         email,
         birthday,
+        avatar,
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
       },
