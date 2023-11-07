@@ -9,7 +9,7 @@ const {
   upload,
 } = require("../../middlewares");
 
-const { schemasDrinks } = require("../../models/drinks");
+const { schemasRecipe } = require("../../models/recipe");
 
 router.get("/mainpage", authenticate, ctrl2.getMainpageDrinks);
 
@@ -27,7 +27,7 @@ router.post(
 router.post(
   "/own/add",
   authenticate,
-  validateBody(schemasDrinks.addDrinkSchema),
+  validateBody(schemasRecipe.addRecipesSchema),
   ctrl.addDrink
 );
 

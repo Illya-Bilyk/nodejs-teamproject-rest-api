@@ -137,11 +137,7 @@ const deleteDrink = async (req, res, next) => {
     next(HttpError(404, "Not found"));
   }
 
-  const rezult = await deletePhoto("cocktails", _id);
-
-  if (!rezult) {
-    next(HttpError(400, "Bad request"));
-  }
+  await deletePhoto("cocktails", _id);
 
   const response = await Recipe.findByIdAndRemove(drinkId);
 
@@ -367,20 +363,20 @@ const getDrinkById = async (req, res, next) => {
     next(HttpError(404, "Not found"));
   }
 
-  const favoriteArrays = userFavoriteDrinks.favoriteDrinks.map((item) => {
+  const favoriteArray = userFavoriteDrinks.favoriteDrinks.map((item) => {
     const favor = item._id.toString() === drinkId;
     return favor;
   });
 
-  const isFavorite = favoriteArrays.includes(true);
+  const isFavorite = favoriteArray.includes(true);
 
-  const rezult = {
+  const result = {
     ...response,
     ingredients: arrayIngredients,
     favorite: isFavorite,
   };
 
-  res.status(200).json(rezult);
+  res.status(200).json(result);
 };
 
 module.exports = {

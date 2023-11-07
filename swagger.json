@@ -1725,14 +1725,14 @@
             "type": "string",
             "description": "Drink's description",
             "minLength": 2,
-            "maxLength": 500,
+            "maxLength": 1000,
             "example": "Strong is a refreshing cocktail that combines the flavors of citrus and mint. It is made with fresh lime juice, orange liqueur, and a touch of mint syrup. The drink is served over ice and garnished with a sprig of mint. It is the perfect beverage for a hot summer day."
           },
           "instructions": {
             "type": "string",
             "description": "Drink's instructions",
             "minLength": 2,
-            "maxLength": 500,
+            "maxLength": 2000,
             "example": "In a shaker half-filled with ice cubes, combine the rum, Kahlua, and cream. Shake well. Strain into a cocktail glass and garnish with the nutmeg."
           },
           "drinkThumb": {
@@ -1740,7 +1740,7 @@
             "description": "Drink's image",
             "minLength": 2,
             "maxLength": 500,
-            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698926456/cocktails/65436e6f6db048cb734906eb-gpfjfDjaEjdaKVzX06itZ.jpg"
+            "example": "https://res.cloudinary.com/dl1cncruu/image/upload/v1698926456/cocktails/65436e6f6db048cb734906eb.jpg"
           },
           "ingredients": {
             "type": "array",
