@@ -10,7 +10,7 @@ const { HttpError, ctrlWrapper } = require("../utils");
 const {
   ACCESS_SECRET_JWT,
   REFRESH_SECRET_JWT,
-  BASE_URL,
+  // BASE_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
 } = process.env;
@@ -19,7 +19,6 @@ const register = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-
   if (user) {
     throw HttpError(409, "Email in use");
   }
@@ -48,6 +47,7 @@ const register = async (req, res) => {
     refreshToken,
     sid: newSession._id,
   });
+  const { avatar } = newUser;
   res.status(201).json({
     accessToken,
     refreshToken,
@@ -56,6 +56,7 @@ const register = async (req, res) => {
       name: newUser.name,
       email: newUser.email,
       birthday: newUser.birthday,
+      avatar,
     },
   });
 };
@@ -88,7 +89,7 @@ const login = async (req, res) => {
     expiresIn: "7d",
   });
 
-  const { name, birthday } = user;
+  const { name, birthday, avatar } = user;
 
   await User.findByIdAndUpdate(user._id, {
     accessToken: accessToken,
@@ -104,6 +105,7 @@ const login = async (req, res) => {
       email,
       name,
       birthday,
+      avatar,
     },
   });
 };
@@ -175,7 +177,7 @@ const signout = async (req, res) => {
 const googleAuth = async (req, res) => {
   const stringifiedParams = querystring.stringify({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: `${BASE_URL}/auth/google-redirect`,
+    redirect_uri: `https://danylotytarenko.github.io/DrinkMaster/auth/google-redirect`,
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -200,7 +202,7 @@ const googleRedirect = async (req, res) => {
     data: {
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${BASE_URL}/auth/google-redirect`,
+      redirect_uri: `https://danylotytarenko.github.io/DrinkMaster/auth/google-redirect`,
       grant_type: "authorization_code",
       code,
     },
@@ -217,7 +219,9 @@ const googleRedirect = async (req, res) => {
   const existingParent = await User.findOne({ email: userData.data.email });
 
   if (!existingParent) {
-    return res.redirect(`${BASE_URL}/signup`);
+    return res.redirect(
+      `https://danylotytarenko.github.io/DrinkMaster/auth/signup`
+    );
   }
   const newSession = await sessionModel.create({
     uid: existingParent._id,
@@ -237,7 +241,7 @@ const googleRedirect = async (req, res) => {
     }
   );
   return res.redirect(
-    `${BASE_URL}/home?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
+    `https://danylotytarenko.github.io/DrinkMaster/home?accessToken=${accessToken}&refreshToken=${refreshToken}&sid=${newSession._id}`
   );
 };
 
