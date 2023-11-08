@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const querystring = require("node:querystring");
 const axios = require("axios");
+const URL = require("url");
 
 const { User } = require("../models/user");
 const { sessionModel } = require("../models/session");
@@ -10,7 +11,6 @@ const { HttpError, ctrlWrapper } = require("../utils");
 const {
   ACCESS_SECRET_JWT,
   REFRESH_SECRET_JWT,
-  // BASE_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
 } = process.env;
@@ -178,7 +178,7 @@ const signout = async (req, res) => {
 const googleAuth = async (req, res) => {
   const stringifiedParams = querystring.stringify({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: `https://danylotytarenko.github.io/DrinkMaster/auth/google-redirect`,
+    redirect_uri: `https://drinks-whm4.onrender.com/auth/google-redirect`,
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -203,7 +203,7 @@ const googleRedirect = async (req, res) => {
     data: {
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: `https://danylotytarenko.github.io/DrinkMaster/auth/google-redirect`,
+      redirect_uri: `https://drinks-whm4.onrender.com/auth/google-redirect`,
       grant_type: "authorization_code",
       code,
     },
@@ -217,25 +217,24 @@ const googleRedirect = async (req, res) => {
     },
   });
 
-  const existingParent = await User.findOne({ email: userData.data.email });
-
-  if (!existingParent) {
+  const existingUser = await User.findOne({ email: userData.data.email });
+  if (!existingUser) {
     return res.redirect(
       `https://danylotytarenko.github.io/DrinkMaster/auth/signup`
     );
   }
   const newSession = await sessionModel.create({
-    uid: existingParent._id,
+    uid: existingUser._id,
   });
   const accessToken = jwt.sign(
-    { uid: existingParent._id, sid: newSession._id },
+    { uid: existingUser._id, sid: newSession._id },
     ACCESS_SECRET_JWT,
     {
       expiresIn: "12h",
     }
   );
   const refreshToken = jwt.sign(
-    { uid: existingParent._id, sid: newSession._id },
+    { uid: existingUser._id, sid: newSession._id },
     REFRESH_SECRET_JWT,
     {
       expiresIn: "7d",
