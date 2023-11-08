@@ -33,7 +33,7 @@ const searchDrinks = async (req, res, next) => {
   drink && (query.drink = { $regex: `${keyword}`, $options: "i" });
   alcoholic && (query.alcoholic = alcohol);
 
-  const responseSizeArray = await Recipe.find(query);  
+  const responseSizeArray = await Recipe.find(query);
 
   if (!responseSizeArray) {
     throw HttpError(404, "Not found");
@@ -73,14 +73,6 @@ const addDrinkImg = async (req, res, next) => {
 const addDrink = async (req, res, next) => {
   const { _id: owner } = req.user;
 
-  const responseDrinkName = await Recipe.find({
-    drink: req.body.drink,
-  });
-
-  if (responseDrinkName) {
-    next(HttpError(400, "Drink name in use"));
-  }
-
   const ingredientTitleArray = req.body.ingredients.map((item) => {
     const ingredientArray = item.title;
     return ingredientArray;
@@ -94,7 +86,7 @@ const addDrink = async (req, res, next) => {
     const sorted = ingredientTitleArray.map((item) => {
       const tempSortArr = responseIngredientArray.find(
         (element) => element.title === item
-      );      
+      );
       return tempSortArr;
     });
     return sorted;
@@ -408,5 +400,5 @@ module.exports = {
   addFavoriteDrink: ctrlWrapper(addFavoriteDrink),
   deleteFavoriteDrink: ctrlWrapper(deleteFavoriteDrink),
   getFavoriteDrink: ctrlWrapper(getFavoriteDrink),
-  getDrinkById: ctrlWrapper(getDrinkById), 
+  getDrinkById: ctrlWrapper(getDrinkById),
 };
