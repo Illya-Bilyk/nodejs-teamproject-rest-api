@@ -102,9 +102,9 @@ This project was made possible by the hard work and dedication of the following 
 - Illya Bilyk - Team Lead / Developer
   - [GitHub](https://github.com/Illya-Bilyk)
 - Kyrylo Lysenko - Developer
-- [GitHub](https://github.com/Stylize-K)
+  - [GitHub](https://github.com/Stylize-K)
 - Viktoria Barma - Scrum Master / Developer
-- [GitHub](https://github.com/ViktoriiaBarma)
+  - [GitHub](https://github.com/ViktoriiaBarma)
 - Ivan Stepanenko - Developer
   - [GitHub](https://github.com/go-to-stars)
 
