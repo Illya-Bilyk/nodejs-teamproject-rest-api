@@ -92,7 +92,6 @@ const addDrink = async (req, res, next) => {
 
   const responseIngredientArraySorted = () => {
     const sorted = ingredientTitleArray.map((item) => {
-      console.log("item", item);
       const tempSortArr = responseIngredientArray.find(
         (element) => element.title === item
       );      

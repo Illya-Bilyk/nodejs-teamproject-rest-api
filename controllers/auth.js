@@ -10,7 +10,6 @@ const { HttpError, ctrlWrapper } = require("../utils");
 const {
   ACCESS_SECRET_JWT,
   REFRESH_SECRET_JWT,
-  // BASE_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
 } = process.env;

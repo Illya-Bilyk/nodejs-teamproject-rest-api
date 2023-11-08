@@ -44,9 +44,6 @@ const userSchema = new Schema(
       type: String,
       default: defaultAvatar,
     },
-    // sid: {
-    //   type: String,
-    // },
   },
   { versionKey: false, timestamps: true }
 );

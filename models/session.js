@@ -6,9 +6,6 @@ const sessionSchema = new Schema(
       type: String,
       ref: "User",
     },
-    // sid: {
-    //   type: String,
-    // },
   },
   { versionKey: false, timestamps: true }
 );

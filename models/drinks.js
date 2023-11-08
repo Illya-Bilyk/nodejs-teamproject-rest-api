@@ -113,4 +113,3 @@ module.exports = {
   Drinks,
   schemasDrinks,
 };
-// { _id: false, versionKey: false, timestamps: true }
