@@ -25,28 +25,15 @@ const searchDrinks = async (req, res, next) => {
 
   const skip = (page - 1) * limit;
 
-  let findCategory = [""];
-  if (category) {
-    findCategory = [category];
-  } else {
-    const categoryList = await Recipe.distinct("category");
-    findCategory = categoryList;
-  }
+  const drink = "";
+  const alcoholic = "";
+  const query = {};
+  category && (query.category = category);
+  ingredient && (query.ingredients = { $elemMatch: { title: ingredient } });
+  drink && (query.drink = { $regex: `${keyword}`, $options: "i" });
+  alcoholic && (query.alcoholic = alcohol);
 
-  let findIngredient = "";
-  if (ingredient) {
-    findIngredient = ingredient;
-  } else {
-    const ingredientsList = await Recipe.distinct("ingredients.title");
-    findIngredient = ingredientsList;
-  }
-
-  const responseSizeArray = await Recipe.find({
-    category: findCategory,
-    "ingredients.title": findIngredient,
-    drink: { $regex: `${keyword}`, $options: "i" },
-    alcoholic: alcohol,
-  });
+  const responseSizeArray = await Recipe.find(query);  
 
   if (!responseSizeArray) {
     throw HttpError(404, "Not found");
@@ -54,19 +41,10 @@ const searchDrinks = async (req, res, next) => {
 
   const size = Object.keys(responseSizeArray).length;
 
-  const response = await Recipe.find(
-    {
-      category: findCategory,
-      "ingredients.title": findIngredient,
-      drink: { $regex: `${keyword}`, $options: "i" },
-      alcoholic: alcohol,
-    },
-    "-createdAt -updatedAt",
-    {
-      skip,
-      limit,
-    }
-  );
+  const response = await Recipe.find(query, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  });
 
   if (!response) {
     throw HttpError(404, "Not found");
@@ -95,6 +73,14 @@ const addDrinkImg = async (req, res, next) => {
 const addDrink = async (req, res, next) => {
   const { _id: owner } = req.user;
 
+  const responseDrinkName = await Recipe.find({
+    drink: req.body.drink,
+  });
+
+  if (responseDrinkName) {
+    next(HttpError(400, "Drink name in use"));
+  }
+
   const ingredientTitleArray = req.body.ingredients.map((item) => {
     const ingredientArray = item.title;
     return ingredientArray;
@@ -109,8 +95,7 @@ const addDrink = async (req, res, next) => {
       console.log("item", item);
       const tempSortArr = responseIngredientArray.find(
         (element) => element.title === item
-      );
-      console.log("tempSortArr", tempSortArr);
+      );      
       return tempSortArr;
     });
     return sorted;
@@ -148,6 +133,16 @@ const deleteDrink = async (req, res, next) => {
   const { _id } = req.user;
 
   if (!drinkId || !_id) {
+    next(HttpError(404, "Not found"));
+  }
+
+  const responseUserDrink = await Recipe.find({ _id: drinkId });
+
+  if (
+    !responseUserDrink ||
+    responseUserDrink[0].owner === undefined ||
+    responseUserDrink[0].owner.toString() !== _id.toString()
+  ) {
     next(HttpError(404, "Not found"));
   }
 
@@ -358,7 +353,7 @@ const getDrinkById = async (req, res, next) => {
   }
 
   const responseIngredientArraySorted = () => {
-    const sorted = ingredientIDArray.map((item) => {      
+    const sorted = ingredientIDArray.map((item) => {
       const tempSortArr = responseIngredientArray.find(
         (element) => element._id.toString() === item.toString()
       );
@@ -414,5 +409,5 @@ module.exports = {
   addFavoriteDrink: ctrlWrapper(addFavoriteDrink),
   deleteFavoriteDrink: ctrlWrapper(deleteFavoriteDrink),
   getFavoriteDrink: ctrlWrapper(getFavoriteDrink),
-  getDrinkById: ctrlWrapper(getDrinkById),
+  getDrinkById: ctrlWrapper(getDrinkById), 
 };
